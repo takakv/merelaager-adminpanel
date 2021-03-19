@@ -1,0 +1,25 @@
+.idea/
+
+*.swp
+
+# Source media
+*.afdesign
+*.afphoto
+
+# FullRes images
+*_og.jpg
+*_og.png
+*_og.svg
+
+#.NET stuff
+bin/
+obj/
+
+#node stuff
+node_modules/
+package-lock.json
+.env
+
+# Private files
+data/arved/*.pdf
+*.sqlite
