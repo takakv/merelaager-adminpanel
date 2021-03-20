@@ -2,16 +2,18 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 
 const loginUser = async (credentials) => {
-  return fetch("http://localhost:3000/api/login", {
+  return fetch("http://localhost:3000/login", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+    },
     body: JSON.stringify(credentials),
   }).then((data) => data.json());
 };
 
 export default function Login({ setToken }) {
   const [username, setUserName] = useState();
-  const [password, setPassword] = useState();
+  const [password, setPasswod] = useState();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -23,28 +25,23 @@ export default function Login({ setToken }) {
   };
 
   return (
-    <div className="c-login-wrapper">
-      <h3>Kambüüs</h3>
+    <div>
+      <h1>Please Log In</h1>
       <form onSubmit={handleSubmit}>
-        <label htmlFor="name">Nimi</label>
-        <input
-          type="text"
-          id="name"
-          name="username"
-          required
-          onChange={(e) => setUserName(e.target.value)}
-        />
-        <label htmlFor="password">Salsõna</label>
-        <input
-          type="password"
-          id="password"
-          name="password"
-          required
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <button className="c-btn" type="submit">
-          Sisene
-        </button>
+        <label>
+          <p>Username</p>
+          <input type="text" onChange={(e) => setUserName(e.target.value)} />
+        </label>
+        <label>
+          <p>Password</p>
+          <input
+            type="password"
+            onChange={(e) => setUserName(e.target.value)}
+          />
+        </label>
+        <div>
+          <button type="submit">Submit</button>
+        </div>
       </form>
     </div>
   );

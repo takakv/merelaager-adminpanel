@@ -6,6 +6,7 @@
   --highlight: #d7591e;
   --highlight-rgb: 215, 89, 30;
   --dimmed: #ededf0;
+  --button-radius: 3px;
 }
 
 :root {
@@ -137,7 +138,7 @@ html {
 }
 
 body {
-  font-family: Raleway, sans-serif;
+  font-family: "Space Grotesk", sans-serif;
   font-size: 1rem;
   font-weight: 400;
   line-height: 1.5;
@@ -145,10 +146,6 @@ body {
   quotes: "„" "”";
   color: var(--primary);
   background-color: var(--default-bg);
-}
-
-body.admin {
-  font-family: "Space Grotesk", sans-serif;
 }
 
 a {
@@ -164,19 +161,33 @@ a {
   display: none !important;
 }
 
-// Objects
-.o-container {
-  width: 90%;
-  min-width: 300px;
-  max-width: var(--page-max-width);
-  margin: auto;
+button {
+  display: inline-block;
+  padding: 0.5em 1em;
+  border: 1px solid #dadce0;
+  border-radius: var(--button-radius);
+  background-color: transparent;
+
+  &:hover {
+    cursor: pointer;
+    background-color: var(--dimmed);
+  }
 }
 
+// Objects
 .o-grid {
   display: grid;
   width: 100%;
   grid-template-columns: repeat(12, 1fr);
   gap: 20px;
+}
+
+.o-button {
+  &--40 {
+    width: 40px;
+    padding: 5px 0;
+    border: 1px solid;
+  }
 }
 
 // Utilities
@@ -326,6 +337,10 @@ a {
   color: var(--highlight);
 }
 
+.u-mono {
+  font-family: "Space Mono", monospace;
+}
+
 // Kambüüs
 .c-login-wrapper {
   width: 500px;
@@ -388,6 +403,53 @@ a {
 .c-admin-nav {
   width: 100%;
   padding: 30px;
+}
+
+.c-regList-shiftBar {
+  margin-bottom: 1em;
+
+  button {
+    margin-right: 1em;
+  }
+}
+
+.c-regList-counters {
+  display: flex;
+
+  &__reg,
+  &__res {
+    display: flex;
+  }
+
+  &__reg {
+    margin-right: 1.5em;
+    border-right: 1px solid #e6e8eb;
+  }
+}
+
+.c-regList-counter {
+  margin-right: 1.5em;
+}
+
+.c-regList-table {
+  border-collapse: collapse;
+  text-align: left;
+
+  tbody {
+    border-bottom: 1px solid #000;
+    tr:nth-of-type(2n + 1) {
+      background-color: var(--dimmed);
+    }
+  }
+
+  th,
+  td {
+    padding: 0.75em 1em;
+  }
+
+  th {
+    font-weight: 600;
+  }
 }
 
 .c-tent {

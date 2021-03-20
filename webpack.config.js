@@ -5,12 +5,12 @@ module.exports = {
   entry: path.resolve(__dirname, "./src/index.js"),
   mode: "development",
   devServer: {
-    contentBase: path.resolve(__dirname, "./dst"),
+    historyApiFallback: true,
   },
   output: {
     path: path.resolve(__dirname, "./dist"),
-    publicPath: "/",
     filename: "bundle.js",
+    publicPath: "/",
   },
   module: {
     rules: [
