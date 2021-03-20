@@ -350,6 +350,10 @@ button {
   border-radius: 4px;
 }
 
+.c-login-submit {
+  margin-top: 1em;
+}
+
 .admin-page {
   display: grid;
   max-width: 100vw;
@@ -437,6 +441,7 @@ button {
 
   tbody {
     border-bottom: 1px solid #000;
+
     tr:nth-of-type(2n + 1) {
       background-color: var(--dimmed);
     }

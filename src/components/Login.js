@@ -17,30 +17,30 @@ export default function Login({ setToken }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const token = await loginUser({
+    const response = await loginUser({
       username,
       password,
     });
-    setToken(token);
+    setToken(response);
   };
 
   return (
-    <div>
-      <h1>Please Log In</h1>
+    <div className="c-login-wrapper">
+      <h1>Kambüüs</h1>
       <form onSubmit={handleSubmit}>
         <label>
-          <p>Username</p>
+          <p>Nimi</p>
           <input type="text" onChange={(e) => setUserName(e.target.value)} />
         </label>
         <label>
-          <p>Password</p>
+          <p>Salasõna</p>
           <input
             type="password"
             onChange={(e) => setPassword(e.target.value)}
           />
         </label>
-        <div>
-          <button type="submit">Submit</button>
+        <div className="c-login-submit">
+          <button type="submit">Sisene</button>
         </div>
       </form>
     </div>
