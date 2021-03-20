@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 
 const loginUser = async (credentials) => {
-  return fetch("http://localhost:3000/login", {
+  return fetch("http://localhost:3000/api/login/", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -13,7 +13,7 @@ const loginUser = async (credentials) => {
 
 export default function Login({ setToken }) {
   const [username, setUserName] = useState();
-  const [password, setPasswod] = useState();
+  const [password, setPassword] = useState();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -36,7 +36,7 @@ export default function Login({ setToken }) {
           <p>Password</p>
           <input
             type="password"
-            onChange={(e) => setUserName(e.target.value)}
+            onChange={(e) => setPassword(e.target.value)}
           />
         </label>
         <div>

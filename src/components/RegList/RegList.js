@@ -92,7 +92,7 @@ class RegTableSection extends Component {
         </tr>
         {this.props.sectionData.map((kid) => (
           <tr key={kid.id}>
-            <td>{kid.id}</td>
+            <td className="u-mono">{kid.id}</td>
             <td>
               <button className="o-button--40">{kid.registered}</button>
             </td>
@@ -182,7 +182,15 @@ export default class RegList extends Component {
       isLoading: true,
     });
 
-    fetch("http://localhost:3000/reglist/")
+    let accessToken = localStorage.getItem("accessToken");
+    accessToken = JSON.parse(accessToken).accessToken;
+
+    fetch("http://localhost:3000/api/reglist/", {
+      method: "GET",
+      headers: {
+        Authorization: "Bearer " + accessToken,
+      },
+    })
       .then((response) => response.json())
       .then((data) =>
         this.setState({
