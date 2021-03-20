@@ -13,7 +13,7 @@ export default function App() {
   const [token, setToken] = useState();
 
   // if (!token) {
-  //   return <Login setTokn={setToken} />;
+  //   return <Login setToken={setToken} />;
   // }
 
   return (
@@ -22,17 +22,17 @@ export default function App() {
       <PageTitle title="Ahoi" />
       <Userbox />
       <main role="main" className="c-content">
-        <Switch>
-          <Route path="/kambyys/nimekiri/">
-            <RegList />
-          </Route>
-          <Route path="/kambyys/arvegeneraator/">
-            <BillGen />
-          </Route>
-          <Route path="/kambyys/telgid/">
-            <TentsList />
-          </Route>
-        </Switch>
+          <Switch>
+            <Route path="/nimekiri/">
+              <RegList />
+            </Route>
+            <Route path="/arvegeneraator/">
+              <BillGen />
+            </Route>
+            <Route path="/telgid/">
+              <TentsList />
+            </Route>
+          </Switch>
       </main>
     </div>
   );

@@ -1,0 +1,461 @@
+// Variables and colours
+:root {
+  --primary: #23408e;
+  --primary-rgb: 35, 64, 142;
+  --default-bg: #fff;
+  --highlight: #d7591e;
+  --highlight-rgb: 215, 89, 30;
+  --dimmed: #ededf0;
+}
+
+:root {
+  --page-max-width: 1100px;
+}
+
+// Mixins and SCSS variables
+$phone-break: 500px;
+$tablet-break: 700px;
+$laptop-break: 900px;
+$hero-height: 850px;
+
+// Resets and defaults
+*,
+::before,
+::after {
+  box-sizing: border-box;
+}
+
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+main,
+nav,
+section,
+summary {
+  display: block;
+}
+
+audio,
+canvas,
+video {
+  display: inline-block;
+}
+
+blockquote,
+body,
+dd,
+dl,
+dt,
+figcaption,
+figure,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+hr,
+html,
+li,
+ol,
+p,
+pre,
+table,
+ul {
+  margin: 0;
+  padding: 0;
+}
+
+embed,
+img,
+object,
+video {
+  max-width: 100%;
+  height: auto;
+}
+
+figure img {
+  display: block;
+}
+
+// Typography
+h1 {
+  font-size: 3rem;
+  line-height: 1.1;
+}
+
+h2 {
+  font-size: 2.5rem;
+  line-height: 1.1;
+}
+
+h3,
+.h3 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: 4px;
+}
+
+h4,
+h5,
+h6 {
+  font-size: 1rem;
+  font-weight: 800;
+}
+
+b,
+strong {
+  font-weight: 600;
+}
+
+a.t-visible {
+  text-decoration: underline;
+
+  &:hover {
+    color: var(--highlight);
+  }
+}
+
+// General
+::-moz-selection,
+::selection {
+  color: #fff;
+  background-color: #7993db;
+}
+
+html {
+  font-size: 100%;
+  overflow-x: hidden;
+  height: 100%;
+  background: var(--default-bg);
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: Raleway, sans-serif;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  min-width: 300px;
+  quotes: "„" "”";
+  color: var(--primary);
+  background-color: var(--default-bg);
+}
+
+body.admin {
+  font-family: "Space Grotesk", sans-serif;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.is-hidden {
+  display: none !important;
+}
+
+// Objects
+.o-container {
+  width: 90%;
+  min-width: 300px;
+  max-width: var(--page-max-width);
+  margin: auto;
+}
+
+.o-grid {
+  display: grid;
+  width: 100%;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 20px;
+}
+
+// Utilities
+.u-banner {
+  display: block;
+  width: 100%;
+  margin: 1em 0;
+  padding: 0.25em 1em;
+  border-left: 0.25em solid #222;
+  background-color: rgba(150, 150, 150, 0.1);
+
+  &--info {
+    border-left-color: var(--primary);
+    background-color: rgba(var(--primary-rgb), 0.1);
+  }
+
+  &--warning {
+    border-left-color: var(--highlight);
+    background-color: rgba(var(--highlight-rgb), 0.1);
+
+    p:first-child::before {
+      font-weight: 600;
+      content: "Tähelepanu! ";
+    }
+  }
+}
+
+.u-popup {
+  position: unset;
+  z-index: 10;
+  bottom: 0;
+  display: none;
+  width: 100%;
+  padding: 3em 0;
+  color: #fff;
+  border-top: 5px solid #fff;
+
+  &.is-active {
+    position: fixed;
+    display: block;
+  }
+
+  &__close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 3px 10px;
+    border-radius: 100px;
+
+    &:hover {
+      cursor: pointer;
+      background-color: rgba(255, 255, 255, 0.3);
+    }
+  }
+
+  &--notice {
+    background-color: rgba(var(--primary-rgb), 0.95);
+  }
+}
+
+.u-list-blank {
+  list-style: none;
+}
+
+.u-text-center {
+  text-align: center;
+}
+
+.u-topmost {
+  position: relative;
+  z-index: 10;
+}
+
+.u-mt-1em {
+  margin-top: 1em;
+}
+
+.u-mb-15 {
+  margin-bottom: 15px;
+}
+
+.u-inline-block {
+  display: inline-block;
+}
+
+.u-no-list-style {
+  list-style: none;
+}
+
+.u-nested-increments {
+  position: relative;
+  counter-reset: section;
+
+  ol {
+    counter-reset: section;
+  }
+
+  li {
+    margin-left: 1em !important;
+  }
+
+  li::before {
+    font-size: 1.25rem;
+    font-weight: 800;
+    position: absolute;
+    left: -20px;
+    content: counters(section, ".") ".";
+    counter-increment: section;
+  }
+
+  li li::before {
+    font-size: 1rem;
+    font-weight: 400;
+    content: counters(section, ".") " ";
+  }
+}
+
+@mixin visible-link {
+  text-decoration: underline;
+  &:hover {
+    color: var(--highlight);
+  }
+}
+
+.u-visible-links {
+  a {
+    @include visible-link;
+  }
+}
+
+.u-required::after {
+  font-size: 1.5rem;
+  line-height: 0;
+  content: "*";
+  color: var(--highlight);
+}
+
+.u-italic {
+  font-style: italic;
+}
+
+.u-regular {
+  font-weight: 400;
+}
+
+.u-orange {
+  color: var(--highlight);
+}
+
+// Kambüüs
+.c-login-wrapper {
+  width: 500px;
+  margin: 20% auto auto;
+  padding: 2em;
+  border: 4px solid var(--dimmed);
+  border-radius: 4px;
+}
+
+.admin-page {
+  display: grid;
+  max-width: 100vw;
+  height: 100%;
+  grid-template-columns: 220px 40px min-content 1fr min-content;
+  grid-template-rows: 32px 42px 1fr;
+  grid-template-areas: "side-nav s1 blank blank blank" "side-nav s2 title placeholder profile" "side-nav s3 content content content";
+
+  &__title {
+    display: flex;
+    align-items: flex-end;
+    grid-area: title;
+
+    span {
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+  }
+
+  &__user {
+    display: flex;
+    align-items: flex-end;
+    padding-right: 40px;
+    grid-area: profile;
+
+    span {
+      font-size: 1.25rem;
+    }
+  }
+
+  .c-content {
+    overflow: auto;
+    margin-top: 24px;
+    grid-area: content;
+  }
+}
+
+.c-sidebar {
+  position: relative;
+  display: block;
+  background-color: #f2f2f2;
+  grid-area: side-nav;
+
+  &-title {
+    font-size: 1.5rem;
+    display: block;
+    padding: 30px 30px 50px;
+  }
+}
+
+.c-admin-nav {
+  width: 100%;
+  padding: 30px;
+}
+
+.c-tent {
+  width: 200px;
+  margin-right: 40px;
+  margin-bottom: 30px;
+  padding: 20px;
+  border: 1px solid #e6e8eb;
+  border-radius: 4px;
+
+  &__container {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  &-header {
+    font-size: 2rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    text-align: center;
+    border-bottom: 1px solid #e6e8eb;
+  }
+
+  &-child {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    &__rm {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 15px;
+      height: 15px;
+      border: 1px solid #e6e8eb;
+      border-radius: 10px;
+
+      div {
+        width: 70%;
+        height: 1px;
+        background-color: #e6e8eb;
+      }
+
+      &:hover {
+        cursor: pointer;
+        border-color: var(--primary);
+
+        div {
+          background-color: var(--primary);
+        }
+      }
+    }
+  }
+}
+
+.c-tentless {
+  margin-right: 40px;
+  margin-bottom: 20px;
+
+  &__container {
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 30px;
+  }
+}
+
+#app {
+  width: 100%;
+  height: 100vh;
+}
