@@ -61,9 +61,9 @@ class ToggleButton extends Component {
       window.alert(
         "Midagi läks nihu." +
           "\n\n" +
-          `Veakood:${response.status}` +
+          `Veakood: ${response.status}` +
           "\n" +
-          `Kirjeldus:${response.statusText}`
+          `Kirjeldus: ${response.statusText}`
       );
       console.log(response);
     } else {
@@ -83,6 +83,57 @@ class ToggleButton extends Component {
   }
 }
 
+// TODO: Find a way to persist state.
+class InputField extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      value: this.props.value,
+    };
+  }
+
+  handleChange = async (e) => {
+    await this.setState({
+      value: e.target.value,
+    });
+
+    let accessToken = localStorage.getItem("accessToken");
+    accessToken = JSON.parse(accessToken).accessToken;
+
+    const response = await fetch(
+      "http://localhost:3000/api/reglist/update/" +
+        `${this.props.id}/${this.props.field}/${this.state.value}/`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: "Bearer " + accessToken,
+        },
+      }
+    );
+    if (!response.ok) {
+      window.alert(
+        "Midagi läks nihu." +
+          "\n\n" +
+          `Veakood: ${response.status}` +
+          "\n" +
+          `Kirjeldus: ${response.statusText}`
+      );
+      console.log(response);
+    }
+  };
+
+  render() {
+    return (
+      <input
+        className={this.props.className}
+        type="text"
+        defaultValue={this.state.value}
+        onBlur={this.handleChange}
+      />
+    );
+  }
+}
+
 class RegTableSection extends Component {
   render() {
     return (
@@ -95,17 +146,19 @@ class RegTableSection extends Component {
             <td className="u-mono">{kid.id}</td>
             <td>{kid.name}</td>
             <td>
-              <input
+              <InputField
+                id={kid.id}
+                field="total-paid"
                 className="price"
-                type="text"
-                defaultValue={kid["pricePaid"]}
+                value={kid["pricePaid"]}
               />
             </td>
             <td>
-              <input
+              <InputField
+                id={kid.id}
+                field="total-due"
                 className="priceToPay"
-                type="text"
-                defaultValue={kid["priceToPay"]}
+                value={kid["priceToPay"]}
               />
             </td>
             <td>
