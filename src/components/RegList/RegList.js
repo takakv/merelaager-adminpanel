@@ -76,8 +76,8 @@ export default class RegList extends Component {
       isLoading: true,
     });
 
-    let accessToken = localStorage.getItem("accessToken");
-    accessToken = JSON.parse(accessToken).accessToken;
+    const credentials = localStorage.getItem("credentials");
+    const accessToken = JSON.parse(credentials).accessToken;
 
     fetch("http://localhost:3000/api/reglist/fetch/", {
       method: "GET",

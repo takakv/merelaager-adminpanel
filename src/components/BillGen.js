@@ -5,11 +5,11 @@ export default class BillGen extends Component {
     const action = e.target.id;
     const email = document.getElementById("mail").value;
 
-    let accessToken = localStorage.getItem("accessToken");
-    accessToken = JSON.parse(accessToken).accessToken;
+    const credentials = localStorage.getItem("credentials");
+    const accessToken = JSON.parse(credentials).accessToken;
 
     const response = await fetch(
-      "http://localhost:3000/api/billgen/" + `${action}/${email}/`,
+      "http://localhost:3000/api/bills/" + `${action}/${email}/`,
       {
         method: "POST",
         headers: {

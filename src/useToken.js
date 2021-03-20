@@ -2,7 +2,7 @@ import { useState } from "react";
 
 export default function useToken() {
   const getToken = () => {
-    const tokenString = localStorage.getItem("accessToken");
+    const tokenString = localStorage.getItem("credentials");
     const userToken = JSON.parse(tokenString);
     return userToken?.accessToken;
   };
@@ -10,7 +10,7 @@ export default function useToken() {
   const [token, setToken] = useState(getToken());
 
   const saveToken = (userToken) => {
-    localStorage.setItem("accessToken", JSON.stringify(userToken));
+    localStorage.setItem("credentials", JSON.stringify(userToken));
     setToken(userToken.accessToken);
   };
 
