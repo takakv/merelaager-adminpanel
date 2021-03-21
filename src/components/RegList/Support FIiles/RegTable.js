@@ -45,11 +45,12 @@ class ToggleButton extends Component {
   }
 
   toggleState = async (e) => {
-    let accessToken = localStorage.getItem("accessToken");
-    accessToken = JSON.parse(accessToken).accessToken;
+    const credentials = localStorage.getItem("credentials");
+    const accessToken = JSON.parse(credentials).accessToken;
 
     const response = await fetch(
-      `http://localhost:3000/api/reglist/update/${this.props.id}/${this.props.field}/`,
+      "http://localhost:3000/api/reglist/update/" +
+        `${this.props.id}/${this.props.field}/`,
       {
         method: "POST",
         headers: {
@@ -97,8 +98,8 @@ class InputField extends Component {
       value: e.target.value,
     });
 
-    let accessToken = localStorage.getItem("accessToken");
-    accessToken = JSON.parse(accessToken).accessToken;
+    const credentials = localStorage.getItem("credentials");
+    const accessToken = JSON.parse(credentials).accessToken;
 
     const response = await fetch(
       "http://localhost:3000/api/reglist/update/" +

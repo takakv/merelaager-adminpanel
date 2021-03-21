@@ -2,21 +2,24 @@ const path = require("path");
 const HTMLWebpackPlugin = require("html-webpack-plugin");
 
 module.exports = {
-  entry: path.resolve(__dirname, "./src/index.js"),
-  mode: "development",
-  devServer: {
-    historyApiFallback: true,
+  entry: {
+    app: "./src/index.js",
   },
+  plugins: [
+    new HTMLWebpackPlugin({
+      template: "./src/index.html",
+    }),
+  ],
   output: {
-    path: path.resolve(__dirname, "./dist"),
     filename: "bundle.js",
+    path: path.resolve(__dirname, "build"),
     publicPath: "/",
   },
   module: {
     rules: [
       {
-        test: /\.(js|jsx)$/,
-        exclude: /node_modules/,
+        test: /\.(js)$/,
+        exclude: /node_moules/,
         use: ["babel-loader"],
       },
       {
@@ -37,9 +40,4 @@ module.exports = {
   resolve: {
     extensions: ["*", ".js", ".jsx"],
   },
-  plugins: [
-    new HTMLWebpackPlugin({
-      template: "./src/index.html",
-    }),
-  ],
 };
