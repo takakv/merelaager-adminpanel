@@ -34,6 +34,11 @@ export default function App() {
     setInterval(silentTokenRefresh, 1200000);
   }
 
+  silentTokenRefresh().catch((err) => {
+    alert("Autentimisega on probleeme. Palun anna Taanielile teada.");
+    console.log(err);
+  });
+
   return (
     <div className="admin-page">
       <Sidebar />

@@ -81,13 +81,26 @@ const NoTentCamper = (props) => {
   );
 };
 
+// The state doesn't get updated when it should. Most likely this is due
+// to some Babel optimisations. Should file a bug report when I feel like it.
 const TentBlock = (props) => {
+  const [campers, setCampers] = useState(props.tentRoster);
+
+  const handleChildUnmount = (index) => {
+    setCampers([...campers.splice(index, 1)]);
+  };
+
   return (
     <div className="c-tent">
       <p className="c-tent-header">{props.tentNumber}</p>
       <ul>
-        {props.tentRoster.map((camper) => (
-          <TentBlockCamper camper={camper} key={camper.id} />
+        {campers.map((camper, index) => (
+          <TentBlockCamper
+            camper={camper}
+            key={camper.id}
+            unmountMe={handleChildUnmount}
+            index={index}
+          />
         ))}
       </ul>
     </div>
@@ -100,6 +113,7 @@ const TentBlockCamper = (props) => {
   const removeCamperFromTent = async () => {
     await makePostRequest("tents/update/" + `${props.camper.id}/0/`);
     setIsAssigned(false);
+    // props.unmountMe(props.index);
   };
 
   let entry = "";
