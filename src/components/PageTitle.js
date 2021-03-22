@@ -1,11 +1,15 @@
-import React, { Component } from "react";
+import React from "react";
+import { useSelector } from "react-redux";
+import { getTitle } from "../features/pageTitle/pageTitleSlice";
 
-export default class PageTile extends Component {
-  render() {
-    return (
-      <div className="admin-page__title">
-        <span>{this.props.title}</span>
-      </div>
-    );
-  }
-}
+const PageTile = () => {
+  const appTitle = useSelector(getTitle);
+
+  return (
+    <div className="admin-page__title">
+      <span>{appTitle}</span>
+    </div>
+  );
+};
+
+export default PageTile;

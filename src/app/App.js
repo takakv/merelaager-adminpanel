@@ -1,14 +1,14 @@
 import React from "react";
 import { Switch, Route } from "react-router-dom";
 
-import Login from "./components/Login";
-import Sidebar from "./components/Sidebar";
-import PageTitle from "./components/PageTitle";
-import Userbox from "./components/userbox";
-import RegList from "./components/RegList/RegList";
-import BillGen from "./components/BillGen";
-import TentList from "./components/TentList";
-import useToken from "./useToken";
+import Login from "../components/Login";
+import Sidebar from "../components/Sidebar";
+import PageTitle from "../components/PageTitle";
+import UserBox from "../components/UserBox";
+import RegList from "../components/RegList/RegList";
+import BillGen from "../components/BillGen";
+import TentList from "../components/TentList";
+import useToken from "../useToken";
 
 export default function App() {
   const { token, setToken } = useToken();
@@ -24,7 +24,6 @@ export default function App() {
       body: JSON.stringify({ token: refreshToken }),
     }).then((data) => data.json());
     credentials.accessToken = response.accessToken;
-    console.log(credentials.accessToken);
     localStorage.setItem("credentials", JSON.stringify(credentials));
   };
 
@@ -42,8 +41,8 @@ export default function App() {
   return (
     <div className="admin-page">
       <Sidebar />
-      <PageTitle title="kambüüs_beta" />
-      <Userbox />
+      <PageTitle />
+      <UserBox />
       <main role="main" className="c-content">
         <Switch>
           <Route path="/nimekiri/">

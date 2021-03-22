@@ -1,5 +1,7 @@
-import React, { Component } from "react";
+import React, { Component, useState, useEffect } from "react";
 import RegTable from "./Support Files/RegTable";
+import { useDispatch } from "react-redux";
+import { setTitle } from "../../features/pageTitle/pageTitleSlice";
 
 const shifts = ["1", "2", "3", "4"];
 const regCounters = ["poisid", "tüdrukud", "kokku"];
@@ -57,15 +59,11 @@ export default class RegList extends Component {
     this.state = {
       shiftNr: 1,
       shiftData: {},
-      isLoading: false,
+      isLoading: true,
     };
   }
 
   componentDidMount() {
-    this.setState({
-      isLoading: true,
-    });
-
     const credentials = localStorage.getItem("credentials");
     const accessToken = JSON.parse(credentials).accessToken;
 
