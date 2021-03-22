@@ -1,5 +1,10 @@
-import React, { Component, useState } from "react";
-import { promptRequestError } from "../../Common/requestAPI";
+import React, { useState } from "react";
+import { makePostRequest, promptRequestError } from "../Common/requestAPI";
+import { useDispatch } from "react-redux";
+import {
+  updatePaidValue,
+  updateToPayValue,
+} from "../../features/registrationList/registrationListSlice";
 
 const camperListSections = [
   ["Poisid", "regBoys"],
@@ -73,56 +78,46 @@ const ToggleButton = (props) => {
   );
 };
 
-// TODO: Find a way to persist state.
-class InputField extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      value: this.props.value,
-    };
-  }
+const InputField = (props) => {
+  const dispatch = useDispatch();
 
-  handleChange = async (e) => {
-    await this.setState({
-      value: e.target.value,
-    });
-
-    const credentials = localStorage.getItem("credentials");
-    const accessToken = JSON.parse(credentials).accessToken;
-
-    const response = await fetch(
-      "http://localhost:3000/api/reglist/update/" +
-        `${this.props.id}/${this.props.field}/${this.state.value}/`,
-      {
-        method: "POST",
-        headers: {
-          Authorization: "Bearer " + accessToken,
-        },
-      }
-    );
-    if (!response.ok) {
-      window.alert(
-        "Midagi läks nihu." +
-          "\n\n" +
-          `Veakood: ${response.status}` +
-          "\n" +
-          `Kirjeldus: ${response.statusText}`
+  const handleChange = async ({ target }) => {
+    if (props.field === "total-paid") {
+      dispatch(
+        updatePaidValue({
+          shiftNr: props.shiftNr,
+          camperData: props.data,
+          value: parseInt(target.value),
+        })
       );
-      console.log(response);
+    } else if (props.field === "total-due") {
+      dispatch(
+        updateToPayValue({
+          shiftNr: props.shiftNr,
+          camperData: props.data,
+          value: parseInt(target.value),
+        })
+      );
+    } else {
+      const err = "Inconsistent API usage";
+      alert(err);
+      console.error(err);
     }
+
+    await makePostRequest(
+      "reglist/update/" + `${props.data.id}/${props.field}/${target.value}`
+    );
   };
 
-  render() {
-    return (
-      <input
-        className={this.props.className}
-        type="text"
-        defaultValue={this.state.value}
-        onBlur={this.handleChange}
-      />
-    );
-  }
-}
+  return (
+    <input
+      className={props.className}
+      type="text"
+      defaultValue={props.value}
+      onBlur={handleChange}
+    />
+  );
+};
 
 const RegTableSection = (props) => {
   return (
@@ -136,17 +131,19 @@ const RegTableSection = (props) => {
           <td>{kid.name}</td>
           <td>
             <InputField
-              id={kid.id}
+              data={kid}
               field="total-paid"
               className="price"
+              shiftNr={props.shiftNr}
               value={kid["pricePaid"]}
             />
           </td>
           <td>
             <InputField
-              id={kid.id}
+              data={kid}
               field="total-due"
               className="priceToPay"
+              shiftNr={props.shiftNr}
               value={kid["priceToPay"]}
             />
           </td>
@@ -202,6 +199,7 @@ const RegTable = (props) => {
           title={section[0]}
           sectionData={props.shiftData[section[1]]}
           key={section[1]}
+          shiftNr={props.shiftNr}
         />
       ))}
     </table>

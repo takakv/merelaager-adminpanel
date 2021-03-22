@@ -1,21 +1,24 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { fetchAccessToken } from "../../components/Common/tokens";
 
-export const fetchCampers = createAsyncThunk("tents/fetchTents", async () => {
-  const response = await fetch(
-    "http://localhost:3000/api/tents/fetch/" + `${2}/`,
-    {
-      method: "GET",
-      headers: {
-        Authorization: "Bearer " + fetchAccessToken(),
-      },
-    }
-  );
-  return await response.json();
-});
+export const fetchCampers = createAsyncThunk(
+  "campers/fetchTents",
+  async (shiftNr) => {
+    const response = await fetch(
+      "http://localhost:3000/api/tents/fetch/" + `${shiftNr}/`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: "Bearer " + fetchAccessToken(),
+        },
+      }
+    );
+    return await response.json();
+  }
+);
 
 const campersSlice = createSlice({
-  name: "tents",
+  name: "campers",
   initialState: {
     data: {},
     status: "idle",
@@ -36,8 +39,7 @@ const campersSlice = createSlice({
         if (obj[1].id === id) camperObject = obj;
       });
       if (camperObject) camperObject[1].tent = tent;
-      else console.error("smh");
-      console.log("adding guy");
+      else console.error("Something went wrong when updating camper tents.");
     },
   },
   extraReducers: {

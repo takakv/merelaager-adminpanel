@@ -5,12 +5,15 @@ import Login from "../components/Login";
 import Sidebar from "../components/Sidebar";
 import PageTitle from "../components/PageTitle";
 import UserBox from "../components/UserBox";
-import RegList from "../components/RegList/RegList";
+import RegistrationList from "../features/RegistrationList/RegistrationList";
 import BillGen from "../components/BillGen";
 import TentList from "../components/TentList";
 import useToken from "../useToken";
+import { useDispatch } from "react-redux";
+import { setData } from "../features/userData/userDataSlice";
 
 export default function App() {
+  const dispatch = useDispatch();
   const { token, setToken } = useToken();
 
   const silentTokenRefresh = async () => {
@@ -31,12 +34,13 @@ export default function App() {
     return <Login setToken={setToken} />;
   } else {
     setInterval(silentTokenRefresh, 1200000);
+    silentTokenRefresh().catch((err) => {
+      alert("Autentimisega on probleeme. Palun anna Taanielile teada.");
+      console.log(err);
+    });
+    const credentials = JSON.parse(localStorage.getItem("credentials"));
+    dispatch(setData(credentials.user));
   }
-
-  silentTokenRefresh().catch((err) => {
-    alert("Autentimisega on probleeme. Palun anna Taanielile teada.");
-    console.log(err);
-  });
 
   return (
     <div className="admin-page">
@@ -53,7 +57,7 @@ export default function App() {
             </p>
           </Route>
           <Route path="/nimekiri/">
-            <RegList title="Nimekiri" />
+            <RegistrationList title="Nimekiri" />
           </Route>
           <Route path="/arvegeneraator/">
             <BillGen title="Arvegeneraator" />

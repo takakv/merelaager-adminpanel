@@ -1,25 +1,15 @@
-import React, { Component } from "react";
+import React from "react";
+import { useSelector } from "react-redux";
+import { getName } from "../features/userData/userDataSlice";
 
-export default class UserBox extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      name: "",
-    };
-  }
+const UserBox = () => {
+  const userName = useSelector(getName);
 
-  componentDidMount() {
-    const credentials = JSON.parse(localStorage.getItem("credentials"));
-    this.setState({
-      name: credentials.user.name,
-    });
-  }
+  return (
+    <div className="admin-page__user">
+      <span>{userName}</span>
+    </div>
+  );
+};
 
-  render() {
-    return (
-      <div className="admin-page__user">
-        <span>{this.state.name}</span>
-      </div>
-    );
-  }
-}
+export default UserBox;

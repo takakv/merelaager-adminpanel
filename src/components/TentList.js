@@ -7,6 +7,7 @@ import {
   getCampers,
   updateCamper,
 } from "../features/tents/campersSlice";
+import { getShift } from "../features/userData/userDataSlice";
 
 // THIS FILE CONTAINS TERRIBLE CODE THAT NEEDS REFACTORING!
 
@@ -14,14 +15,16 @@ import {
 const tentNumbers = Array.from({ length: 10 }, (_, i) => i + 1);
 
 const TentList = (props) => {
+  const shiftNr = useSelector(getShift);
   const dispatch = useDispatch();
   dispatch(setTitle(props.title));
+
   const shiftData = useSelector(getCampers);
   const shiftStatus = useSelector((state) => state.campers.status);
   const error = useSelector((state) => state.campers.error);
 
   useEffect(() => {
-    if (shiftStatus === "idle") dispatch(fetchCampers());
+    if (shiftStatus === "idle") dispatch(fetchCampers(shiftNr));
   }, [shiftStatus, dispatch]);
 
   if (shiftStatus === "succeeded") {
