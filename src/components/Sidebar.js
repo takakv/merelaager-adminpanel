@@ -9,6 +9,11 @@ const Navigation = () => {
     <nav className="c-admin-nav">
       <ul className="u-list-blank">
         <li>
+          <Link to="/" onClick={() => dispatch(setTitle("Kambüüs"))}>
+            Kambüüs
+          </Link>
+        </li>
+        <li>
           <Link to="/nimekiri/" onClick={() => dispatch(setTitle("Nimekiri"))}>
             Nimekiri
           </Link>
@@ -45,7 +50,11 @@ const Sidebar = () => {
         className="c-sidebar-title"
         onClick={() => dispatch(setTitle("Kambüüs"))}
       >
-        Kambüüs
+        <img
+          alt="Logo"
+          src="https://merelaager.ee/media/img/merelaager_ship.svg"
+          width="50px"
+        />
       </Link>
       <Navigation />
     </div>

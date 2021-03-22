@@ -45,6 +45,13 @@ export default function App() {
       <UserBox />
       <main role="main" className="c-content">
         <Switch>
+          <Route path="/" exact={true}>
+            <p>
+              Kambüüsi uus versioon on veel töös, nii et võib esineda veidraid
+              tõrkeid, ent uus versioon peaks olema kiirem, mugavam ning
+              sujuvam, kui seda oli vana.
+            </p>
+          </Route>
           <Route path="/nimekiri/">
             <RegList title="Nimekiri" />
           </Route>

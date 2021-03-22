@@ -27,7 +27,8 @@ const campersSlice = createSlice({
     // array. The current implementation tries to find the object which contains
     // the camper with the known ID, and then acts on that object. Since the state
     // object passed as an argument behaves in some complicated Redux way,
-    // the state.data contains and index (index 0) and the data (index 1).
+    // the state.data contains an array consisting of:
+    // an index (index 0), the data (index 1).
     updateCamper: (state, action) => {
       const { id, tent } = action.payload;
       let camperObject;
