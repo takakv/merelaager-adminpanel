@@ -1,10 +1,10 @@
 import { configureStore } from "@reduxjs/toolkit";
 import pageTitleReducer from "../features/pageTitle/pageTitleSlice";
-import tentsReducer from "../features/tents/tentsSlice";
+import campersReducer from "../features/tents/campersSlice";
 
 export default configureStore({
   reducer: {
     pageTitle: pageTitleReducer,
-    tents: tentsReducer,
+    campers: campersReducer,
   },
 });
