@@ -1,5 +1,5 @@
 import React, { Component, useState } from "react";
-import { promptRequestError } from "../../Common/errors";
+import { promptRequestError } from "../../Common/requestAPI";
 
 const camperListSections = [
   ["Poisid", "regBoys"],

@@ -1,6 +1,6 @@
-import React, { Component } from "react";
+import React, { Component, useState } from "react";
 import { fetchAccessToken } from "./Common/tokens";
-import { promptRequestError } from "./Common/errors";
+import { makePostRequest } from "./Common/requestAPI";
 
 // Populate the options dropdown for campers with a tent.
 const tentNumbers = Array.from({ length: 10 }, (_, i) => i + 1);
@@ -33,7 +33,6 @@ export default class TentList extends Component {
 
   render() {
     const isLoading = this.state.isLoading;
-    if (!isLoading) console.log(this.state.shiftData);
     if (isLoading) {
       return <p>Laen...</p>;
     }
@@ -41,10 +40,18 @@ export default class TentList extends Component {
       <div>
         <div className="c-tentless__container">
           {this.state.shiftData["noTentList"].map((camper) => (
-            <NoTentCamper name={camper.name} key={camper.id} />
+            <NoTentCamper name={camper.name} key={camper.id} id={camper.id} />
           ))}
         </div>
-        <div className="c-tent__container"></div>
+        <div className="c-tent__container">
+          {tentNumbers.map((tentNr) => (
+            <TentBlock
+              key={tentNr.toString()}
+              tentNumber={tentNr}
+              tentRoster={this.state.shiftData["tentList"][tentNr]}
+            />
+          ))}
+        </div>
       </div>
     );
   }
@@ -52,27 +59,11 @@ export default class TentList extends Component {
 
 const NoTentCamper = (props) => {
   const addCamperToTent = async ({ target }) => {
-    const credentials = localStorage.getItem("credentials");
-    const accessToken = JSON.parse(credentials).accessToken;
-
-    const response = await fetch(
-      "http://localhost:3000/api/tents/update/" +
-        `${props.id}/${target.value}/`,
-      {
-        method: "POST",
-        headers: {
-          Authorization: "Bearer " + accessToken,
-        },
-      }
-    );
-    if (!response.ok) promptRequestError(response);
-    else {
-      console.log("Ok");
-    }
+    await makePostRequest("tents/update/" + `${props.id}/${target.value}/`);
   };
 
   return (
-    <div id={props.id} className="c-tentless">
+    <div className="c-tentless">
       <p>{props.name}</p>
       <label>
         <select name="tent" onChange={addCamperToTent}>
@@ -90,4 +81,37 @@ const NoTentCamper = (props) => {
   );
 };
 
-class TentBlock extends Component {}
+const TentBlock = (props) => {
+  return (
+    <div className="c-tent">
+      <p className="c-tent-header">{props.tentNumber}</p>
+      <ul>
+        {props.tentRoster.map((camper) => (
+          <TentBlockCamper camper={camper} key={camper.id} />
+        ))}
+      </ul>
+    </div>
+  );
+};
+
+const TentBlockCamper = (props) => {
+  const [isAssigned, setIsAssigned] = useState(true);
+
+  const removeCamperFromTent = async () => {
+    await makePostRequest("tents/update/" + `${props.camper.id}/0/`);
+    setIsAssigned(false);
+  };
+
+  let entry = "";
+  if (isAssigned)
+    entry = (
+      <li className="u-list-blank c-tent-child">
+        <span>{props.camper.name}</span>
+        <div className="c-tent-child__rm" onClick={removeCamperFromTent}>
+          <div />
+        </div>
+      </li>
+    );
+
+  return entry;
+};
