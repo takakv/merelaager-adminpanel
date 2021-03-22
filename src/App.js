@@ -7,6 +7,7 @@ import PageTitle from "./components/PageTitle";
 import Userbox from "./components/userbox";
 import RegList from "./components/RegList/RegList";
 import BillGen from "./components/BillGen";
+import TentList from "./components/TentList";
 import useToken from "./useToken";
 
 export default function App() {
@@ -23,13 +24,14 @@ export default function App() {
       body: JSON.stringify({ token: refreshToken }),
     }).then((data) => data.json());
     credentials.accessToken = response.accessToken;
+    console.log(credentials.accessToken);
     localStorage.setItem("credentials", JSON.stringify(credentials));
   };
 
   if (!token) {
     return <Login setToken={setToken} />;
   } else {
-    setInterval(silentTokenRefresh, 1700000);
+    setInterval(silentTokenRefresh, 1200000);
   }
 
   return (
@@ -45,7 +47,9 @@ export default function App() {
           <Route path="/arvegeneraator/">
             <BillGen />
           </Route>
-          <Route path="/telgid/"/>
+          <Route path="/telgid/">
+            <TentList />
+          </Route>
         </Switch>
       </main>
     </div>

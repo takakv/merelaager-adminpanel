@@ -1,65 +1,55 @@
 import React, { Component } from "react";
-import RegTable from "./Support FIiles/RegTable";
+import RegTable from "./Support Files/RegTable";
 
-class ShiftSwitchButtons extends Component {
-  render() {
-    const shifts = [];
-    for (let i = 0; i < 4; ++i) shifts[i] = i + 1;
-    return (
-      <div className="c-regList-shiftBar">
-        {shifts.map((shift) => (
-          <button
-            key={shift.toString()}
-            onClick={this.props.switcher}
-            className="o-button--40"
-          >
-            {shift}v
-          </button>
+const shifts = ["1", "2", "3", "4"];
+const regCounters = ["poisid", "tüdrukud", "kokku"];
+const resCounters = ["res. poisid", "res. tüdrukud"];
+
+const ShiftSwitchButtons = (props) => {
+  return (
+    <div className="c-regList-shiftBar">
+      {shifts.map((shift) => (
+        <button key={shift} onClick={props.switcher} className="o-button--40">
+          {shift}v
+        </button>
+      ))}
+    </div>
+  );
+};
+
+const ShiftOverviewCounter = (props) => {
+  const count = props.count ?? 0;
+  return (
+    <div className="c-regList-counter">
+      {props.counterName}: <span className="u-mono">{count}</span>
+    </div>
+  );
+};
+
+const ShiftOverviewInfo = (props) => {
+  return (
+    <div className="c-regList-counters">
+      <div className="c-regList-counters__reg">
+        {regCounters.map((counter, index) => (
+          <ShiftOverviewCounter
+            counterName={counter}
+            key={counter}
+            count={props.regCounts[index]}
+          />
         ))}
       </div>
-    );
-  }
-}
-
-class ShiftOverviewCounter extends Component {
-  render() {
-    let count = this.props.count ?? 0;
-    return (
-      <div className="c-regList-counter">
-        {this.props.counterName}: <span className="u-mono">{count}</span>
+      <div className="c-regList-counters__res">
+        {resCounters.map((counter, index) => (
+          <ShiftOverviewCounter
+            counterName={counter}
+            key={counter}
+            count={props.resCounts[index]}
+          />
+        ))}
       </div>
-    );
-  }
-}
-
-class ShiftOverviewInfo extends Component {
-  render() {
-    const regCounters = ["poisid", "tüdrukud", "kokku"];
-    const resCounters = ["res. poisid", "res. tüdrukud"];
-    return (
-      <div className="c-regList-counters">
-        <div className="c-regList-counters__reg">
-          {regCounters.map((counter, index) => (
-            <ShiftOverviewCounter
-              counterName={counter}
-              key={counter}
-              count={this.props.regCounts[index]}
-            />
-          ))}
-        </div>
-        <div className="c-regList-counters__res">
-          {resCounters.map((counter, index) => (
-            <ShiftOverviewCounter
-              counterName={counter}
-              key={counter}
-              count={this.props.resCounts[index]}
-            />
-          ))}
-        </div>
-      </div>
-    );
-  }
-}
+    </div>
+  );
+};
 
 export default class RegList extends Component {
   constructor(props) {
