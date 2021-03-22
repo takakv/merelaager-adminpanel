@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-export const pageTitleSlice = createSlice({
+const pageTitleSlice = createSlice({
   name: "pageTitle",
   initialState: {
     value: "Kambüüs",

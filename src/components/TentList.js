@@ -1,55 +1,45 @@
 import React, { useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
-import { fetchAccessToken } from "./Common/tokens";
+import { useDispatch, useSelector } from "react-redux";
 import { makePostRequest } from "./Common/requestAPI";
 import { setTitle } from "../features/pageTitle/pageTitleSlice";
+import { fetchTents, getTents } from "../features/tents/tentsSlice";
 
 // Populate the options dropdown for campers with a tent.
 const tentNumbers = Array.from({ length: 10 }, (_, i) => i + 1);
 
-const TentList = () => {
+const TentList = (props) => {
   const dispatch = useDispatch();
-  dispatch(setTitle("Telgid"));
-
-  const shiftNr = 2;
-  const [shiftData, setShiftData] = useState({});
-  const [isLoading, setIsLoading] = useState(true);
+  dispatch(setTitle(props.title));
+  const shiftData = useSelector(getTents);
+  const shiftStatus = useSelector((state) => state.tents.status);
+  const error = useSelector((state) => state.tents.error);
 
   useEffect(() => {
-    fetch("http://localhost:3000/api/tents/fetch/" + `${shiftNr}/`, {
-      method: "GET",
-      headers: {
-        Authorization: "Bearer " + fetchAccessToken(),
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setShiftData(data);
-        setIsLoading(false);
-      });
-  }, []);
+    if (shiftStatus === "idle") dispatch(fetchTents());
+  }, [shiftStatus, dispatch]);
 
-  if (isLoading) {
-    return <p>Laen...</p>;
-  }
-  return (
-    <div>
-      <div className="c-tentless__container">
-        {shiftData["noTentList"].map((camper) => (
-          <NoTentCamper name={camper.name} key={camper.id} id={camper.id} />
-        ))}
+  if (shiftStatus === "succeeded") {
+    return (
+      <div>
+        <div className="c-tentless__container">
+          {shiftData["noTentList"].map((camper) => (
+            <NoTentCamper name={camper.name} key={camper.id} id={camper.id} />
+          ))}
+        </div>
+        <div className="c-tent__container">
+          {tentNumbers.map((tentNr) => (
+            <TentBlock
+              key={tentNr.toString()}
+              tentNumber={tentNr}
+              tentRoster={shiftData["tentList"][tentNr]}
+            />
+          ))}
+        </div>
       </div>
-      <div className="c-tent__container">
-        {tentNumbers.map((tentNr) => (
-          <TentBlock
-            key={tentNr.toString()}
-            tentNumber={tentNr}
-            tentRoster={shiftData["tentList"][tentNr]}
-          />
-        ))}
-      </div>
-    </div>
-  );
+    );
+  } else if (shiftStatus === "failed") {
+    return <p>{error}</p>;
+  } else return <p>Laen...</p>;
 };
 
 export default TentList;

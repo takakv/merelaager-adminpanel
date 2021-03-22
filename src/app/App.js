@@ -46,13 +46,13 @@ export default function App() {
       <main role="main" className="c-content">
         <Switch>
           <Route path="/nimekiri/">
-            <RegList />
+            <RegList title="Nimekiri" />
           </Route>
           <Route path="/arvegeneraator/">
-            <BillGen />
+            <BillGen title="Arvegeneraator" />
           </Route>
           <Route path="/telgid/">
-            <TentList />
+            <TentList title="Telgid" />
           </Route>
         </Switch>
       </main>

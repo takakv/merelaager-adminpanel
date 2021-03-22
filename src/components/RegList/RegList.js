@@ -1,7 +1,5 @@
 import React, { Component, useState, useEffect } from "react";
 import RegTable from "./Support Files/RegTable";
-import { useDispatch } from "react-redux";
-import { setTitle } from "../../features/pageTitle/pageTitleSlice";
 
 const shifts = ["1", "2", "3", "4"];
 const regCounters = ["poisid", "tüdrukud", "kokku"];
