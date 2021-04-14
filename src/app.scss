@@ -460,6 +460,13 @@ button {
   th {
     font-weight: 600;
   }
+
+  input[type="text"] {
+    width: 50px;
+    border: 0;
+    border-bottom: 1px solid var(--primary);
+    background-color: transparent;
+  }
 }
 
 .c-tent {

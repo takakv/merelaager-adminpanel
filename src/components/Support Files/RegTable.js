@@ -72,6 +72,12 @@ const InputField = (props) => {
   const dispatch = useDispatch();
 
   const handleChange = async ({ target }) => {
+    const response = await makePostRequest(
+      "reglist/update/" + `${props.data.id}/${props.field}/${target.value}`
+    );
+
+    if (!response || !response.ok) return;
+
     if (props.field === "total-paid") {
       dispatch(
         updatePaidValue({
@@ -93,10 +99,6 @@ const InputField = (props) => {
       alert(err);
       console.error(err);
     }
-
-    await makePostRequest(
-      "reglist/update/" + `${props.data.id}/${props.field}/${target.value}`
-    );
   };
 
   return (

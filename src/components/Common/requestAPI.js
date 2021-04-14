@@ -7,17 +7,25 @@ export const makePostRequest = async (apiLinkSuffix) => {
   const credentials = localStorage.getItem("credentials");
   const accessToken = JSON.parse(credentials).accessToken;
 
-  const response = await fetch(`${apiURL}/api/` + apiLinkSuffix, {
-    method: "POST",
-    headers: {
-      Authorization: "Bearer " + accessToken,
-    },
-  });
-  if (!response.ok) {
-    promptRequestError(response);
+  try {
+    const response = await fetch(`${apiURL}/api/` + apiLinkSuffix, {
+      method: "POST",
+      headers: {
+        Authorization: "Bearer " + accessToken,
+      },
+    });
+    if (!response.ok) {
+      promptRequestError(response);
+      return null;
+    }
+    return response;
+  } catch (e) {
+    window.alert(
+      "Serveriga ei õnnestunud ühendust saada.\n" +
+        "Muudatused pole salvestatud."
+    );
     return null;
   }
-  return response;
 };
 
 export const makeGetRequest = async (apiLinkSuffix) => {
@@ -35,7 +43,7 @@ export const makeGetRequest = async (apiLinkSuffix) => {
     return null;
   }
   return response;
-}
+};
 
 export const promptRequestError = (response) => {
   window.alert(
