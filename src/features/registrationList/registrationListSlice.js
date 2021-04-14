@@ -78,6 +78,9 @@ const registrationListSlice = createSlice({
       // Update the state outside of immer.
       state.data[shiftNr][registrationCategory][camperIndex].priceToPay = value;
     },
+    toggleRegistration: (state, action) => {
+      const { shiftNr, value } = action.payload;
+    }
   },
   extraReducers: {
     [fetchRegistrationList.fulfilled]: (state, action) => {
