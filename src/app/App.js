@@ -12,6 +12,15 @@ import useToken from "../useToken";
 import { useDispatch } from "react-redux";
 import { setData } from "../features/userData/userDataSlice";
 
+if (process.env.NODE_ENV === "development") {
+  console.log("DEV!");
+}
+
+const apiURL =
+  process.env.NODE_ENV === "development"
+    ? "http://localhost:3000"
+    : "https://merelaager.ee";
+
 export default function App() {
   const dispatch = useDispatch();
   const { token, setToken } = useToken();
@@ -19,7 +28,7 @@ export default function App() {
   const silentTokenRefresh = async () => {
     const credentials = JSON.parse(localStorage.getItem("credentials"));
     const refreshToken = credentials["refreshToken"];
-    const response = await fetch("http://localhost:3000/api/token/", {
+    const response = await fetch(`${apiURL}/api/token/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

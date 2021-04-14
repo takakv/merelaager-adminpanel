@@ -1,18 +1,10 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { fetchAccessToken } from "../../components/Common/tokens";
+import { makeGetRequest } from "../../components/Common/requestAPI";
 
 export const fetchCampers = createAsyncThunk(
   "campers/fetchTents",
   async (shiftNr) => {
-    const response = await fetch(
-      "http://localhost:3000/api/tents/fetch/" + `${shiftNr}/`,
-      {
-        method: "GET",
-        headers: {
-          Authorization: "Bearer " + fetchAccessToken(),
-        },
-      }
-    );
+    const response = await makeGetRequest("tents/fetch/" + `${shiftNr}/`);
     return await response.json();
   }
 );

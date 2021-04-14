@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { makePostRequest, promptRequestError } from "../Common/requestAPI";
+import { makePostRequest } from "../Common/requestAPI";
 import { useDispatch } from "react-redux";
 import {
   updatePaidValue,
@@ -52,21 +52,10 @@ const ToggleButton = (props) => {
   const [status, setStatus] = useState(props.status);
 
   const toggleState = async ({ target }) => {
-    const credentials = localStorage.getItem("credentials");
-    const accessToken = JSON.parse(credentials).accessToken;
-
-    const response = await fetch(
-      "http://localhost:3000/api/reglist/update/" +
-        `${props.id}/${props.field}/`,
-      {
-        method: "POST",
-        headers: {
-          Authorization: "Bearer " + accessToken,
-        },
-      }
+    const response = await makePostRequest(
+      "reglist/update/" + `${props.id}/${props.field}/`
     );
-    if (!response.ok) promptRequestError(response);
-    else {
+    if (response.ok) {
       setStatus((prevStatus) => !prevStatus);
       switchStatus(target);
     }
@@ -166,9 +155,7 @@ const RegTableSection = (props) => {
               {kid["contactNumber"]}
             </span>
           </td>
-          <td>
-            {kid["contactEmail"]}
-          </td>
+          <td>{kid["contactEmail"]}</td>
           <td>
             <ToggleButton
               status={kid.isOld === "jah"}

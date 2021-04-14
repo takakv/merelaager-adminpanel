@@ -1,16 +1,41 @@
+const apiURL =
+  process.env.NODE_ENV === "development"
+    ? "http://localhost:3000"
+    : "https://merelaager.ee";
+
 export const makePostRequest = async (apiLinkSuffix) => {
   const credentials = localStorage.getItem("credentials");
   const accessToken = JSON.parse(credentials).accessToken;
 
-  const response = await fetch("http://localhost:3000/api/" + apiLinkSuffix, {
+  const response = await fetch(`${apiURL}/api/` + apiLinkSuffix, {
     method: "POST",
     headers: {
       Authorization: "Bearer " + accessToken,
     },
   });
-  if (!response.ok) promptRequestError(response);
-  return response.ok;
+  if (!response.ok) {
+    promptRequestError(response);
+    return null;
+  }
+  return response;
 };
+
+export const makeGetRequest = async (apiLinkSuffix) => {
+  const credentials = localStorage.getItem("credentials");
+  const accessToken = JSON.parse(credentials).accessToken;
+
+  const response = await fetch(`${apiURL}/api/` + apiLinkSuffix, {
+    method: "GET",
+    headers: {
+      Authorization: "Bearer " + accessToken,
+    },
+  });
+  if (!response.ok) {
+    promptRequestError(response);
+    return null;
+  }
+  return response;
+}
 
 export const promptRequestError = (response) => {
   window.alert(

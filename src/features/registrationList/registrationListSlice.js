@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice, current } from "@reduxjs/toolkit";
-import { fetchAccessToken } from "../../components/Common/tokens";
+import { makeGetRequest } from "../../components/Common/requestAPI";
 
 // Refactors scheduled.
 
@@ -20,12 +20,7 @@ const getIndexOfCamper = (state, shiftNr, registrationCategory, camper) => {
 export const fetchRegistrationList = createAsyncThunk(
   "registrationList/fetchRegistrationList",
   async () => {
-    const response = await fetch("http://localhost:3000/api/reglist/fetch/", {
-      method: "GET",
-      headers: {
-        Authorization: "Bearer " + fetchAccessToken(),
-      },
-    });
+    const response = await makeGetRequest("reglist/fetch/");
     return await response.json();
   }
 );
@@ -80,7 +75,7 @@ const registrationListSlice = createSlice({
     },
     toggleRegistration: (state, action) => {
       const { shiftNr, value } = action.payload;
-    }
+    },
   },
   extraReducers: {
     [fetchRegistrationList.fulfilled]: (state, action) => {

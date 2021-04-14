@@ -1,32 +1,14 @@
 import React from "react";
 import { useDispatch } from "react-redux";
 import { setTitle } from "../features/pageTitle/pageTitleSlice";
+import { makePostRequest } from "./Common/requestAPI";
 
 const fetchPDF = async ({ target }) => {
   const action = target.id;
   const email = document.getElementById("mail").value;
 
-  const credentials = localStorage.getItem("credentials");
-  const accessToken = JSON.parse(credentials).accessToken;
-
-  const response = await fetch(
-    "http://localhost:3000/api/bills/" + `${action}/${email}/`,
-    {
-      method: "POST",
-      headers: {
-        Authorization: "Bearer " + accessToken,
-      },
-    }
-  );
+  const response = await makePostRequest("bills/" + `${action}/${email}/`);
   if (!response.ok) {
-    window.alert(
-      "Midagi läks nihu." +
-        "\n\n" +
-        `Veakood: ${response.status}` +
-        "\n" +
-        `Kirjeldus: ${response.statusText}`
-    );
-    console.log(response);
     return;
   }
 

@@ -1,8 +1,13 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 
+const apiURL =
+  process.env.NODE_ENV === "development"
+    ? "http://localhost:3000"
+    : "https://merelaager.ee";
+
 const loginUser = async (credentials) => {
-  return fetch("http://localhost:3000/api/login/", {
+  return fetch(`${apiURL}/api/login/`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
