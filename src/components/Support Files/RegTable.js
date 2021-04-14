@@ -36,6 +36,7 @@ const RegTableHead = () => {
         <th>Kogusumma</th>
         <th>Reg?</th>
         <th>Kontakt</th>
+        <th>Meil</th>
         <th>Vana?</th>
         <th>Sünnipäev</th>
         <th>Ts</th>
@@ -164,6 +165,9 @@ const RegTableSection = (props) => {
             <span className="c-camper-contact__phone">
               {kid["contactNumber"]}
             </span>
+          </td>
+          <td>
+            {kid["contactEmail"]}
           </td>
           <td>
             <ToggleButton
