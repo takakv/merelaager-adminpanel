@@ -5,7 +5,7 @@ import Login from "../components/Login";
 import Sidebar from "../components/Sidebar";
 import PageTitle from "../components/PageTitle";
 import UserBox from "../components/UserBox";
-import RegistrationList from "../features/RegistrationList/RegistrationList";
+import RegistrationList from "../features/registrationList/RegistrationList";
 import BillGen from "../components/BillGen";
 import TentList from "../components/TentList";
 import useToken from "../useToken";
