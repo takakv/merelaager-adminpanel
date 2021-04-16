@@ -9,19 +9,37 @@ const ShirtCell = (props) => {
   return (
     <div className="c-shirtBox">
       <p className="c-shirtBox__title">{props.shift}</p>
-      {Object.entries(props.shirtData).sort().map((shirt) => (
-        <div key={shirt[0]} className="c-shirtCount">
-          <p>{shirt[0]}:</p>
-          <p className="u-mono">{shirt[1]}</p>
-        </div>
-      ))}
+      {Object.entries(props.shirtData)
+        .sort()
+        .map((shirt) => (
+          <div key={shirt[0]} className="c-shirtCount">
+            <p>{shirt[0]}:</p>
+            <p className="u-mono">{shirt[1]}</p>
+          </div>
+        ))}
+    </div>
+  );
+};
+
+const TotalShirts = (props) => {
+  return (
+    <div className="c-shirtBox">
+      <p className="c-shirtBox__title">Kokku:</p>
+      {Object.entries(props.shirtData)
+        .sort()
+        .map((shirt) => (
+          <div key={shirt[0]} className="c-shirtCount">
+            <p>{shirt[0]}:</p>
+            <p className="u-mono">{shirt[1]}</p>
+          </div>
+        ))}
     </div>
   );
 };
 
 const ShirtCells = (props) => {
   return (
-    <div className="c-shirtBox-container">
+    <div className="c-shirtBox__container">
       {shifts.map((shift) => (
         <ShirtCell
           key={shift}
@@ -29,6 +47,7 @@ const ShirtCells = (props) => {
           shirtData={props.shirtData[shift]}
         />
       ))}
+      <TotalShirts shirtData={props.shirtData.total} />
     </div>
   );
 };
@@ -65,5 +84,4 @@ const Shirts = (props) => {
     return renderContent(condContent);
   }
 };
-
 export default Shirts;
