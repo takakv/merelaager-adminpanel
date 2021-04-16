@@ -9,7 +9,7 @@ const ShirtCell = (props) => {
   return (
     <div className="c-shirtBox">
       <p className="c-shirtBox__title">{props.shift}</p>
-      {Object.entries(props.shirtData).map((shirt) => (
+      {Object.entries(props.shirtData).sort().map((shirt) => (
         <div key={shirt[0]} className="c-shirtCount">
           <p>{shirt[0]}:</p>
           <p className="u-mono">{shirt[1]}</p>
