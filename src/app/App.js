@@ -11,10 +11,7 @@ import TentList from "../components/TentList";
 import useToken from "../useToken";
 import { useDispatch } from "react-redux";
 import { setData } from "../features/userData/userDataSlice";
-
-if (process.env.NODE_ENV === "development") {
-  console.log("DEV!");
-}
+import Shirts from "../features/thisrts/Tshirts";
 
 const apiURL =
   process.env.NODE_ENV === "development"
@@ -73,6 +70,9 @@ export default function App() {
           </Route>
           <Route path="/telgid/">
             <TentList title="Telgid" />
+          </Route>
+          <Route path="/sargid/">
+            <Shirts title="Särgid" />
           </Route>
         </Switch>
       </main>

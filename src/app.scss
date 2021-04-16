@@ -524,6 +524,30 @@ button {
   }
 }
 
+.c-shirtBox {
+  width: 150px;
+  margin-right: 1em;
+  padding: 1em;
+  border: 1px solid var(--dimmed);
+  border-radius: 4px;
+
+  &-container {
+    display: flex;
+  }
+
+  &__title {
+    margin-bottom: 0.5em;
+    padding-bottom: 0.5em;
+    text-align: center;
+    border-bottom: 1px solid var(--dimmed);
+  }
+}
+
+.c-shirtCount {
+  display: flex;
+  justify-content: space-between;
+}
+
 .c-tentless {
   margin-right: 40px;
   margin-bottom: 20px;

@@ -32,8 +32,8 @@ const Navigation = () => {
           </Link>
         </li>
         <li>
-          <Link to="/lapsed/" onClick={() => dispatch(setTitle("Lapsed"))}>
-            Lapsed
+          <Link to="/sargid/" onClick={() => dispatch(setTitle("Särgid"))}>
+            Särgid
           </Link>
         </li>
       </ul>

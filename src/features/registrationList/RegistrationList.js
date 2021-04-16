@@ -11,6 +11,7 @@ const shifts = ["1", "2", "3", "4"];
 const regCounters = ["poisid", "tüdrukud", "kokku"];
 const resCounters = ["res. poisid", "res. tüdrukud"];
 
+// Buttons used to switch between each of the shifts.
 const ShiftSwitchButtons = (props) => {
   return (
     <div className="c-regList-shiftBar">
@@ -23,6 +24,7 @@ const ShiftSwitchButtons = (props) => {
   );
 };
 
+// Counters for shift data.
 const ShiftOverviewCounter = (props) => {
   const count = props.count ?? 0;
   return (
@@ -32,6 +34,7 @@ const ShiftOverviewCounter = (props) => {
   );
 };
 
+// Overview of the number of campers for each shift.
 const ShiftOverviewInfo = (props) => {
   return (
     <div className="c-regList-counters">
@@ -61,16 +64,20 @@ const RegistrationList = (props) => {
   const dispatch = useDispatch();
   dispatch(setTitle(props.title));
 
+  // Get the registration list for all shifts from the store.
   const regListData = useSelector(getAllRegistrationLists);
+  // Get the status of fetching the registration list from the backend.
   const regListStatus = useSelector((state) => state.registrationList.status);
   const regListError = useSelector((state) => state.registrationList.error);
 
   const [shiftNr, setShiftNr] = useState(1);
 
+  // Fetch all camper registration lists when the page has been rendered.
   useEffect(() => {
     if (regListStatus === "idle") dispatch(fetchRegistrationList());
   }, [regListStatus, dispatch]);
 
+  // Update the active shift.
   const shiftSwitcher = ({ target }) => {
     setShiftNr(parseInt(target.innerText[0]));
   };

@@ -147,17 +147,14 @@ const RegTableSection = (props) => {
             />
           </td>
           <td id={`${kid.id}-contact`} className="c-camper-contact">
-            <a
-              href={`mailto:${kid["contactEmail"]}`}
-              className="c-caper-contact__name"
-            >
-              {kid["contactName"]}
-            </a>
+            {kid["contactName"]}
             <span className="c-camper-contact__phone">
               {kid["contactNumber"]}
             </span>
           </td>
-          <td>{kid["contactEmail"]}</td>
+          <td>
+            <a href={`mailto:${kid["contactEmail"]}`}>{kid["contactEmail"]}</a>
+          </td>
           <td>
             <ToggleButton
               status={kid.isOld === "jah"}
