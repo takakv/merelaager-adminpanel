@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { makePostRequest } from "../Common/requestAPI";
 import { useDispatch } from "react-redux";
 import {
+  toggleRegistration,
   updatePaidValue,
   updateToPayValue,
 } from "../../features/registrationList/registrationListSlice";
@@ -51,6 +52,8 @@ const RegTableHead = () => {
 const ToggleButton = (props) => {
   const [status, setStatus] = useState(props.status);
 
+  const dispatch = useDispatch();
+
   const toggleState = async ({ target }) => {
     const response = await makePostRequest(
       "reglist/update/" + `${props.id}/${props.field}/`
@@ -58,6 +61,17 @@ const ToggleButton = (props) => {
     if (response.ok) {
       setStatus((prevStatus) => !prevStatus);
       switchStatus(target);
+
+      // Update store.
+      if (props.field === "registration") {
+        dispatch(
+          toggleRegistration({
+            id: props.id,
+            status: props.status,
+            shiftNr: props.shiftNr,
+          })
+        );
+      }
     }
   };
 
@@ -117,7 +131,7 @@ const RegTableSection = (props) => {
       <tr>
         <td colSpan="14">{props.title}</td>
       </tr>
-      {props.sectionData.map((kid) => (
+      {props.children.map((kid) => (
         <tr key={kid.id}>
           <td className="u-mono">{kid.id}</td>
           <td>{kid.name}</td>
@@ -141,9 +155,10 @@ const RegTableSection = (props) => {
           </td>
           <td>
             <ToggleButton
-              status={kid.registered === "jah"}
+              status={kid.registered}
               id={kid.id}
               field="registration"
+              shiftNr={props.shiftNr}
             />
           </td>
           <td id={`${kid.id}-contact`} className="c-camper-contact">
@@ -157,14 +172,14 @@ const RegTableSection = (props) => {
           </td>
           <td>
             <ToggleButton
-              status={kid.isOld === "jah"}
+              status={kid.isOld}
               id={kid.id}
               field="regular"
             />
           </td>
           <td className="u-mono">{kid["bDay"]}</td>
           <td>{kid["tShirtSize"]}</td>
-          <td>{kid["tln"]}</td>
+          <td>{kid.tln ? "jah" : "ei"}</td>
           <td className="u-mono">{kid["billNr"]}</td>
           <td className="u-mono">{kid["idCode"]}</td>
         </tr>
@@ -174,6 +189,25 @@ const RegTableSection = (props) => {
 };
 
 const RegTable = (props) => {
+  // Store reformatted raw object data.
+  const parsedData = {
+    regBoys: [],
+    regGirls: [],
+    resBoys: [],
+    resGirls: [],
+  };
+
+  // Convert object data into array format to be more manageable for React.
+  Object.values(props.shiftData.campers).forEach((camper) => {
+    if (camper.registered) {
+      if (camper.gender === "Poiss") parsedData.regBoys.push(camper);
+      else parsedData.regGirls.push(camper);
+    } else {
+      if (camper.gender === "Poiss") parsedData.resBoys.push(camper);
+      else parsedData.resGirls.push(camper);
+    }
+  });
+
   if (!props.shiftData) {
     return (
       <table>
@@ -186,9 +220,9 @@ const RegTable = (props) => {
       <RegTableHead />
       {camperListSections.map((section) => (
         <RegTableSection
-          title={section[0]}
-          sectionData={props.shiftData[section[1]]}
           key={section[1]}
+          title={section[0]}
+          children={parsedData[section[1]]}
           shiftNr={props.shiftNr}
         />
       ))}

@@ -74,7 +74,14 @@ const registrationListSlice = createSlice({
       state.data[shiftNr][registrationCategory][camperIndex].priceToPay = value;
     },
     toggleRegistration: (state, action) => {
-      const { shiftNr, value } = action.payload;
+      console.log(action.payload);
+      const { id, status, shiftNr } = action.payload;
+      console.log(current(state.data[shiftNr]));
+      let camperObject = 0;
+      Object.entries(state.data).forEach((obj) => {
+        if (obj[1].id === id) camperObject = obj;
+      });
+      console.log(camperObject);
     },
   },
   extraReducers: {
@@ -92,6 +99,7 @@ const registrationListSlice = createSlice({
 export const {
   updatePaidValue,
   updateToPayValue,
+  toggleRegistration,
 } = registrationListSlice.actions;
 
 export default registrationListSlice.reducer;
