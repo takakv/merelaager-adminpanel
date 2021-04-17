@@ -1,21 +1,5 @@
-import { createAsyncThunk, createSlice, current } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { makeGetRequest } from "../../components/Common/requestAPI";
-
-// Refactors scheduled.
-
-const getRegistrationCategory = (camper) => {
-  let registrationCategory = camper["registered"] === "jah" ? "reg" : "res";
-  registrationCategory += camper["gender"] === "Poiss" ? "Boys" : "Girls";
-  return registrationCategory;
-};
-
-const getIndexOfCamper = (state, shiftNr, registrationCategory, camper) => {
-  const lookupArray = current(state).data[shiftNr][registrationCategory];
-  for (let [index, el] of lookupArray.entries()) {
-    if (el.id === camper.id) return index;
-  }
-  return -1;
-};
 
 export const fetchRegistrationList = createAsyncThunk(
   "registrationList/fetchRegistrationList",
@@ -34,71 +18,33 @@ const registrationListSlice = createSlice({
   },
   reducers: {
     updatePaidValue: (state, action) => {
-      const { shiftNr, camperData, value } = action.payload;
-      const registrationCategory = getRegistrationCategory(camperData);
-      const camperIndex = getIndexOfCamper(
-        state,
-        shiftNr,
-        registrationCategory,
-        camperData
-      );
-
-      // This is never supposed to happen.
-      if (camperIndex === -1) {
-        console.error("Fatal logic error!");
-        alert("Midagi läks väga valesti.");
-        return;
-      }
-
-      // Update the state outside of immer.
-      state.data[shiftNr][registrationCategory][camperIndex].pricePaid = value;
+      const { shiftNr, id, value } = action.payload;
+      const camper = state.data[shiftNr].campers[id];
+      camper.pricePaid = value;
     },
     updateToPayValue: (state, action) => {
-      const { shiftNr, camperData, value } = action.payload;
-      const registrationCategory = getRegistrationCategory(camperData);
-      const camperIndex = getIndexOfCamper(
-        state,
-        shiftNr,
-        registrationCategory,
-        camperData
-      );
-
-      // This is never supposed to happen.
-      if (camperIndex === -1) {
-        console.error("Fatal logic error!");
-        alert("Midagi läks väga valesti.");
-        return;
-      }
-
-      // Update the state outside of immer.
-      state.data[shiftNr][registrationCategory][camperIndex].priceToPay = value;
+      const { shiftNr, id, value } = action.payload;
+      const camper = state.data[shiftNr].campers[id];
+      camper.priceToPay = value;
     },
     toggleRegistration: (state, action) => {
-      const { id, status, shiftNr } = action.payload;
+      const { shiftNr, id, status } = action.payload;
       const isRegistered = !status;
       const shift = state.data[shiftNr];
 
       // Update camper registration status.
-      let camperObject = shift.campers[id];
-      camperObject.registered = isRegistered;
+      const camper = shift.campers[id];
+      camper.registered = isRegistered;
 
       // Update shift counters.
       if (isRegistered) {
         shift.totalRegCount++;
-        ++shift[
-          camperObject.gender === "Poiss" ? "regBoyCount" : "regGirlCount"
-        ];
-        --shift[
-          camperObject.gender === "Poiss" ? "resBoyCount" : "resGirlCount"
-        ];
+        ++shift[camper.gender === "Poiss" ? "regBoyCount" : "regGirlCount"];
+        --shift[camper.gender === "Poiss" ? "resBoyCount" : "resGirlCount"];
       } else {
         shift.totalRegCount--;
-        --shift[
-          camperObject.gender === "Poiss" ? "regBoyCount" : "regGirlCount"
-        ];
-        ++shift[
-          camperObject.gender === "Poiss" ? "resBoyCount" : "resGirlCount"
-        ];
+        --shift[camper.gender === "Poiss" ? "regBoyCount" : "regGirlCount"];
+        ++shift[camper.gender === "Poiss" ? "resBoyCount" : "resGirlCount"];
       }
     },
   },

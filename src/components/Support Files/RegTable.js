@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { makePostRequest } from "../Common/requestAPI";
 import { useDispatch } from "react-redux";
 import {
@@ -50,28 +50,26 @@ const RegTableHead = () => {
 };
 
 const ToggleButton = (props) => {
-  const [status, setStatus] = useState(props.status);
-
   const dispatch = useDispatch();
 
   const toggleState = async ({ target }) => {
     const response = await makePostRequest(
       "reglist/update/" + `${props.id}/${props.field}/`
     );
-    if (response.ok) {
-      setStatus((prevStatus) => !prevStatus);
-      switchStatus(target);
 
-      // Update store.
-      if (props.field === "registration") {
-        dispatch(
-          toggleRegistration({
-            id: props.id,
-            status: props.status,
-            shiftNr: props.shiftNr,
-          })
-        );
-      }
+    if (!response || !response.ok) return;
+
+    switchStatus(target);
+
+    // Update store.
+    if (props.field === "registration") {
+      dispatch(
+        toggleRegistration({
+          shiftNr: props.shiftNr,
+          id: props.id,
+          status: props.status,
+        })
+      );
     }
   };
 
@@ -87,7 +85,7 @@ const InputField = (props) => {
 
   const handleChange = async ({ target }) => {
     const response = await makePostRequest(
-      "reglist/update/" + `${props.data.id}/${props.field}/${target.value}`
+      "reglist/update/" + `${props.id}/${props.field}/${target.value}`
     );
 
     if (!response || !response.ok) return;
@@ -96,7 +94,7 @@ const InputField = (props) => {
       dispatch(
         updatePaidValue({
           shiftNr: props.shiftNr,
-          camperData: props.data,
+          id: props.id,
           value: parseInt(target.value),
         })
       );
@@ -104,7 +102,7 @@ const InputField = (props) => {
       dispatch(
         updateToPayValue({
           shiftNr: props.shiftNr,
-          camperData: props.data,
+          id: props.id,
           value: parseInt(target.value),
         })
       );
@@ -137,28 +135,28 @@ const RegTableSection = (props) => {
           <td>{kid.name}</td>
           <td>
             <InputField
-              data={kid}
+              shiftNr={props.shiftNr}
+              id={kid.id}
               field="total-paid"
               className="price"
-              shiftNr={props.shiftNr}
               value={kid["pricePaid"]}
             />
           </td>
           <td>
             <InputField
-              data={kid}
+              shiftNr={props.shiftNr}
+              id={kid.id}
               field="total-due"
               className="priceToPay"
-              shiftNr={props.shiftNr}
               value={kid["priceToPay"]}
             />
           </td>
           <td>
             <ToggleButton
-              status={kid.registered}
-              id={kid.id}
-              field="registration"
               shiftNr={props.shiftNr}
+              id={kid.id}
+              status={kid.registered}
+              field="registration"
             />
           </td>
           <td id={`${kid.id}-contact`} className="c-camper-contact">
@@ -171,11 +169,7 @@ const RegTableSection = (props) => {
             <a href={`mailto:${kid["contactEmail"]}`}>{kid["contactEmail"]}</a>
           </td>
           <td>
-            <ToggleButton
-              status={kid.isOld}
-              id={kid.id}
-              field="regular"
-            />
+            <ToggleButton status={kid.isOld} id={kid.id} field="regular" />
           </td>
           <td className="u-mono">{kid["bDay"]}</td>
           <td>{kid["tShirtSize"]}</td>
