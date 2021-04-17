@@ -74,14 +74,32 @@ const registrationListSlice = createSlice({
       state.data[shiftNr][registrationCategory][camperIndex].priceToPay = value;
     },
     toggleRegistration: (state, action) => {
-      console.log(action.payload);
       const { id, status, shiftNr } = action.payload;
-      console.log(current(state.data[shiftNr]));
-      let camperObject = 0;
-      Object.entries(state.data).forEach((obj) => {
-        if (obj[1].id === id) camperObject = obj;
-      });
-      console.log(camperObject);
+      const isRegistered = !status;
+      const shift = state.data[shiftNr];
+
+      // Update camper registration status.
+      let camperObject = shift.campers[id];
+      camperObject.registered = isRegistered;
+
+      // Update shift counters.
+      if (isRegistered) {
+        shift.totalRegCount++;
+        ++shift[
+          camperObject.gender === "Poiss" ? "regBoyCount" : "regGirlCount"
+        ];
+        --shift[
+          camperObject.gender === "Poiss" ? "resBoyCount" : "resGirlCount"
+        ];
+      } else {
+        shift.totalRegCount--;
+        --shift[
+          camperObject.gender === "Poiss" ? "regBoyCount" : "regGirlCount"
+        ];
+        ++shift[
+          camperObject.gender === "Poiss" ? "resBoyCount" : "resGirlCount"
+        ];
+      }
     },
   },
   extraReducers: {
