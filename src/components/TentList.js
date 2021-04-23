@@ -19,7 +19,7 @@ const TentList = (props) => {
   const dispatch = useDispatch();
   dispatch(setTitle(props.title));
 
-  const shiftData = useSelector(getCampers);
+  const tentData = useSelector(getCampers);
   const shiftStatus = useSelector((state) => state.campers.status);
   const error = useSelector((state) => state.campers.error);
 
@@ -31,15 +31,17 @@ const TentList = (props) => {
     return (
       <div>
         <div className="c-tentless__container">
-          {shiftData
-            .filter((camper) => !camper["tent"])
-            .map((camper) => (
-              <NoTentCamper name={camper.name} key={camper.id} id={camper.id} />
-            ))}
+          {tentData.tentless.map((camper) => (
+            <NoTentCamper key={camper.id} id={camper.id} name={camper.name} />
+          ))}
         </div>
         <div className="c-tent__container">
-          {tentNumbers.map((tentNumber) => (
-            <TentBlock key={tentNumber.toString()} tentNumber={tentNumber} />
+          {tentData.tents.map((tent, index) => (
+            <TentBlock
+              key={index.toString()}
+              tentMembers={tent}
+              tentNumber={index}
+            />
           ))}
         </div>
       </div>
@@ -52,10 +54,13 @@ const TentList = (props) => {
 export default TentList;
 
 const NoTentCamper = (props) => {
+  const shiftNr = useSelector(getShift);
   const dispatch = useDispatch();
   const addCamperToTent = async ({ target }) => {
-    await makePostRequest("tents/update/" + `${props.id}/${target.value}/`);
-    dispatch(updateCamper({ id: props.id, tent: parseInt(target.value) }));
+    await makePostRequest(
+      "tents/update/" + `${shiftNr}/${props.id}/${target.value}/`
+    );
+    dispatch(updateCamper({ id: props.id, tentNr: parseInt(target.value) }));
   };
 
   return (
@@ -78,16 +83,16 @@ const NoTentCamper = (props) => {
 };
 
 const TentBlock = (props) => {
-  const campers = useSelector(getCampers).filter(
-    (campers) => campers["tent"] === props.tentNumber
-  );
-
   return (
     <div className="c-tent">
-      <p className="c-tent-header">{props.tentNumber}</p>
+      <p className="c-tent-header">{props.tentNumber + 1}</p>
       <ul>
-        {campers.map((camper) => (
-          <TentBlockCamper camper={camper} key={camper.id} />
+        {props.tentMembers.map((camper) => (
+          <TentBlockCamper
+            camper={camper}
+            key={camper.id}
+            tentNumber={props.tentNumber}
+          />
         ))}
       </ul>
     </div>
@@ -95,10 +100,17 @@ const TentBlock = (props) => {
 };
 
 const TentBlockCamper = (props) => {
+  const shiftNr = useSelector(getShift);
   const dispatch = useDispatch();
   const removeCamperFromTent = async () => {
-    await makePostRequest("tents/update/" + `${props.camper.id}/0/`);
-    dispatch(updateCamper({ id: props.camper.id, tent: 0 }));
+    await makePostRequest("tents/update/" + `${shiftNr}/${props.camper.id}/0/`);
+    dispatch(
+      updateCamper({
+        id: props.camper.id,
+        tentNr: 0,
+        currentNr: props.tentNumber,
+      })
+    );
   };
 
   return (

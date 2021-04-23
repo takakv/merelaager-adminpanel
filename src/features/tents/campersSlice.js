@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, current } from "@reduxjs/toolkit";
 import { makeGetRequest } from "../../components/Common/requestAPI";
 
 export const fetchCampers = createAsyncThunk(
@@ -17,21 +17,28 @@ const campersSlice = createSlice({
     error: null,
   },
   reducers: {
-    // This reducer uses a hack and the whole logic should probably be rewritten!
-    // It is difficult to know where a particular camper is situated in the campers
-    // array. The current implementation tries to find the object which contains
-    // the camper with the known ID, and then acts on that object. Since the state
-    // object passed as an argument behaves in some complicated Redux way,
-    // the state.data contains an array consisting of:
-    // an index (index 0), the data (index 1).
     updateCamper: (state, action) => {
-      const { id, tent } = action.payload;
-      let camperObject;
-      Object.entries(state.data).forEach((obj) => {
-        if (obj[1].id === id) camperObject = obj;
-      });
-      if (camperObject) camperObject[1].tent = tent;
-      else console.error("Something went wrong when updating camper tents.");
+      const { id, tentNr, currentNr } = action.payload;
+      // The camper was assigned a tent.
+      if (tentNr) {
+        // Double iteration is not very efficient
+        // but avoids nasty index calculations.
+        const child = state.data.tentless.find((child) => child.id === id);
+        state.data.tentless = state.data.tentless.filter(
+          (child) => child.id !== id
+        );
+        state.data.tents[tentNr - 1].push(child);
+      }
+      // The camper was removed from their tent.
+      else {
+        const child = state.data.tents[currentNr].find(
+          (child) => child.id === id
+        );
+        state.data.tents[currentNr] = state.data.tents[currentNr].filter(
+          (child) => child.id !== id
+        );
+        state.data.tentless.push(child);
+      }
     },
   },
   extraReducers: {
