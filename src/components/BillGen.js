@@ -1,52 +1,55 @@
-import React, { Component } from "react";
+import React from "react";
+import { useDispatch } from "react-redux";
+import { setTitle } from "../features/pageTitle/pageTitleSlice";
+import { makePostRequest } from "./Common/requestAPI";
 
-export default class BillGen extends Component {
-  fetchPDF = (e) => {
-    const target = e.target.id;
-    const data = { meil: document.getElementById("mail").value };
-    fetch(`${window.location}${target}/`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    })
-      .then(async (response) => ({
-        filename: "arve.pdf",
-        blob: await response.blob(),
-      }))
-      .then((obj) => {
-        // const data = window.URL.createObjectURL(blob);
-        // window.location.assign(data);
-        // window.open(data);
-        const newBlob = new Blob([obj.blob], { type: "application/pdf" });
-        const objUrl = window.URL.createObjectURL(newBlob);
-        // window.location.assign(objUrl);
-        const link = document.createElement("a");
-        link.href = objUrl;
-        link.download = obj.filename;
-        link.click();
-      });
-  };
+const fetchPDF = async ({ target }) => {
+  const action = target.id;
+  const email = document.getElementById("mail").value;
 
-  render() {
-    return (
-      <div>
-        <label htmlFor="mail">Lapsevanema meil</label>
-        <input type="email" name="meil" id="mail" />
-        <button id="fetch" onClick={this.fetchPDF}>
-          Leia
-        </button>
-        <button id="generate" onClick={this.fetchPDF}>
-          Genereeri
-        </button>
-        <div className="u-banner u-banner--warning">
-          <p>
-            "Genereeri" asendab olemasoleva arve uuega (tänase kuupäevaga). Leia
-            näitab viimast arvet.
-          </p>
-        </div>
-      </div>
-    );
+  const response = await makePostRequest("bills/" + `${action}/${email}/`);
+  if (!response.ok) {
+    return;
   }
-}
+
+  const obj = {
+    filename: "arve.pdf",
+    blob: await response.blob(),
+  };
+  const newBlob = new Blob([obj.blob], { type: "application/pdf" });
+  const objUrl = window.URL.createObjectURL(newBlob);
+  const link = document.createElement("a");
+  link.href = objUrl;
+  link.download = obj.filename;
+  link.click();
+  // const data = window.URL.createObjectURL(blob);
+  // window.location.assign(data);
+  // window.open(data);
+  // window.location.assign(objUrl);
+};
+
+const BillGen = (props) => {
+  const dispatch = useDispatch();
+  dispatch(setTitle(props.title));
+
+  return (
+    <div>
+      <label htmlFor="mail">Lapsevanema meil</label>
+      <input type="email" name="meil" id="mail" />
+      <button id="fetch" onClick={fetchPDF}>
+        Leia
+      </button>
+      <button id="create" onClick={fetchPDF}>
+        Genereeri
+      </button>
+      <div className="o-banner o-banner--warning">
+        <p>
+          "Genereeri" asendab olemasoleva arve uuega (tänase kuupäevaga). Leia
+          näitab viimast arvet.
+        </p>
+      </div>
+    </div>
+  );
+};
+
+export default BillGen;
