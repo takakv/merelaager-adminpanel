@@ -434,7 +434,7 @@ button {
 .c-sidebar {
   position: relative;
   display: block;
-  background-color: #f2f2f2;
+  background-color: var(--line-light); // #f9f9f9;
   grid-area: side-nav;
 
   &-title {
