@@ -45,11 +45,9 @@ const CamperInfo = (props) => {
       return (
         <div>
           <p>Märkused veel ei tööta.</p>
-          {Object.values(camperInfo)
-            .sort()
-            .map((camper) => (
-              <CamperEntry key={camper.key} data={camper} />
-            ))}
+          {Object.values(camperInfo).map((camper) => (
+            <CamperEntry key={camper.key} data={camper} />
+          ))}
         </div>
       );
     case "nok":
