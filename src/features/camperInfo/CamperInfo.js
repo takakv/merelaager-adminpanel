@@ -16,11 +16,11 @@ const CamperEntry = (props) => {
       <div className="c-camper-info__content">
         <div className="c-info-block">
           <div className="title">Info</div>
-          <div className="content">{props.data.notes}</div>
+          <div className="content">{props.data.parentNotes}</div>
         </div>
         <div className="c-info-block">
           <div className="title">Märkused</div>
-          <textarea className="content" defaultValue={props.data.parentNotes} />
+          <textarea className="content" defaultValue={props.data.notes} />
         </div>
       </div>
     </div>
@@ -45,9 +45,11 @@ const CamperInfo = (props) => {
       return (
         <div>
           <p>Märkused veel ei tööta.</p>
-          {Object.values(camperInfo).map((camper) => (
-            <CamperEntry key={camper.key} data={camper} />
-          ))}
+          {Object.values(camperInfo)
+            .sort()
+            .map((camper) => (
+              <CamperEntry key={camper.key} data={camper} />
+            ))}
         </div>
       );
     case "nok":
