@@ -7,7 +7,7 @@ const PageTile = () => {
 
   return (
     <div className="admin-page__title">
-      <span>{appTitle}</span>
+      <h1>{appTitle}</h1>
     </div>
   );
 };

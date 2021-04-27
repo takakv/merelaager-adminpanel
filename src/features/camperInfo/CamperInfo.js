@@ -1,13 +1,13 @@
-import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { setTitle } from "../pageTitle/pageTitleSlice";
-import { fetchCamperInfo, getCamperInfo } from "./camperInfoSlice";
-import { getShift } from "../userData/userDataSlice";
+import React, {useEffect} from "react";
+import {useDispatch, useSelector} from "react-redux";
+import {setTitle} from "../pageTitle/pageTitleSlice";
+import {fetchCamperInfo, getCamperInfo} from "./camperInfoSlice";
+import {getShift} from "../userData/userDataSlice";
 
 const CamperEntry = (props) => {
   return (
-    <div className="c-camper-info">
-      <div className="c-camper-info__header">
+    <div className="o-box c-camper-info">
+      <div className="o-box-header">
         <p>
           {props.data.name}, {props.data.gender === "M" ? "Poiss" : "Tüdruk"},
           Telk {props.data.tentNr ?? "-"}
@@ -15,12 +15,12 @@ const CamperEntry = (props) => {
       </div>
       <div className="c-camper-info__content">
         <div className="c-info-block">
-          <div className="title">Info</div>
+          <p className="title">Info</p>
           <div className="content">{props.data.parentNotes}</div>
         </div>
         <div className="c-info-block">
-          <div className="title">Märkused</div>
-          <textarea className="content" defaultValue={props.data.notes} />
+          <p className="title">Märkused</p>
+          <textarea className="content" placeholder="..." defaultValue={props.data.notes}/>
         </div>
       </div>
     </div>
@@ -46,7 +46,7 @@ const CamperInfo = (props) => {
         <div>
           <p>Märkused veel ei tööta.</p>
           {Object.values(camperInfo).map((camper) => (
-            <CamperEntry key={camper.key} data={camper} />
+            <CamperEntry key={camper.key} data={camper}/>
           ))}
         </div>
       );

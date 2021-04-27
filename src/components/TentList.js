@@ -30,12 +30,12 @@ const TentList = (props) => {
   if (shiftStatus === "succeeded") {
     return (
       <div>
-        <div className="c-tentless__container">
+        <div className="c-tentless-container u-flex u-flex-wrap">
           {tentData.tentless.map((camper) => (
             <NoTentCamper key={camper.id} id={camper.id} name={camper.name} />
           ))}
         </div>
-        <div className="c-tent__container">
+        <div className="u-flex u-flex-wrap">
           {tentData.tents.map((tent, index) => (
             <TentBlock
               key={index.toString()}
@@ -84,9 +84,9 @@ const NoTentCamper = (props) => {
 
 const TentBlock = (props) => {
   return (
-    <div className="c-tent">
-      <p className="c-tent-header">{props.tentNumber + 1}</p>
-      <ul>
+    <div className="c-tent o-box">
+      <h3 className="o-box-header u-text-center">{props.tentNumber + 1}</h3>
+      <ul className="u-list-blank">
         {props.tentMembers.map((camper) => (
           <TentBlockCamper
             camper={camper}
@@ -114,9 +114,9 @@ const TentBlockCamper = (props) => {
   };
 
   return (
-    <li className="u-list-blank c-tent-child">
+    <li className="u-flex u-space-between u-align-center">
       <span>{props.camper.name}</span>
-      <div className="c-tent-child__rm" onClick={removeCamperFromTent}>
+      <div className="c-tent-rm" onClick={removeCamperFromTent}>
         <div />
       </div>
     </li>
