@@ -8,13 +8,26 @@ const Navigation = () => {
   return (
     <nav className="c-admin-nav">
       <ul className="u-list-blank">
-        <li>
+        <li className="last">
           <Link to="/" onClick={() => dispatch(setTitle("Kambüüs"))}>
             Kambüüs
           </Link>
         </li>
         <li>
-          <Link to="/nimekiri/" onClick={() => dispatch(setTitle("Nimekiri"))}>
+          <Link to="/lapsed/" onClick={() => dispatch(setTitle("Lapsed"))}>
+            Lapsed
+          </Link>
+        </li>
+        <li className="last">
+          <Link to="/telgid/" onClick={() => dispatch(setTitle("Telgid"))}>
+            Telgid
+          </Link>
+        </li>
+        <li>
+          <Link
+            to="/nimekiri/"
+            onClick={() => dispatch(setTitle("Nimekiri"))}
+          >
             Nimekiri
           </Link>
         </li>
@@ -24,11 +37,6 @@ const Navigation = () => {
             onClick={() => dispatch(setTitle("Arvegeneraator"))}
           >
             Arvegeneraator
-          </Link>
-        </li>
-        <li>
-          <Link to="/telgid/" onClick={() => dispatch(setTitle("Telgid"))}>
-            Telgid
           </Link>
         </li>
         <li>

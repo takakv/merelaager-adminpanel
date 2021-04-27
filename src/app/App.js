@@ -12,6 +12,7 @@ import useToken from "../useToken";
 import { useDispatch } from "react-redux";
 import { setData } from "../features/userData/userDataSlice";
 import Shirts from "../features/thisrts/Tshirts";
+import ShiftInfo from "../features/camperInfo/CamperInfo";
 
 const apiURL =
   process.env.NODE_ENV === "development"
@@ -62,14 +63,17 @@ export default function App() {
               sujuvam, kui seda oli vana.
             </p>
           </Route>
+          <Route path="/lapsed/">
+            <ShiftInfo title="Lapsed" />
+          </Route>
+          <Route path="/telgid/">
+            <TentList title="Telgid" />
+          </Route>
           <Route path="/nimekiri/">
             <RegistrationList title="Nimekiri" />
           </Route>
           <Route path="/arvegeneraator/">
             <BillGen title="Arvegeneraator" />
-          </Route>
-          <Route path="/telgid/">
-            <TentList title="Telgid" />
           </Route>
           <Route path="/sargid/">
             <Shirts title="Särgid" />

@@ -4,6 +4,7 @@ import campersReducer from "../features/tents/campersSlice";
 import userDataReducer from "../features/userData/userDataSlice";
 import registrationListReducer from "../features/registrationList/registrationListSlice";
 import shirtsReducer from "../features/thisrts/tshirtsSlice";
+import camperInfoReducer from "../features/camperInfo/camperInfoSlice";
 
 export default configureStore({
   reducer: {
@@ -12,5 +13,6 @@ export default configureStore({
     userData: userDataReducer,
     registrationList: registrationListReducer,
     shirts: shirtsReducer,
+    camperInfo: camperInfoReducer,
   },
 });
