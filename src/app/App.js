@@ -42,8 +42,11 @@ export default function App() {
   } else {
     setInterval(silentTokenRefresh, 1200000);
     silentTokenRefresh().catch((err) => {
-      alert("Autentimisega on probleeme. Palun anna Taanielile teada.");
+      alert("Sessioon on aegunud.");
+      localStorage.clear();
+      location.reload();
       console.log(err);
+      // alert("Autentimisega on probleeme. Palun anna Taanielile teada.");
     });
     const credentials = JSON.parse(localStorage.getItem("credentials"));
     dispatch(setData(credentials.user));
