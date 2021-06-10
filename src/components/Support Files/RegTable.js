@@ -2,6 +2,7 @@ import React from "react";
 import { makePostRequest } from "../Common/requestAPI";
 import { useDispatch } from "react-redux";
 import {
+  removeCamper,
   toggleRegistration,
   updatePaidValue,
   updateToPayValue,
@@ -30,21 +31,21 @@ const switchStatus = (target) => {
 const RegTableHead = () => {
   return (
     <thead className="c-regList-table__head">
-      <tr>
-        <th>Reg ID</th>
-        <th>Nimi</th>
-        <th>Makstud</th>
-        <th>Kogusumma</th>
-        <th>Reg?</th>
-        <th>Kontakt</th>
-        <th>Meil</th>
-        <th>Vana?</th>
-        <th>Sünnipäev</th>
-        <th>Ts</th>
-        <th>Tln?</th>
-        <th>Arve nr</th>
-        <th>Isikukood</th>
-      </tr>
+    <tr>
+      <th>Reg ID</th>
+      <th>Nimi</th>
+      <th>Makstud</th>
+      <th>Kogusumma</th>
+      <th>Reg?</th>
+      <th>Kontakt</th>
+      <th>Meil</th>
+      <th>Vana?</th>
+      <th>Sünnipäev</th>
+      <th>Ts</th>
+      <th>Tln?</th>
+      <th>Arve nr</th>
+      <th>Isikukood</th>
+    </tr>
     </thead>
   );
 };
@@ -52,7 +53,7 @@ const RegTableHead = () => {
 const ToggleButton = (props) => {
   const dispatch = useDispatch();
 
-  const toggleState = async ({ target }) => {
+  const toggleState = async ({target}) => {
     const response = await makePostRequest(
       "reglist/update/" + `${props.id}/${props.field}/`
     );
@@ -83,7 +84,7 @@ const ToggleButton = (props) => {
 const InputField = (props) => {
   const dispatch = useDispatch();
 
-  const handleChange = async ({ target }) => {
+  const handleChange = async ({target}) => {
     const response = await makePostRequest(
       "reglist/update/" + `${props.id}/${props.field}/${target.value}`
     );
@@ -123,61 +124,88 @@ const InputField = (props) => {
   );
 };
 
+const Deleter = (props) => {
+  const dispatch = useDispatch();
+
+  const remove = async () => {
+    const response = await makePostRequest(
+      "reglist/remove/" + `${props.id}/`
+    );
+    if (!response || !response.ok) return;
+
+    dispatch(
+      removeCamper({
+        shiftNr: props.shiftNr,
+        id: props.id,
+      })
+    );
+  };
+
+  return (
+    <button onClick={remove} className="c-regList-del">X</button>
+  )
+}
+
 const RegTableSection = (props) => {
   return (
     <tbody>
-      <tr>
-        <td colSpan="14">{props.title}</td>
-      </tr>
-      {props.children.map((kid) => (
-        <tr key={kid.id}>
-          <td className="u-mono">{kid.id}</td>
-          <td>{kid.name}</td>
-          <td>
-            <InputField
-              shiftNr={props.shiftNr}
-              id={kid.id}
-              field="total-paid"
-              className="price"
-              value={kid["pricePaid"]}
-            />
-          </td>
-          <td>
-            <InputField
-              shiftNr={props.shiftNr}
-              id={kid.id}
-              field="total-due"
-              className="priceToPay"
-              value={kid["priceToPay"]}
-            />
-          </td>
-          <td>
-            <ToggleButton
-              shiftNr={props.shiftNr}
-              id={kid.id}
-              status={kid.registered}
-              field="registration"
-            />
-          </td>
-          <td id={`${kid.id}-contact`} className="c-camper-contact">
-            {kid["contactName"]}
-            <span className="c-camper-contact__phone">
+    <tr>
+      <td colSpan="14">{props.title}</td>
+    </tr>
+    {props.children.map((kid) => (
+      <tr key={kid.id}>
+        <td className="u-mono u-relative">
+          {kid.id}
+          {kid.registered ? "" : <Deleter id={kid.id} shiftNr={props.shiftNr}/>}
+        </td>
+        <td>
+          {kid.name}
+        </td>
+        <td>
+          <InputField
+            shiftNr={props.shiftNr}
+            id={kid.id}
+            field="total-paid"
+            className="price"
+            value={kid["pricePaid"]}
+          />
+        </td>
+        <td>
+          <InputField
+            shiftNr={props.shiftNr}
+            id={kid.id}
+            field="total-due"
+            className="priceToPay"
+            value={kid["priceToPay"]}
+          />
+        </td>
+        <td>
+          <ToggleButton
+            shiftNr={props.shiftNr}
+            id={kid.id}
+            status={kid.registered}
+            field="registration"
+          />
+        </td>
+        <td id={`${kid.id}-contact`} className="c-camper-contact">
+          {kid["contactName"]}
+          <span className="c-camper-contact__phone">
               {kid["contactNumber"]}
             </span>
-          </td>
-          <td>
-            <a href={`mailto:${kid["contactEmail"]}`}>{kid["contactEmail"]}</a>
-          </td>
-          <td>
-            <ToggleButton status={kid.isOld} id={kid.id} field="regular" />
-          </td>
-          <td className="u-mono">{kid["bDay"]}</td>
-          <td>{kid["tShirtSize"]}</td>
-          <td>{kid.tln ? "jah" : "ei"}</td>
-          <td className="u-mono">{kid["billNr"]}</td>
-          <td className="u-mono">{kid["idCode"]}</td>
-        </tr>
-      ))}
+        </td>
+        <td>
+          <a href={`mailto:${kid["contactEmail"]}`}>{kid["contactEmail"]}</a>
+        </td>
+        <td>
+          <ToggleButton status={kid.isOld} id={kid.id} field="regular"/>
+        </td>
+        <td className="u-mono">{kid["bDay"]}</td>
+        <td>{kid["tShirtSize"]}</td>
+        <td>{kid.tln ? "jah" : "ei"}</td>
+        <td className="u-mono">{kid["billNr"]}</td>
+        <td className="u-mono">{kid["idCode"]}</td>
+      </tr>
+    ))}
     </tbody>
   );
 };
@@ -205,13 +233,13 @@ const RegTable = (props) => {
   if (!props.shiftData) {
     return (
       <table>
-        <RegTableHead />
+        <RegTableHead/>
       </table>
     );
   }
   return (
     <table className="c-regList-table">
-      <RegTableHead />
+      <RegTableHead/>
       {camperListSections.map((section) => (
         <RegTableSection
           key={section[1]}
