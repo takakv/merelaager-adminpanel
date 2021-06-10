@@ -188,10 +188,9 @@ const RegTableSection = (props) => {
           />
         </td>
         <td id={`${kid.id}-contact`} className="c-camper-contact">
-          {kid["contactName"]}
-          <span className="c-camper-contact__phone">
-              {kid["contactNumber"]}
-            </span>
+          {kid["contactName"]}, {kid["contactNr"]}
+          {/*<span className="c-camper-contact__phone">*/}
+          {/*</span>*/}
         </td>
         <td>
           <a href={`mailto:${kid["contactEmail"]}`}>{kid["contactEmail"]}</a>
