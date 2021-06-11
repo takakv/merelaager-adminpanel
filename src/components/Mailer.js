@@ -46,6 +46,8 @@ const Mailer = (props) => {
     <div className="c-mailer">
       <p>Meilid:</p>
       <p className="c-mailer-emails">{parentEmails.sort().join("; ")}</p>
+      <p><a href={`mailto:${parentEmails.join(";")}`} className="o-button">Ava meiliäpis</a>(ei pruugi töötada)</p>
+      <br />
       <div className="u-unready">
         <p>See osa pole veel valmis</p>
         <p>Saadab meili vahetusse registreeritud laste vanematele.</p>
