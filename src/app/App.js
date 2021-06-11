@@ -13,6 +13,7 @@ import { useDispatch } from "react-redux";
 import { setData } from "../features/userData/userDataSlice";
 import Shirts from "../features/thisrts/Tshirts";
 import ShiftInfo from "../features/camperInfo/CamperInfo";
+import Mailer from "../components/Mailer";
 
 const apiURL =
   process.env.NODE_ENV === "development"
@@ -71,6 +72,9 @@ export default function App() {
           </Route>
           <Route path="/telgid/">
             <TentList title="Telgid" />
+          </Route>
+          <Route path="/meil/">
+            <Mailer title="Meil" />
           </Route>
           <Route path="/nimekiri/">
             <RegistrationList title="Nimekiri" />

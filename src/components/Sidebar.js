@@ -33,6 +33,13 @@ const Navigation = () => {
         </li>
         <li>
           <Link
+            to="/meil/"
+            onClick={() => dispatch(setTitle("Meil"))}>
+            Meil
+          </Link>
+        </li>
+        <li>
+          <Link
             to="/arvegeneraator/"
             onClick={() => dispatch(setTitle("Arvegeneraator"))}
           >
@@ -64,7 +71,7 @@ const Sidebar = () => {
           width="50px"
         />
       </Link>
-      <Navigation />
+      <Navigation/>
     </div>
   );
 };

@@ -3,16 +3,21 @@ const apiURL =
     ? "http://localhost:3000"
     : "https://merelaager.ee";
 
-export const makePostRequest = async (apiLinkSuffix) => {
+export const makePostRequest = async (apiLinkSuffix, content = null) => {
   const credentials = localStorage.getItem("credentials");
   const accessToken = JSON.parse(credentials).accessToken;
+
+  const headers = {
+    Authorization: "Bearer " + accessToken,
+  }
+
+  if (content) headers["Content-Type"] = "application/json";
 
   try {
     const response = await fetch(`${apiURL}/api/` + apiLinkSuffix, {
       method: "POST",
-      headers: {
-        Authorization: "Bearer " + accessToken,
-      },
+      headers: headers,
+      body: JSON.stringify(content),
     });
     if (!response.ok) {
       promptRequestError(response);
@@ -22,7 +27,7 @@ export const makePostRequest = async (apiLinkSuffix) => {
   } catch (e) {
     window.alert(
       "Serveriga ei õnnestunud ühendust saada.\n" +
-        "Muudatused pole salvestatud."
+      "Muudatused pole salvestatud."
     );
     return null;
   }
@@ -48,10 +53,10 @@ export const makeGetRequest = async (apiLinkSuffix) => {
 export const promptRequestError = (response) => {
   window.alert(
     "Midagi läks nihu." +
-      "\n\n" +
-      `Veakood: ${response.status}` +
-      "\n" +
-      `Kirjeldus: ${response.statusText}`
+    "\n\n" +
+    `Veakood: ${response.status}` +
+    "\n" +
+    `Kirjeldus: ${response.statusText}`
   );
   console.log(response);
 };

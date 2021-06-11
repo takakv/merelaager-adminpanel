@@ -300,6 +300,18 @@ button {
   color: var(--accent-text);
 }
 
+.u-disabled {
+  cursor: not-allowed;
+
+  &:hover {
+    cursor: not-allowed;
+  }
+}
+
+.u-unready {
+  opacity: 0.3;
+}
+
 .u-topmost {
   position: relative;
   z-index: 10;
@@ -625,6 +637,19 @@ button {
       border: none;
       border-bottom: 1px solid #000;
     }
+  }
+}
+
+.c-mailer {
+  &-box {
+    width: 50%;
+  }
+
+  &-emails {
+    margin-bottom: 2em;
+    padding: .5rem 1rem;
+    border: 1px solid var(--line-dark);
+    border-radius: var(--box-radius);
   }
 }
 
