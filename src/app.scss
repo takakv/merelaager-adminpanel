@@ -475,6 +475,11 @@ button, .o-button {
 }
 
 .c-regList {
+  &-shiftButtons {
+    margin-right: 1em;
+    border-right: 1px solid var(--line-dark);
+  }
+
   &-del {
     position: absolute;
     right: -0.25em;
@@ -506,6 +511,8 @@ button, .o-button {
 }
 
 .c-regList-shiftBar {
+  display: flex;
+  align-items: center;
   margin-bottom: 1em;
 
   button {

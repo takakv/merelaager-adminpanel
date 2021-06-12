@@ -12,29 +12,6 @@ const resCounters = ["res. poisid", "res. tüdrukud"];
 
 // Buttons used to switch between each of the shifts.
 const ShiftSwitchButtons = (props) => {
-  return (
-    <div className="c-regList-shiftBar">
-      {shifts.map((shift) => (
-        <button key={shift} onClick={props.switcher} className="o-button--40">
-          {shift}v
-        </button>
-      ))}
-    </div>
-  );
-};
-
-// Counters for shift data.
-const ShiftOverviewCounter = (props) => {
-  const count = props.count ?? 0;
-  return (
-    <div className="c-regList-counter">
-      {props.counterName}: <span className="u-mono">{count}</span>
-    </div>
-  );
-};
-
-// Overview of the number of campers for each shift.
-const ShiftOverviewInfo = (props) => {
   const shiftNr = useSelector(getShift);
 
   const print = async () => {
@@ -61,28 +38,51 @@ const ShiftOverviewInfo = (props) => {
   }
 
   return (
-    <div>
-      <div className="c-regList-counters">
-        <div className="c-regList-counters__reg">
-          {regCounters.map((counter, index) => (
-            <ShiftOverviewCounter
-              counterName={counter}
-              key={counter}
-              count={props.regCounts[index]}
-            />
-          ))}
-        </div>
-        <div className="c-regList-counters__res">
-          {resCounters.map((counter, index) => (
-            <ShiftOverviewCounter
-              counterName={counter}
-              key={counter}
-              count={props.resCounts[index]}
-            />
-          ))}
-        </div>
+    <div className="c-regList-shiftBar">
+      <div className="c-regList-shiftButtons">
+      {shifts.map((shift) => (
+        <button key={shift} onClick={props.switcher} className="o-button--40">
+          {shift}v
+        </button>
+      ))}
       </div>
       <button onClick={print}>Prindi</button>
+    </div>
+  );
+};
+
+// Counters for shift data.
+const ShiftOverviewCounter = (props) => {
+  const count = props.count ?? 0;
+  return (
+    <div className="c-regList-counter">
+      {props.counterName}: <span className="u-mono">{count}</span>
+    </div>
+  );
+};
+
+// Overview of the number of campers for each shift.
+const ShiftOverviewInfo = (props) => {
+  return (
+    <div className="c-regList-counters">
+      <div className="c-regList-counters__reg">
+        {regCounters.map((counter, index) => (
+          <ShiftOverviewCounter
+            counterName={counter}
+            key={counter}
+            count={props.regCounts[index]}
+          />
+        ))}
+      </div>
+      <div className="c-regList-counters__res">
+        {resCounters.map((counter, index) => (
+          <ShiftOverviewCounter
+            counterName={counter}
+            key={counter}
+            count={props.resCounts[index]}
+          />
+        ))}
+      </div>
     </div>
   );
 };
