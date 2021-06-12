@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import RegTable from "../../components/Support Files/RegTable";
 import { useDispatch, useSelector } from "react-redux";
 import { setTitle } from "../pageTitle/pageTitleSlice";
-import {
-  fetchRegistrationList,
-  getAllRegistrationLists,
-} from "./registrationListSlice";
+import { fetchRegistrationList, getAllRegistrationLists, } from "./registrationListSlice";
+import { getShift } from "../userData/userDataSlice";
+import { makeGetRequest } from "../../components/Common/requestAPI";
 
 const shifts = ["1", "2", "3", "4"];
 const regCounters = ["poisid", "tüdrukud", "kokku"];
@@ -36,26 +35,54 @@ const ShiftOverviewCounter = (props) => {
 
 // Overview of the number of campers for each shift.
 const ShiftOverviewInfo = (props) => {
+  const shiftNr = useSelector(getShift);
+
+  const print = async () => {
+    const response = await makeGetRequest("reglist/print/" + `${shiftNr}/`);
+    if (!response || !response.ok) return;
+
+    const obj = {
+      filename: `${shiftNr}v_nimekiri.pdf`,
+      blob: await response.blob(),
+    };
+    const newBlob = new Blob([obj.blob], {type: "application/pdf"});
+    const objUrl = window.URL.createObjectURL(newBlob);
+    // first method
+    // const link = document.createElement("a");
+    // link.href = objUrl;
+    // link.target = "_blank";
+    // link.download = obj.filename;
+    // link.click();
+    // second method
+    window.open(objUrl, "_blank");
+    // third method
+    // let tab = window.open();
+    // tab.location.href = objUrl;
+  }
+
   return (
-    <div className="c-regList-counters">
-      <div className="c-regList-counters__reg">
-        {regCounters.map((counter, index) => (
-          <ShiftOverviewCounter
-            counterName={counter}
-            key={counter}
-            count={props.regCounts[index]}
-          />
-        ))}
+    <div>
+      <div className="c-regList-counters">
+        <div className="c-regList-counters__reg">
+          {regCounters.map((counter, index) => (
+            <ShiftOverviewCounter
+              counterName={counter}
+              key={counter}
+              count={props.regCounts[index]}
+            />
+          ))}
+        </div>
+        <div className="c-regList-counters__res">
+          {resCounters.map((counter, index) => (
+            <ShiftOverviewCounter
+              counterName={counter}
+              key={counter}
+              count={props.resCounts[index]}
+            />
+          ))}
+        </div>
       </div>
-      <div className="c-regList-counters__res">
-        {resCounters.map((counter, index) => (
-          <ShiftOverviewCounter
-            counterName={counter}
-            key={counter}
-            count={props.resCounts[index]}
-          />
-        ))}
-      </div>
+      <button onClick={print}>Prindi</button>
     </div>
   );
 };
@@ -78,7 +105,7 @@ const RegistrationList = (props) => {
   }, [regListStatus, dispatch]);
 
   // Update the active shift.
-  const shiftSwitcher = ({ target }) => {
+  const shiftSwitcher = ({target}) => {
     setShiftNr(parseInt(target.innerText[0]));
   };
 
@@ -101,8 +128,8 @@ const RegistrationList = (props) => {
   const renderContent = (appendixContent) => {
     return (
       <div>
-        <ShiftSwitchButtons switcher={shiftSwitcher} />
-        <ShiftOverviewInfo regCounts={regCounts} resCounts={resCounts} />
+        <ShiftSwitchButtons switcher={shiftSwitcher}/>
+        <ShiftOverviewInfo regCounts={regCounts} resCounts={resCounts}/>
         {appendixContent}
       </div>
     );
@@ -110,7 +137,7 @@ const RegistrationList = (props) => {
 
   if (regListStatus === "succeeded") {
     const conditionalRenderContent = (
-      <RegTable shiftData={shiftData} shiftNr={shiftNr} />
+      <RegTable shiftData={shiftData} shiftNr={shiftNr}/>
     );
     return renderContent(conditionalRenderContent);
   } else if (regListStatus === "failed") {
