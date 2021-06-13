@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice, current } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { makeGetRequest } from "../../components/Common/requestAPI";
 
 export const fetchCampers = createAsyncThunk(
@@ -18,13 +18,13 @@ const campersSlice = createSlice({
   },
   reducers: {
     updateCamper: (state, action) => {
-      const { id, tentNr, currentNr } = action.payload;
+      const {id, tentNr, currentNr} = action.payload;
       // The camper was assigned a tent.
       if (tentNr) {
         // Double iteration is not very efficient
         // but avoids nasty index calculations.
-        const child = state.data.tentless.find((child) => child.id === id);
-        state.data.tentless = state.data.tentless.filter(
+        const child = state.data.noTent.find((child) => child.id === id);
+        state.data.noTent = state.data.noTent.filter(
           (child) => child.id !== id
         );
         state.data.tents[tentNr - 1].push(child);
@@ -37,7 +37,7 @@ const campersSlice = createSlice({
         state.data.tents[currentNr] = state.data.tents[currentNr].filter(
           (child) => child.id !== id
         );
-        state.data.tentless.push(child);
+        state.data.noTent.push(child);
       }
     },
   },
@@ -53,7 +53,7 @@ const campersSlice = createSlice({
   },
 });
 
-export const { updateCamper } = campersSlice.actions;
+export const {updateCamper} = campersSlice.actions;
 
 export default campersSlice.reducer;
 
