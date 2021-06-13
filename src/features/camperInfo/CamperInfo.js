@@ -1,10 +1,19 @@
-import React, {useEffect} from "react";
-import {useDispatch, useSelector} from "react-redux";
-import {setTitle} from "../pageTitle/pageTitleSlice";
-import {fetchCamperInfo, getCamperInfo} from "./camperInfoSlice";
-import {getShift} from "../userData/userDataSlice";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { setTitle } from "../pageTitle/pageTitleSlice";
+import { fetchCamperInfo, getCamperInfo } from "./camperInfoSlice";
+import { getShift } from "../userData/userDataSlice";
+import { makePostRequest } from "../../components/Common/requestAPI";
 
 const CamperEntry = (props) => {
+  const handleChange = async ({target}) => {
+    const packet = {notes: target.value}
+    await makePostRequest(
+      "/notes/update/" + `${props.data.id}/`,
+      packet,
+    );
+  }
+
   return (
     <div className="o-box c-camper-info">
       <div className="o-box-header">
@@ -20,7 +29,7 @@ const CamperEntry = (props) => {
         </div>
         <div className="c-info-block">
           <p className="title">Märkused</p>
-          <textarea className="content" placeholder="..." defaultValue={props.data.notes}/>
+          <textarea onBlur={handleChange} className="content" placeholder="..." defaultValue={props.data.notes}/>
         </div>
       </div>
     </div>
@@ -44,9 +53,9 @@ const CamperInfo = (props) => {
     case "ok":
       return (
         <div>
-          <p>Märkused veel ei tööta.</p>
+          <p>Märkused töötavad ja salvestavad end ise.</p>
           {Object.values(camperInfo).map((camper) => (
-            <CamperEntry key={camper.key} data={camper}/>
+            <CamperEntry key={camper.id} data={camper}/>
           ))}
         </div>
       );
