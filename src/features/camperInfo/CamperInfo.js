@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setTitle } from "../pageTitle/pageTitleSlice";
 import { fetchCamperInfo, getCamperInfo } from "./camperInfoSlice";
 import { getShift } from "../userData/userDataSlice";
-import { makePostRequest } from "../../components/Common/requestAPI";
+import { makeGetRequest, makePostRequest } from "../../components/Common/requestAPI";
 
 const CamperEntry = (props) => {
   const handleChange = async ({target}) => {
@@ -49,10 +49,21 @@ const CamperInfo = (props) => {
     if (infoStatus === "idle") dispatch(fetchCamperInfo(shiftNr));
   }, [infoStatus, dispatch]);
 
+  const print = async () => {
+    const response = await makeGetRequest("notes/fetch/" + `${shiftNr}/`);
+    if (!response || !response.ok) return;
+
+    const blob = await response.blob();
+    const newBlob = new Blob([blob], {type: "application/pdf"});
+    const objUrl = window.URL.createObjectURL(newBlob);
+    window.open(objUrl, "_blank");
+  };
+
   switch (infoStatus) {
     case "ok":
       return (
         <div>
+          <button onClick={print}>Prindi kõik</button>
           <p>Märkused töötavad ja salvestavad end ise.</p>
           {Object.values(camperInfo).map((camper) => (
             <CamperEntry key={camper.id} data={camper}/>
