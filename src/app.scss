@@ -200,6 +200,8 @@ button, .o-button {
   border-radius: var(--box-radius);
 
   &-header {
+    display: flex;
+    justify-content: space-between;
     margin-bottom: 0.5em;
     padding-bottom: 0.5em;
     border-bottom: 1px solid var(--line-light);

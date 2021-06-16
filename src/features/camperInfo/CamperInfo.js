@@ -14,6 +14,16 @@ const CamperEntry = (props) => {
     );
   }
 
+  const print = async () => {
+    const response = await makeGetRequest("notes/fetch/" + `${props.shiftNr}/${props.data.id}/`);
+    if (!response || !response.ok) return;
+
+    const blob = await response.blob();
+    const newBlob = new Blob([blob], {type: "application/pdf"});
+    const objUrl = window.URL.createObjectURL(newBlob);
+    window.open(objUrl, "_blank");
+  };
+
   return (
     <div className="o-box c-camper-info">
       <div className="o-box-header">
@@ -21,6 +31,7 @@ const CamperEntry = (props) => {
           {props.data.name}, {props.data.gender === "M" ? "Poiss" : "Tüdruk"},
           Telk {props.data.tentNr ?? "-"}
         </p>
+        <button onClick={print}>Prindi</button>
       </div>
       <div className="c-camper-info__content">
         <div className="c-info-block">
@@ -50,13 +61,18 @@ const CamperInfo = (props) => {
   }, [infoStatus, dispatch]);
 
   const print = async () => {
+    document.body.style.cursor = "wait";
     const response = await makeGetRequest("notes/fetch/" + `${shiftNr}/`);
-    if (!response || !response.ok) return;
+    if (!response || !response.ok) {
+      document.body.style.cursor = "";
+      return;
+    }
 
     const blob = await response.blob();
     const newBlob = new Blob([blob], {type: "application/pdf"});
     const objUrl = window.URL.createObjectURL(newBlob);
     window.open(objUrl, "_blank");
+    document.body.style.cursor = "";
   };
 
   switch (infoStatus) {
@@ -64,9 +80,9 @@ const CamperInfo = (props) => {
       return (
         <div>
           <button onClick={print}>Prindi kõik</button>
-          <p>Märkused töötavad ja salvestavad end ise.</p>
+          <p>Märkused säilivad läbi aastate ja vahetuste.</p>
           {Object.values(camperInfo).map((camper) => (
-            <CamperEntry key={camper.id} data={camper}/>
+            <CamperEntry key={camper.id} data={camper} shiftNr={shiftNr}/>
           ))}
         </div>
       );
