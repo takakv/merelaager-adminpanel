@@ -14,6 +14,7 @@ import { setData } from "../features/userData/userDataSlice";
 import Shirts from "../features/thisrts/Tshirts";
 import ShiftInfo from "../features/camperInfo/CamperInfo";
 import Mailer from "../components/Mailer";
+import Hamburger from "../components/Hamburger";
 
 const apiURL =
   process.env.NODE_ENV === "development"
@@ -55,6 +56,7 @@ export default function App() {
 
   return (
     <div className="admin-page">
+      <Hamburger />
       <Sidebar />
       <PageTitle />
       <UserBox />

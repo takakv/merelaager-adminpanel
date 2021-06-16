@@ -14,6 +14,7 @@
   --box-radius: 4px;
   --grid-column-count: 12;
   --grid-colspan-half: 6;
+  --grid-colspan-full: 12;
 }
 
 :root {
@@ -165,7 +166,8 @@ a {
   display: none !important;
 }
 
-button, .o-button {
+button,
+.o-button {
   display: inline-block;
   padding: 0.5em 1em;
   border: 1px solid #dadce0;
@@ -207,6 +209,12 @@ button, .o-button {
 
   &--heavy {
     border-width: 4px;
+  }
+}
+
+@media screen and (max-width: 1000px) {
+  .o-printer {
+    display: none;
   }
 }
 
@@ -414,14 +422,25 @@ button, .o-button {
   display: grid;
   max-width: 100vw;
   height: 100%;
-  grid-template-columns: 220px 40px min-content 1fr min-content;
-  grid-template-rows: 32px 42px 1fr;
-  grid-template-areas: "side-nav s1 blank blank blank" "side-nav s2 title placeholder profile" "side-nav s3 content content content";
+
+  grid-template-rows: auto auto 1fr;
+  grid-template-areas: "mobile-menu" "title" "content";
+
+  @media screen and (min-width: 1000px) {
+    grid-template-columns: 220px 40px min-content 1fr min-content;
+    grid-template-rows: 32px 42px 1fr;
+    grid-template-areas: "side-nav s1 blank blank blank" "side-nav s2 title placeholder profile" "side-nav s3 content content content";
+  }
 
   &__title {
     display: flex;
     align-items: flex-end;
+    margin: 0 1em;
     grid-area: title;
+
+    @media screen and (min-width: 1000px) {
+      margin: 0;
+    }
 
     h1 {
       font-size: 1.25rem;
@@ -430,10 +449,14 @@ button, .o-button {
   }
 
   &__user {
-    display: flex;
+    display: none;
     align-items: flex-end;
     padding-right: 40px;
-    grid-area: profile;
+
+    @media only screen and (min-width: 1000px) {
+      display: flex;
+      grid-area: profile;
+    }
 
     span {
       font-size: 1.25rem;
@@ -443,20 +466,54 @@ button, .o-button {
   .c-content {
     overflow: auto;
     margin-top: 24px;
+    padding: 0 1em;
     grid-area: content;
+    @media only screen and (min-width: 1000px) {
+      padding: 0;
+    }
+  }
+}
+
+// Mobile navigation.
+.c-mn {
+  margin: 1em;
+  grid-area: mobile-menu;
+
+  @media screen and (min-width: 1000px) {
+    display: none;
   }
 }
 
 .c-sidebar {
-  position: relative;
+  position: absolute;
+  z-index: 10;
   display: block;
+  width: 200px;
+  height: 100%;
+  transition: transform 200ms cubic-bezier(0.55, 0.055, 0.675, 0.19);
+  transform: translateX(-200px);
   background-color: var(--line-light); // #f9f9f9;
-  grid-area: side-nav;
+
+  &.is-active {
+    transition: transform 250ms cubic-bezier(0.215, 0.61, 0.355, 1);
+    transform: translateX(0);
+  }
+
+  @media only screen and (min-width: 1000px) {
+    position: relative;
+    width: auto;
+    transform: none;
+    grid-area: side-nav;
+  }
 
   &-title {
     font-size: 1.5rem;
-    display: block;
-    padding: 30px 30px 0;
+    display: inline-block;
+    margin: 30px 30px 0;
+
+    img {
+      display: block;
+    }
   }
 }
 
@@ -477,13 +534,15 @@ button, .o-button {
 .c-regList {
   &-shiftButtons {
     margin-right: 1em;
-    border-right: 1px solid var(--line-dark);
+    @media screen and (min-width: 1000px) {
+      border-right: 1px solid var(--line-dark);
+    }
   }
 
   &-del {
     position: absolute;
     right: -0.25em;
-    padding: .25rem .5rem;
+    padding: 0.25rem 0.5rem;
     color: #e01e5a;
     border-radius: 30px;
 
@@ -492,7 +551,7 @@ button, .o-button {
       top: -1em;
       left: 2em;
       display: none;
-      padding: .25rem .5rem;
+      padding: 0.25rem 0.5rem;
       content: "Kustuta (lõplik)";
       border: 1px solid #dadce0;
       border-radius: var(--box-radius);
@@ -569,24 +628,41 @@ button, .o-button {
 }
 
 .c-tent {
-  width: 200px;
-  margin-right: 30px;
+  width: 100%;
   margin-bottom: 30px;
+
+  @media screen and (min-width: 500px) {
+    width: 200px;
+    margin-right: 30px;
+  }
 
   // Self-contained
   &-rm {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 15px;
-    height: 15px;
-    border: 1px solid #e6e8eb;
-    border-radius: 10px;
+    width: 30px;
+    height: 30px;
+    margin: .75em;
+    border: 3px solid #e6e8eb;
+    border-radius: 30px;
+
+    @media screen and (min-width: 1000px) {
+      width: 15px;
+      height: 15px;
+      margin: 0;
+      border-width: 1px;
+      border-radius: 10px;
+    }
 
     div {
       width: 70%;
-      height: 1px;
+      height: 3px;
       background-color: #e6e8eb;
+
+      @media screen and (min-width: 1000px) {
+        height: 1px;
+      }
     }
 
     &:hover {
@@ -619,7 +695,6 @@ button, .o-button {
 }
 
 .c-camper-info {
-  margin-right: 40px;
   margin-bottom: 30px;
 
   &__content {
@@ -627,8 +702,22 @@ button, .o-button {
     grid-template-columns: repeat(var(--grid-column-count), 1fr);
   }
 
+  @media only screen and (min-width: 1000px) {
+    margin-right: 40px;
+  }
+
   .c-info-block {
-    grid-column: span var(--grid-colspan-half);
+    margin-bottom: 1em;
+    grid-column: span var(--grid-colspan-full);
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    @media screen and (min-width: 1000px) {
+      margin-bottom: 0;
+      grid-column: span var(--grid-colspan-half);
+    }
 
     .title {
       display: inline-block;
@@ -654,7 +743,7 @@ button, .o-button {
 
   &-emails {
     margin-bottom: 2em;
-    padding: .5rem 1rem;
+    padding: 0.5rem 1rem;
     border: 1px solid var(--line-dark);
     border-radius: var(--box-radius);
   }

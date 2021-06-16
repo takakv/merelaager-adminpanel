@@ -1,9 +1,9 @@
-import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { setTitle } from "../pageTitle/pageTitleSlice";
-import { fetchCamperInfo, getCamperInfo } from "./camperInfoSlice";
-import { getShift } from "../userData/userDataSlice";
-import { makeGetRequest, makePostRequest } from "../../components/Common/requestAPI";
+import React, {useEffect} from "react";
+import {useDispatch, useSelector} from "react-redux";
+import {setTitle} from "../pageTitle/pageTitleSlice";
+import {fetchCamperInfo, getCamperInfo} from "./camperInfoSlice";
+import {getShift} from "../userData/userDataSlice";
+import {makeGetRequest, makePostRequest} from "../../components/Common/requestAPI";
 
 const CamperEntry = (props) => {
   const handleChange = async ({target}) => {
@@ -32,7 +32,7 @@ const CamperEntry = (props) => {
             {props.data.name}, {props.data.gender === "M" ? "Poiss" : "Tüdruk"},
             Telk {props.data.tentNr ?? "-"}
           </p>
-          <button onClick={print}>Prindi</button>
+          <button className="o-printer" onClick={print}>Prindi</button>
         </div>
       </div>
       <div className="c-camper-info__content">
@@ -81,7 +81,7 @@ const CamperInfo = (props) => {
     case "ok":
       return (
         <div>
-          <button onClick={print}>Prindi kõik</button>
+          <button className="o-printer" onClick={print}>Prindi kõik</button>
           <p>Märkused säilivad läbi aastate ja vahetuste.</p>
           {Object.values(camperInfo).map((camper) => (
             <CamperEntry key={camper.id} data={camper} shiftNr={shiftNr}/>

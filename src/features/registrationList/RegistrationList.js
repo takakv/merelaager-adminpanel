@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, {useEffect, useState} from "react";
 import RegTable from "../../components/Support Files/RegTable";
-import { useDispatch, useSelector } from "react-redux";
-import { setTitle } from "../pageTitle/pageTitleSlice";
-import { fetchRegistrationList, getAllRegistrationLists, } from "./registrationListSlice";
-import { getShift } from "../userData/userDataSlice";
-import { makeGetRequest } from "../../components/Common/requestAPI";
+import {useDispatch, useSelector} from "react-redux";
+import {setTitle} from "../pageTitle/pageTitleSlice";
+import {fetchRegistrationList, getAllRegistrationLists,} from "./registrationListSlice";
+import {getShift} from "../userData/userDataSlice";
+import {makeGetRequest} from "../../components/Common/requestAPI";
 
 const shifts = ["1", "2", "3", "4"];
 const regCounters = ["poisid", "tüdrukud", "kokku"];
@@ -40,13 +40,13 @@ const ShiftSwitchButtons = (props) => {
   return (
     <div className="c-regList-shiftBar">
       <div className="c-regList-shiftButtons">
-      {shifts.map((shift) => (
-        <button key={shift} onClick={props.switcher} className="o-button--40">
-          {shift}v
-        </button>
-      ))}
+        {shifts.map((shift) => (
+          <button key={shift} onClick={props.switcher} className="o-button--40">
+            {shift}v
+          </button>
+        ))}
       </div>
-      <button onClick={print}>Prindi</button>
+      <button className="o-printer" onClick={print}>Prindi</button>
     </div>
   );
 };
