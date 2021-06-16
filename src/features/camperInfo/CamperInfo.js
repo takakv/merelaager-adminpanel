@@ -27,11 +27,13 @@ const CamperEntry = (props) => {
   return (
     <div className="o-box c-camper-info">
       <div className="o-box-header">
-        <p>
-          {props.data.name}, {props.data.gender === "M" ? "Poiss" : "Tüdruk"},
-          Telk {props.data.tentNr ?? "-"}
-        </p>
-        <button onClick={print}>Prindi</button>
+        <div className="u-flex u-space-between">
+          <p>
+            {props.data.name}, {props.data.gender === "M" ? "Poiss" : "Tüdruk"},
+            Telk {props.data.tentNr ?? "-"}
+          </p>
+          <button onClick={print}>Prindi</button>
+        </div>
       </div>
       <div className="c-camper-info__content">
         <div className="c-info-block">
