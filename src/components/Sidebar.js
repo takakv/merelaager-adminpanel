@@ -1,7 +1,7 @@
 import React from "react";
-import {Link} from "react-router-dom";
-import {useDispatch} from "react-redux";
-import {setTitle} from "../features/pageTitle/pageTitleSlice";
+import { Link } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { setTitle } from "../features/pageTitle/pageTitleSlice";
 
 // _link classnames serve as identifiers when to
 // close the navigation menu on mobile.
@@ -20,9 +20,14 @@ const Navigation = () => {
             Lapsed
           </Link>
         </li>
-        <li className="last">
+        <li>
           <Link className="_link" to="/telgid/" onClick={() => dispatch(setTitle("Telgid"))}>
             Telgid
+          </Link>
+        </li>
+        <li className="last">
+          <Link className="_link" to="/meeskonnad/" onClick={() => dispatch(setTitle("Meeskonnad"))}>
+            Meeskonnad
           </Link>
         </li>
         <li>
