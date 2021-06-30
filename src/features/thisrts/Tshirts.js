@@ -7,28 +7,30 @@ const shifts = ["1v", "2v", "3v", "4v"];
 
 const ShirtCell = (props) => {
   return (
-    <div className="c-shirtBox">
-      <p className="c-shirtBox__title">{props.shift}</p>
+    <div className="o-box">
+      <p className="o-box-header u-text-center">{props.shift}</p>
+      <ul className="u-list-blank">
       {Object.entries(props.shirtData)
         .sort()
         .map((shirt) => (
-          <div key={shirt[0]} className="c-shirtCount">
+          <li key={shirt[0]} className="u-flex u-space-between">
             <p>{shirt[0]}:</p>
             <p className="u-mono">{shirt[1]}</p>
-          </div>
+          </li>
         ))}
+      </ul>
     </div>
   );
 };
 
 const TotalShirts = (props) => {
   return (
-    <div className="c-shirtBox">
-      <p className="c-shirtBox__title">Kokku:</p>
+    <div className="o-box">
+      <p className="o-box-header u-text-center">Kokku:</p>
       {Object.entries(props.shirtData)
         .sort()
         .map((shirt) => (
-          <div key={shirt[0]} className="c-shirtCount">
+          <div key={shirt[0]} className="u-flex u-space-between">
             <p>{shirt[0]}:</p>
             <p className="u-mono">{shirt[1]}</p>
           </div>
@@ -39,7 +41,7 @@ const TotalShirts = (props) => {
 
 const ShirtCells = (props) => {
   return (
-    <div className="c-shirtBox__container">
+    <div className="c-shirts-container u-flex">
       {shifts.map((shift) => (
         <ShirtCell
           key={shift}

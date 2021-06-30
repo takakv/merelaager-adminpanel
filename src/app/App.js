@@ -1,5 +1,5 @@
 import React from "react";
-import { Switch, Route } from "react-router-dom";
+import { Route, Switch } from "react-router-dom";
 
 import Login from "../components/Login";
 import Sidebar from "../components/Sidebar";
@@ -8,10 +8,14 @@ import UserBox from "../components/UserBox";
 import RegistrationList from "../features/registrationList/RegistrationList";
 import BillGen from "../components/BillGen";
 import TentList from "../components/TentList";
+import TeamList from "../components/TeamList";
 import useToken from "../useToken";
 import { useDispatch } from "react-redux";
 import { setData } from "../features/userData/userDataSlice";
 import Shirts from "../features/thisrts/Tshirts";
+import ShiftInfo from "../features/camperInfo/CamperInfo";
+import Mailer from "../components/Mailer";
+import Hamburger from "../components/Hamburger";
 
 const apiURL =
   process.env.NODE_ENV === "development"
@@ -20,7 +24,7 @@ const apiURL =
 
 export default function App() {
   const dispatch = useDispatch();
-  const { token, setToken } = useToken();
+  const {token, setToken} = useToken();
 
   const silentTokenRefresh = async () => {
     const credentials = JSON.parse(localStorage.getItem("credentials"));
@@ -30,19 +34,22 @@ export default function App() {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ token: refreshToken }),
+      body: JSON.stringify({token: refreshToken}),
     }).then((data) => data.json());
     credentials.accessToken = response.accessToken;
     localStorage.setItem("credentials", JSON.stringify(credentials));
   };
 
   if (!token) {
-    return <Login setToken={setToken} />;
+    return <Login setToken={setToken}/>;
   } else {
     setInterval(silentTokenRefresh, 1200000);
     silentTokenRefresh().catch((err) => {
-      alert("Autentimisega on probleeme. Palun anna Taanielile teada.");
+      alert("Sessioon on aegunud.");
+      localStorage.clear();
+      location.reload();
       console.log(err);
+      // alert("Autentimisega on probleeme. Palun anna Taanielile teada.");
     });
     const credentials = JSON.parse(localStorage.getItem("credentials"));
     dispatch(setData(credentials.user));
@@ -50,9 +57,10 @@ export default function App() {
 
   return (
     <div className="admin-page">
-      <Sidebar />
-      <PageTitle />
-      <UserBox />
+      <Hamburger/>
+      <Sidebar/>
+      <PageTitle/>
+      <UserBox/>
       <main role="main" className="c-content">
         <Switch>
           <Route path="/" exact={true}>
@@ -62,17 +70,26 @@ export default function App() {
               sujuvam, kui seda oli vana.
             </p>
           </Route>
-          <Route path="/nimekiri/">
-            <RegistrationList title="Nimekiri" />
+          <Route path="/lapsed/">
+            <ShiftInfo title="Lapsed"/>
           </Route>
-          <Route path="/arvegeneraator/">
-            <BillGen title="Arvegeneraator" />
+          <Route path="/meeskonnad/">
+            <TeamList title="Meeskonnad"/>
           </Route>
           <Route path="/telgid/">
-            <TentList title="Telgid" />
+            <TentList title="Telgid"/>
+          </Route>
+          <Route path="/meil/">
+            <Mailer title="Meil"/>
+          </Route>
+          <Route path="/nimekiri/">
+            <RegistrationList title="Nimekiri"/>
+          </Route>
+          <Route path="/arvegeneraator/">
+            <BillGen title="Arvegeneraator"/>
           </Route>
           <Route path="/sargid/">
-            <Shirts title="Särgid" />
+            <Shirts title="Särgid"/>
           </Route>
         </Switch>
       </main>

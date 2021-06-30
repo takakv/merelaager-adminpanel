@@ -5,12 +5,7 @@ import { setTitle } from "../features/pageTitle/pageTitleSlice";
 import { fetchCampers, getCampers, updateCamper, } from "../features/tents/campersSlice";
 import { getShift } from "../features/userData/userDataSlice";
 
-// THIS FILE CONTAINS TERRIBLE CODE THAT NEEDS REFACTORING!
-
-// Populate the options dropdown for campers with a tent.
-const tentNumbers = Array.from({length: 10}, (_, i) => i + 1);
-
-const TentList = (props) => {
+const TeamList = (props) => {
   const shiftNr = useSelector(getShift);
   const dispatch = useDispatch();
   dispatch(setTitle(props.title));
@@ -47,7 +42,7 @@ const TentList = (props) => {
   } else return <p>Laen...</p>;
 };
 
-export default TentList;
+export default TeamList;
 
 const NoTentCamper = (props) => {
   const dispatch = useDispatch();
