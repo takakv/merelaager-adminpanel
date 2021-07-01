@@ -2,29 +2,21 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setTitle } from "../features/pageTitle/pageTitleSlice";
 import { getShift } from "../features/userData/userDataSlice";
-import { fetchTeams, getTeams } from "../features/teams/teamerSlice";
-import { makePostRequest } from "./Common/requestAPI";
 import {
-  fetchCamperInfo,
-  getCamperInfo,
-} from "../features/camperInfo/camperInfoSlice";
+  addMember,
+  fetchTeams,
+  getTeams,
+  removeMember,
+} from "../features/teams/teamerSlice";
+import { makePostRequest } from "./Common/requestAPI";
 
 const TeamsPage = (props) => {
   const shiftNr = useSelector(getShift);
   const dispatch = useDispatch();
   dispatch(setTitle(props.title));
 
-  // Get the children.
-  const camperInfo = useSelector(getCamperInfo);
-  const camperStatus = useSelector((state) => state.camperInfo.status);
-  const camperError = useSelector((state) => state.camperInfo.error);
-
-  useEffect(() => {
-    if (camperStatus === "idle") dispatch(fetchCamperInfo(shiftNr));
-  }, [camperStatus, dispatch]);
-
   // Get the teams.
-  const teams = useSelector(getTeams);
+  useSelector(getTeams);
   const teamsStatus = useSelector((state) => state.teams.status);
   const teamsError = useSelector((state) => state.teams.error);
 
@@ -32,21 +24,19 @@ const TeamsPage = (props) => {
     if (teamsStatus === "idle") dispatch(fetchTeams(shiftNr));
   }, [teamsStatus, dispatch]);
 
-  if (camperStatus === "ok" && teamsStatus === "ok") {
+  if (teamsStatus === "ok") {
     return (
       <div>
         <TeamCreator shiftNr={shiftNr} />
-        <TeamlessList campers={camperInfo} teams={teams} />
-        <TeamsList campers={camperInfo} teams={teams} />
+        <TeamlessList />
+        <TeamsList />
       </div>
     );
-  } else if (camperStatus === "nok" || teamsStatus === "nok") {
+  } else if (teamsStatus === "nok") {
     return (
       <div>
         <TeamCreator shiftNr={shiftNr} />
-        <p>
-          {camperError} {teamsError}
-        </p>
+        <p>{teamsError}</p>
       </div>
     );
   } else
@@ -66,7 +56,7 @@ const TeamCreator = (props) => {
   };
 
   const createTeam = async () => {
-    const response = await makePostRequest("/teams/create/", {
+    await makePostRequest("/teams/create/", {
       shiftNr: props.shiftNr,
       name: teamName,
     });
@@ -84,12 +74,23 @@ const TeamCreator = (props) => {
 };
 
 const Teamless = (props) => {
+  const dispatch = useDispatch();
+
   const addCamperToTeam = async ({ target }) => {
-    await makePostRequest("teams/member/add/", {
+    const response = await makePostRequest("teams/member/add/", {
       teamId: target.value,
       dataId: props.camper.id,
     });
+    if (!response || !response.ok) return;
+
+    dispatch(
+      addMember({
+        member: props.camper,
+        teamId: target.value,
+      })
+    );
   };
+
   return (
     <div className="c-teamless">
       <p>{props.camper.name}</p>
@@ -109,32 +110,65 @@ const Teamless = (props) => {
   );
 };
 
-const TeamlessList = (props) => {
+const TeamlessList = () => {
+  const data = useSelector(getTeams);
+  const { teams, teamless } = data;
+
   return (
     <div className="u-flex u-flex-wrap">
-      {Object.values(props.campers).map((camper) => (
-        <Teamless key={camper.id} camper={camper} teams={props.teams} />
+      {teamless.map((camper) => (
+        <Teamless key={camper.id} camper={camper} teams={teams} />
       ))}
     </div>
   );
 };
 
-const Member = (props) => {};
+const Member = (props) => {
+  const dispatch = useDispatch();
+  const removeCamperFromTeam = async () => {
+    const response = await makePostRequest("teams/member/remove/", {
+      dataId: props.member.id,
+    });
+    if (!response || !response.ok) return;
+
+    dispatch(
+      removeMember({
+        member: props.member,
+        currentTeam: props.teamId,
+      })
+    );
+  };
+
+  return (
+    <li className="u-flex u-space-between u-align-center">
+      <span>{props.member.name}</span>
+      <div className="c-team-rm" onClick={removeCamperFromTeam}>
+        <div />
+      </div>
+    </li>
+  );
+};
 
 const TeamBox = (props) => {
   return (
     <div className="c-team o-box">
-      <h3 className="o-box-header u-text-center">{props.name}</h3>
-      <ul className={"u-list-blank"}></ul>
+      <h3 className="o-box-header u-text-center">{props.team.name}</h3>
+      <ul className={"u-list-blank"}>
+        {props.team.members.map((member) => (
+          <Member key={member.id} member={member} teamId={props.team.id} />
+        ))}
+      </ul>
     </div>
   );
 };
 
-const TeamsList = (props) => {
+const TeamsList = () => {
+  const teams = useSelector(getTeams).teams;
+
   return (
     <div className="u-flex u-flex-wrap">
-      {Object.values(props.teams).map((team) => (
-        <TeamBox key={team.id} name={team.name} members={team.members} />
+      {Object.values(teams).map((team) => (
+        <TeamBox key={team.id} team={team} />
       ))}
     </div>
   );

@@ -16,7 +16,22 @@ const teamSlice = createSlice({
     status: "idle",
     error: null,
   },
-  reducers: {},
+  reducers: {
+    addMember: (state, action) => {
+      const { member, teamId } = action.payload;
+      state.data.teams[teamId].members.push(member);
+      state.data.teamless = state.data.teamless.filter(
+        (entry) => entry.id !== member.id
+      );
+    },
+    removeMember: (state, action) => {
+      const { member, currentTeam } = action.payload;
+      state.data.teamless.push(member);
+      state.data.teams[currentTeam].members = state.data.teams[
+        currentTeam
+      ].members.filter((entry) => entry.id !== member.id);
+    },
+  },
   extraReducers: {
     [fetchTeams.fulfilled]: (state, action) => {
       state.status = "ok";
@@ -28,6 +43,8 @@ const teamSlice = createSlice({
     },
   },
 });
+
+export const { addMember, removeMember } = teamSlice.actions;
 
 export default teamSlice.reducer;
 
