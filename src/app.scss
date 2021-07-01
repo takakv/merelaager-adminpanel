@@ -300,8 +300,16 @@ button,
   list-style: none;
 }
 
+.u-text-left {
+  text-align: left;
+}
+
 .u-text-center {
   text-align: center;
+}
+
+.u-text-right {
+  text-align: right;
 }
 
 .u-accent {
@@ -755,6 +763,17 @@ button,
     padding: 0.5rem 1rem;
     border: 1px solid var(--line-dark);
     border-radius: var(--box-radius);
+  }
+}
+
+.c-leaderboard {
+  border-collapse: collapse;
+  border: 2px solid var(--line-light);
+
+  th,
+  td {
+    padding: 0.25rem 0.5rem;
+    border: 2px solid var(--line-light);
   }
 }
 

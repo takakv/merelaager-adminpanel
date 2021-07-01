@@ -10,6 +10,34 @@ import {
 } from "../features/teams/teamerSlice";
 import { makePostRequest } from "./Common/requestAPI";
 
+const Leaderboard = (props) => {
+  const teams = useSelector(getTeams).teams;
+  const teamCount = Object.keys(teams).length;
+
+  return (
+    <table className="c-leaderboard">
+      <tbody>
+        <tr>
+          <th className="u-text-right">Meeskond</th>
+          {Object.values(teams).map((team) => (
+            <td key={team.id}>{team.name}</td>
+          ))}
+        </tr>
+        <tr>
+          <th className="u-text-right">Koht</th>
+          {Object.values(teams).map((team) => (
+            <td key={team.id}>
+              <input type="number" min={1} max={teamCount}>
+                {team.place}
+              </input>
+            </td>
+          ))}
+        </tr>
+      </tbody>
+    </table>
+  );
+};
+
 const TeamsPage = (props) => {
   const shiftNr = useSelector(getShift);
   const dispatch = useDispatch();
@@ -28,6 +56,7 @@ const TeamsPage = (props) => {
     return (
       <div>
         <TeamCreator shiftNr={shiftNr} />
+        <Leaderboard shiftNr={shiftNr} />
         <TeamlessList />
         <TeamsList />
       </div>
