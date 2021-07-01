@@ -407,11 +407,15 @@ button,
 
 // Kambüüs
 .c-login-wrapper {
-  width: 500px;
-  margin: 20% auto auto;
+  margin: 20% 2em;
   padding: 2em;
   border: 4px solid var(--dimmed);
   border-radius: 4px;
+
+  @media screen and (min-width: $phone-break) {
+    width: 500px;
+    margin: 20% auto;
+  }
 }
 
 .c-login-submit {
@@ -627,7 +631,8 @@ button,
   }
 }
 
-.c-tent, .c-team {
+.c-tent,
+.c-team {
   width: 100%;
   margin-bottom: 30px;
 
@@ -643,7 +648,7 @@ button,
     justify-content: center;
     width: 30px;
     height: 30px;
-    margin: .75em;
+    margin: 0.75em;
     border: 3px solid #e6e8eb;
     border-radius: 30px;
 
@@ -676,7 +681,8 @@ button,
   }
 }
 
-.c-tentless, .c-teamless {
+.c-tentless,
+.c-teamless {
   margin-right: 30px;
   margin-bottom: 20px;
 
