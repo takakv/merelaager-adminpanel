@@ -407,14 +407,17 @@ button,
 
 // Kambüüs
 .c-login-wrapper {
-  margin: 20% 2em;
+  position: relative;
+  top: 10%;
+  margin: 0 2em;
   padding: 2em;
   border: 4px solid var(--dimmed);
   border-radius: 4px;
 
   @media screen and (min-width: $phone-break) {
+    top: 20%;
     width: 500px;
-    margin: 20% auto;
+    margin: 0 auto;
   }
 }
 
