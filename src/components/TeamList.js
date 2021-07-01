@@ -2,11 +2,16 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setTitle } from "../features/pageTitle/pageTitleSlice";
 import { getShift } from "../features/userData/userDataSlice";
-import { addMember, fetchTeams, getTeams, removeMember, } from "../features/teams/teamerSlice";
+import {
+  addMember,
+  fetchTeams,
+  getTeams,
+  removeMember,
+} from "../features/teams/teamerSlice";
 import { makePostRequest } from "./Common/requestAPI";
 
 const TeamPlace = (props) => {
-  const updatePlace = async ({target}) => {
+  const updatePlace = async ({ target }) => {
     if (!target.value) return;
     if (target.value < 1 || target.value > props.teamCount) {
       alert(`Kohad peavad olema 1–${props.teamCount}`);
@@ -34,24 +39,17 @@ const Leaderboard = (props) => {
   const teamCount = Object.keys(teams).length;
 
   return (
-    <table className="c-leaderboard">
-      <tbody>
-      <tr>
-        <th className="u-text-right">Meeskond</th>
-        {Object.values(teams).map((team) => (
-          <td key={team.id}>{team.name}</td>
-        ))}
-      </tr>
-      <tr>
-        <th className="u-text-right">Koht</th>
-        {Object.values(teams).map((team) => (
-          <td key={team.id}>
-            <TeamPlace team={team} teamCount={teamCount}/>
-          </td>
-        ))}
-      </tr>
-      </tbody>
-    </table>
+    <div className="c-leaderboard u-flex u-flex-wrap">
+      <p className="c-leaderboard-title">Kohad:</p>
+      {Object.values(teams).map((team) => (
+        <div className="c-leaderboard-item" key={team.id}>
+          <div className="c-leaderboard-team">{team.name}</div>
+          <div className="c-leaderboard-place">
+            <TeamPlace team={team} teamCount={teamCount} />
+          </div>
+        </div>
+      ))}
+    </div>
   );
 };
 
@@ -72,23 +70,23 @@ const TeamsPage = (props) => {
   if (teamsStatus === "ok") {
     return (
       <div>
-        <TeamCreator shiftNr={shiftNr}/>
-        <Leaderboard shiftNr={shiftNr}/>
-        <TeamlessList/>
-        <TeamsList/>
+        <TeamCreator shiftNr={shiftNr} />
+        <Leaderboard shiftNr={shiftNr} />
+        <TeamlessList />
+        <TeamsList />
       </div>
     );
   } else if (teamsStatus === "nok") {
     return (
       <div>
-        <TeamCreator shiftNr={shiftNr}/>
+        <TeamCreator shiftNr={shiftNr} />
         <p>{teamsError}</p>
       </div>
     );
   } else
     return (
       <div>
-        <TeamCreator shiftNr={shiftNr}/>
+        <TeamCreator shiftNr={shiftNr} />
         <p>Laen...</p>
       </div>
     );
@@ -114,7 +112,7 @@ const TeamCreator = (props) => {
     <div>
       <label>
         Meeskonna nimi:
-        <input type="text" onChange={handleChange}/>
+        <input type="text" onChange={handleChange} />
       </label>
       <button onClick={createTeam}>Loo meeskond</button>
     </div>
@@ -124,7 +122,7 @@ const TeamCreator = (props) => {
 const Teamless = (props) => {
   const dispatch = useDispatch();
 
-  const addCamperToTeam = async ({target}) => {
+  const addCamperToTeam = async ({ target }) => {
     const response = await makePostRequest("teams/member/add/", {
       teamId: target.value,
       dataId: props.camper.id,
@@ -144,7 +142,7 @@ const Teamless = (props) => {
       <p>{props.camper.name}</p>
       <label>
         <select onChange={addCamperToTeam}>
-          <option value={null} style={{color: "grey"}}>
+          <option value={null} style={{ color: "grey" }}>
             Vali meeskond
           </option>
           {Object.values(props.teams).map((team) => (
@@ -160,12 +158,12 @@ const Teamless = (props) => {
 
 const TeamlessList = () => {
   const data = useSelector(getTeams);
-  const {teams, teamless} = data;
+  const { teams, teamless } = data;
 
   return (
     <div className="u-flex u-flex-wrap">
       {teamless.map((camper) => (
-        <Teamless key={camper.id} camper={camper} teams={teams}/>
+        <Teamless key={camper.id} camper={camper} teams={teams} />
       ))}
     </div>
   );
@@ -191,7 +189,7 @@ const Member = (props) => {
     <li className="u-flex u-space-between u-align-center">
       <span>{props.member.name}</span>
       <div className="c-team-rm" onClick={removeCamperFromTeam}>
-        <div/>
+        <div />
       </div>
     </li>
   );
@@ -200,10 +198,19 @@ const Member = (props) => {
 const TeamBox = (props) => {
   return (
     <div className="c-team o-box">
-      <h3 className="o-box-header u-text-center">{props.team.name}</h3>
+      <div className="o-box-header u-text-center">
+        <h3>{props.team.name}</h3>
+        <p>{props.team.place ?? "-"}. koht</p>
+        {/*<div>*/}
+        {/*  <input*/}
+        {/*    className="u-text-right"*/}
+        {/*    defaultValue={props.team.place ?? "-"}*/}
+        {/*  />. koht*/}
+        {/*</div>*/}
+      </div>
       <ul className={"u-list-blank"}>
         {props.team.members.map((member) => (
-          <Member key={member.id} member={member} teamId={props.team.id}/>
+          <Member key={member.id} member={member} teamId={props.team.id} />
         ))}
       </ul>
     </div>
@@ -216,7 +223,7 @@ const TeamsList = () => {
   return (
     <div className="u-flex u-flex-wrap">
       {Object.values(teams).map((team) => (
-        <TeamBox key={team.id} team={team}/>
+        <TeamBox key={team.id} team={team} />
       ))}
     </div>
   );

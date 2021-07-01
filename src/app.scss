@@ -255,6 +255,12 @@ button,
   }
 }
 
+.u-jc {
+  &-sb {
+    justify-content: space-between;
+  }
+}
+
 .u-space-between {
   justify-content: space-between;
 }
@@ -692,6 +698,12 @@ button,
   }
 }
 
+.c-team {
+  input {
+    width: 1rem;
+  }
+}
+
 .c-tentless,
 .c-teamless {
   margin-right: 30px;
@@ -767,13 +779,15 @@ button,
 }
 
 .c-leaderboard {
-  border-collapse: collapse;
   border: 2px solid var(--line-light);
+  padding: 1em;
+  margin-bottom: 30px;
 
-  th,
-  td {
-    padding: 0.25rem 0.5rem;
-    border: 2px solid var(--line-light);
+  &-title {
+    width: 100%;
+  }
+  &-item {
+    margin: 0 10px 10px 0;
   }
 }
 
