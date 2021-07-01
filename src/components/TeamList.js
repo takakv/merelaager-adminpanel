@@ -56,10 +56,12 @@ const TeamCreator = (props) => {
   };
 
   const createTeam = async () => {
-    await makePostRequest("/teams/create/", {
+    const response = await makePostRequest("/teams/create/", {
       shiftNr: props.shiftNr,
       name: teamName,
     });
+    if (!response || !response.ok) return;
+    window.location.reload();
   };
 
   return (
