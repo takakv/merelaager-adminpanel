@@ -19,6 +19,7 @@ const MainPage = (props) => {
       email,
     };
     const response = await makePostRequest("/su/ct/", packet);
+    if (response && response.ok) alert("Meil edukalt saadetud");
   };
 
   if (role === "op") {
