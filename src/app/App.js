@@ -16,6 +16,7 @@ import Shirts from "../features/thisrts/Tshirts";
 import ShiftInfo from "../features/camperInfo/CamperInfo";
 import Mailer from "../components/Mailer";
 import Hamburger from "../components/Hamburger";
+import MainPage from "../components/MainPage";
 
 const apiURL =
   process.env.NODE_ENV === "development"
@@ -67,7 +68,7 @@ export default function App() {
       <main role="main" className="c-content">
         <Switch>
           <Route path="/" exact={true}>
-            <p>Siia tulevad asjad, aga veel neid asju pole.</p>
+            <MainPage title="Kambüüs" />
           </Route>
           {role === "op" ? (
             ""
