@@ -1,69 +1,153 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { makePostRequest } from "./Common/requestAPI";
 import { setTitle } from "../features/pageTitle/pageTitleSlice";
-import { fetchCampers, getCampers, updateCamper, } from "../features/tents/campersSlice";
 import { getShift } from "../features/userData/userDataSlice";
+import {
+  addMember,
+  fetchTeams,
+  getTeams,
+  removeMember,
+} from "../features/teams/teamerSlice";
+import { makePostRequest } from "./Common/requestAPI";
 
-const TeamList = (props) => {
+const TeamPlace = (props) => {
+  const updatePlace = async ({ target }) => {
+    if (!target.value) return;
+    if (target.value < 1 || target.value > props.teamCount) {
+      alert(`Kohad peavad olema 1–${props.teamCount}`);
+      return;
+    }
+    await makePostRequest("teams/set/place/", {
+      teamId: props.team.id,
+      place: target.value,
+    });
+  };
+
+  return (
+    <input
+      type="number"
+      min={1}
+      max={props.teamCount}
+      onBlur={updatePlace}
+      defaultValue={props.team.place}
+    />
+  );
+};
+
+const Leaderboard = (props) => {
+  const teams = useSelector(getTeams).teams;
+  const teamCount = Object.keys(teams).length;
+
+  return (
+    <div className="c-leaderboard u-flex u-flex-wrap">
+      <p className="c-leaderboard-title">Kohad:</p>
+      {Object.values(teams).map((team) => (
+        <div className="c-leaderboard-item" key={team.id}>
+          <div className="c-leaderboard-team">{team.name}</div>
+          <div className="c-leaderboard-place">
+            <TeamPlace team={team} teamCount={teamCount} />
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+const TeamsPage = (props) => {
   const shiftNr = useSelector(getShift);
   const dispatch = useDispatch();
   dispatch(setTitle(props.title));
 
-  const tentData = useSelector(getCampers);
-  const shiftStatus = useSelector((state) => state.campers.status);
-  const error = useSelector((state) => state.campers.error);
+  // Get the teams.
+  useSelector(getTeams);
+  const teamsStatus = useSelector((state) => state.teams.status);
+  const teamsError = useSelector((state) => state.teams.error);
 
   useEffect(() => {
-    if (shiftStatus === "idle") dispatch(fetchCampers(shiftNr));
-  }, [shiftStatus, dispatch]);
+    if (teamsStatus === "idle") dispatch(fetchTeams(shiftNr));
+  }, [teamsStatus, dispatch]);
 
-  if (shiftStatus === "succeeded") {
+  if (teamsStatus === "ok") {
     return (
       <div>
-        <div className="c-tentless-container u-flex u-flex-wrap">
-          {tentData.noTent.map((camper) => (
-            <NoTentCamper key={camper.id} id={camper.id} name={camper.name}/>
-          ))}
-        </div>
-        <div className="u-flex u-flex-wrap">
-          {tentData.tents.map((tent, index) => (
-            <TentBlock
-              key={index.toString()}
-              tentMembers={tent}
-              tentNumber={index}
-            />
-          ))}
-        </div>
+        <TeamCreator shiftNr={shiftNr} />
+        <Leaderboard shiftNr={shiftNr} />
+        <TeamlessList />
+        <TeamsList />
       </div>
     );
-  } else if (shiftStatus === "failed") {
-    return <p>{error}</p>;
-  } else return <p>Laen...</p>;
+  } else if (teamsStatus === "nok") {
+    return (
+      <div>
+        <TeamCreator shiftNr={shiftNr} />
+        <p>{teamsError}</p>
+      </div>
+    );
+  } else
+    return (
+      <div>
+        <TeamCreator shiftNr={shiftNr} />
+        <p>Laen...</p>
+      </div>
+    );
 };
 
-export default TeamList;
+const TeamCreator = (props) => {
+  const [teamName, setTeamName] = useState();
 
-const NoTentCamper = (props) => {
-  const dispatch = useDispatch();
-  const addCamperToTent = async ({target}) => {
-    await makePostRequest(
-      "tents/update/" + `${props.id}/${target.value}/`
-    );
-    dispatch(updateCamper({id: props.id, tentNr: parseInt(target.value)}));
+  const handleChange = (event) => {
+    setTeamName(event.target.value);
+  };
+
+  const createTeam = async () => {
+    const response = await makePostRequest("/teams/create/", {
+      shiftNr: props.shiftNr,
+      name: teamName,
+    });
+    if (!response || !response.ok) return;
+    window.location.reload();
   };
 
   return (
-    <div className="c-tentless">
-      <p>{props.name}</p>
+    <div>
       <label>
-        <select name="tent" onChange={addCamperToTent}>
-          <option value="0" style={{color: "grey"}}>
-            Telk
+        Meeskonna nimi:
+        <input type="text" onChange={handleChange} />
+      </label>
+      <button onClick={createTeam}>Loo meeskond</button>
+    </div>
+  );
+};
+
+const Teamless = (props) => {
+  const dispatch = useDispatch();
+
+  const addCamperToTeam = async ({ target }) => {
+    const response = await makePostRequest("teams/member/add/", {
+      teamId: target.value,
+      dataId: props.camper.id,
+    });
+    if (!response || !response.ok) return;
+
+    dispatch(
+      addMember({
+        member: props.camper,
+        teamId: target.value,
+      })
+    );
+  };
+
+  return (
+    <div className="c-teamless">
+      <p>{props.camper.name}</p>
+      <label>
+        <select onChange={addCamperToTeam}>
+          <option value={null} style={{ color: "grey" }}>
+            Vali meeskond
           </option>
-          {tentNumbers.map((nr) => (
-            <option value={nr} key={nr}>
-              {nr}
+          {Object.values(props.teams).map((team) => (
+            <option key={team.id} value={team.id}>
+              {team.name}
             </option>
           ))}
         </select>
@@ -72,42 +156,77 @@ const NoTentCamper = (props) => {
   );
 };
 
-const TentBlock = (props) => {
+const TeamlessList = () => {
+  const data = useSelector(getTeams);
+  const { teams, teamless } = data;
+
   return (
-    <div className="c-tent o-box">
-      <h3 className="o-box-header u-text-center">{props.tentNumber + 1}</h3>
-      <ul className="u-list-blank">
-        {props.tentMembers.map((camper) => (
-          <TentBlockCamper
-            camper={camper}
-            key={camper.id}
-            tentNumber={props.tentNumber}
-          />
-        ))}
-      </ul>
+    <div className="u-flex u-flex-wrap">
+      {teamless.map((camper) => (
+        <Teamless key={camper.id} camper={camper} teams={teams} />
+      ))}
     </div>
   );
 };
 
-const TentBlockCamper = (props) => {
+const Member = (props) => {
   const dispatch = useDispatch();
-  const removeCamperFromTent = async () => {
-    await makePostRequest("tents/update/" + `${props.camper.id}/0/`);
+  const removeCamperFromTeam = async () => {
+    const response = await makePostRequest("teams/member/remove/", {
+      dataId: props.member.id,
+    });
+    if (!response || !response.ok) return;
+
     dispatch(
-      updateCamper({
-        id: props.camper.id,
-        tentNr: 0,
-        currentNr: props.tentNumber,
+      removeMember({
+        member: props.member,
+        currentTeam: props.teamId,
       })
     );
   };
 
   return (
     <li className="u-flex u-space-between u-align-center">
-      <span>{props.camper.name}</span>
-      <div className="c-tent-rm" onClick={removeCamperFromTent}>
-        <div/>
+      <span>{props.member.name}</span>
+      <div className="c-team-rm" onClick={removeCamperFromTeam}>
+        <div />
       </div>
     </li>
   );
 };
+
+const TeamBox = (props) => {
+  return (
+    <div className="c-team o-box">
+      <div className="o-box-header u-text-center">
+        <h3>{props.team.name}</h3>
+        <p>{props.team.place ?? "-"}. koht</p>
+        {/*<div>*/}
+        {/*  <input*/}
+        {/*    className="u-text-right"*/}
+        {/*    defaultValue={props.team.place ?? "-"}*/}
+        {/*  />. koht*/}
+        {/*</div>*/}
+      </div>
+      <ul className={"u-list-blank"}>
+        {props.team.members.map((member) => (
+          <Member key={member.id} member={member} teamId={props.team.id} />
+        ))}
+      </ul>
+    </div>
+  );
+};
+
+const TeamsList = () => {
+  const teams = useSelector(getTeams).teams;
+
+  return (
+    <div className="u-flex u-flex-wrap">
+      {Object.values(teams).map((team) => (
+        <TeamBox key={team.id} team={team} />
+      ))}
+    </div>
+  );
+};
+
+export default TeamsPage;

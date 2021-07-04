@@ -18,7 +18,7 @@ const campersSlice = createSlice({
   },
   reducers: {
     updateCamper: (state, action) => {
-      const {id, tentNr, currentNr} = action.payload;
+      const { id, tentNr, currentNr } = action.payload;
       // The camper was assigned a tent.
       if (tentNr) {
         // Double iteration is not very efficient
@@ -53,7 +53,7 @@ const campersSlice = createSlice({
   },
 });
 
-export const {updateCamper} = campersSlice.actions;
+export const { updateCamper } = campersSlice.actions;
 
 export default campersSlice.reducer;
 

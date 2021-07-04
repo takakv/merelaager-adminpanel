@@ -255,6 +255,12 @@ button,
   }
 }
 
+.u-jc {
+  &-sb {
+    justify-content: space-between;
+  }
+}
+
 .u-space-between {
   justify-content: space-between;
 }
@@ -300,8 +306,16 @@ button,
   list-style: none;
 }
 
+.u-text-left {
+  text-align: left;
+}
+
 .u-text-center {
   text-align: center;
+}
+
+.u-text-right {
+  text-align: right;
 }
 
 .u-accent {
@@ -407,11 +421,18 @@ button,
 
 // Kambüüs
 .c-login-wrapper {
-  width: 500px;
-  margin: 20% auto auto;
+  position: relative;
+  top: 10%;
+  margin: 0 2em;
   padding: 2em;
   border: 4px solid var(--dimmed);
   border-radius: 4px;
+
+  @media screen and (min-width: $phone-break) {
+    top: 20%;
+    width: 500px;
+    margin: 0 auto;
+  }
 }
 
 .c-login-submit {
@@ -627,7 +648,8 @@ button,
   }
 }
 
-.c-tent {
+.c-tent,
+.c-team {
   width: 100%;
   margin-bottom: 30px;
 
@@ -643,7 +665,7 @@ button,
     justify-content: center;
     width: 30px;
     height: 30px;
-    margin: .75em;
+    margin: 0.75em;
     border: 3px solid #e6e8eb;
     border-radius: 30px;
 
@@ -676,7 +698,14 @@ button,
   }
 }
 
-.c-tentless {
+.c-team {
+  input {
+    width: 1rem;
+  }
+}
+
+.c-tentless,
+.c-teamless {
   margin-right: 30px;
   margin-bottom: 20px;
 
@@ -746,6 +775,19 @@ button,
     padding: 0.5rem 1rem;
     border: 1px solid var(--line-dark);
     border-radius: var(--box-radius);
+  }
+}
+
+.c-leaderboard {
+  border: 2px solid var(--line-light);
+  padding: 1em;
+  margin-bottom: 30px;
+
+  &-title {
+    width: 100%;
+  }
+  &-item {
+    margin: 0 10px 10px 0;
   }
 }
 

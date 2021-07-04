@@ -8,7 +8,7 @@ import UserBox from "../components/UserBox";
 import RegistrationList from "../features/registrationList/RegistrationList";
 import BillGen from "../components/BillGen";
 import TentList from "../components/TentList";
-import TeamList from "../components/TeamList";
+import TeamsPage from "../components/TeamList";
 import useToken from "../useToken";
 import { useDispatch } from "react-redux";
 import { setData } from "../features/userData/userDataSlice";
@@ -24,7 +24,7 @@ const apiURL =
 
 export default function App() {
   const dispatch = useDispatch();
-  const {token, setToken} = useToken();
+  const { token, setToken } = useToken();
 
   const silentTokenRefresh = async () => {
     const credentials = JSON.parse(localStorage.getItem("credentials"));
@@ -34,14 +34,14 @@ export default function App() {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({token: refreshToken}),
+      body: JSON.stringify({ token: refreshToken }),
     }).then((data) => data.json());
     credentials.accessToken = response.accessToken;
     localStorage.setItem("credentials", JSON.stringify(credentials));
   };
 
   if (!token) {
-    return <Login setToken={setToken}/>;
+    return <Login setToken={setToken} />;
   } else {
     setInterval(silentTokenRefresh, 1200000);
     silentTokenRefresh().catch((err) => {
@@ -57,10 +57,10 @@ export default function App() {
 
   return (
     <div className="admin-page">
-      <Hamburger/>
-      <Sidebar/>
-      <PageTitle/>
-      <UserBox/>
+      <Hamburger />
+      <Sidebar />
+      <PageTitle />
+      <UserBox />
       <main role="main" className="c-content">
         <Switch>
           <Route path="/" exact={true}>
@@ -71,25 +71,25 @@ export default function App() {
             </p>
           </Route>
           <Route path="/lapsed/">
-            <ShiftInfo title="Lapsed"/>
+            <ShiftInfo title="Lapsed" />
           </Route>
           <Route path="/meeskonnad/">
-            <TeamList title="Meeskonnad"/>
+            <TeamsPage title="Meeskonnad" />
           </Route>
           <Route path="/telgid/">
-            <TentList title="Telgid"/>
+            <TentList title="Telgid" />
           </Route>
           <Route path="/meil/">
-            <Mailer title="Meil"/>
+            <Mailer title="Meil" />
           </Route>
           <Route path="/nimekiri/">
-            <RegistrationList title="Nimekiri"/>
+            <RegistrationList title="Nimekiri" />
           </Route>
           <Route path="/arvegeneraator/">
-            <BillGen title="Arvegeneraator"/>
+            <BillGen title="Arvegeneraator" />
           </Route>
           <Route path="/sargid/">
-            <Shirts title="Särgid"/>
+            <Shirts title="Särgid" />
           </Route>
         </Switch>
       </main>
