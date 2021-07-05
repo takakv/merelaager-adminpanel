@@ -5,6 +5,7 @@ import PropTypes from "prop-types";
 import { setTitle } from "../features/pageTitle/pageTitleSlice";
 import { getShift } from "../features/userData/userDataSlice";
 import { makePostRequest } from "./Common/requestAPI";
+import StaffList from "../features/staffList/staffList";
 
 const MainPage = (props) => {
   const { title } = props;
@@ -30,6 +31,7 @@ const MainPage = (props) => {
   }
   return (
     <div>
+      <StaffList />
       <p>Saada kasvatajale ligipääs:</p>
       {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
       <label>

@@ -6,6 +6,7 @@ import registrationListReducer from "../features/registrationList/registrationLi
 import shirtsReducer from "../features/thisrts/tshirtsSlice";
 import camperInfoReducer from "../features/camperInfo/camperInfoSlice";
 import teamsReducer from "../features/teams/teamerSlice";
+import staffListReducer from "../features/staffList/staffListSlice";
 
 export default configureStore({
   reducer: {
@@ -16,5 +17,6 @@ export default configureStore({
     shirts: shirtsReducer,
     camperInfo: camperInfoReducer,
     teams: teamsReducer,
+    staffList: staffListReducer,
   },
 });
