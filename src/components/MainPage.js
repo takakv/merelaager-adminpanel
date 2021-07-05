@@ -27,7 +27,7 @@ const MainPage = (props) => {
   };
 
   if (role === "op") {
-    return <p>Siia tekivad asjad, ent neid asju veel pole.</p>;
+    return <StaffList />;
   }
   return (
     <div>
