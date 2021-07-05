@@ -25,7 +25,9 @@ const Hamburger = () => {
 
   return (
     <div className="c-mn">
-      <button onClick={showMenu}>Menüü</button>
+      <button type="button" onClick={showMenu}>
+        Menüü
+      </button>
     </div>
   );
 };

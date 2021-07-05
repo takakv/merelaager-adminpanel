@@ -3,20 +3,31 @@ const apiURL =
     ? "http://localhost:3000"
     : "https://merelaager.ee";
 
+export const promptRequestError = (response) => {
+  window.alert(
+    "Midagi läks nihu." +
+      "\n\n" +
+      `Veakood: ${response.status}` +
+      "\n" +
+      `Kirjeldus: ${response.statusText}`
+  );
+  console.log(response);
+};
+
 export const makePostRequest = async (apiLinkSuffix, content = null) => {
   const credentials = localStorage.getItem("credentials");
-  const accessToken = JSON.parse(credentials).accessToken;
+  const { accessToken } = JSON.parse(credentials);
 
   const headers = {
-    Authorization: "Bearer " + accessToken,
+    Authorization: `Bearer ${accessToken}`,
   };
 
   if (content) headers["Content-Type"] = "application/json";
 
   try {
-    const response = await fetch(`${apiURL}/api/` + apiLinkSuffix, {
+    const response = await fetch(`${apiURL}/api/${apiLinkSuffix}`, {
       method: "POST",
-      headers: headers,
+      headers,
       body: JSON.stringify(content),
     });
     if (!response.ok) {
@@ -35,12 +46,12 @@ export const makePostRequest = async (apiLinkSuffix, content = null) => {
 
 export const makeGetRequest = async (apiLinkSuffix) => {
   const credentials = localStorage.getItem("credentials");
-  const accessToken = JSON.parse(credentials).accessToken;
+  const { accessToken } = JSON.parse(credentials);
 
-  const response = await fetch(`${apiURL}/api/` + apiLinkSuffix, {
+  const response = await fetch(`${apiURL}/api/${apiLinkSuffix}`, {
     method: "GET",
     headers: {
-      Authorization: "Bearer " + accessToken,
+      Authorization: `Bearer ${accessToken}`,
     },
   });
   if (!response.ok) {
@@ -48,15 +59,4 @@ export const makeGetRequest = async (apiLinkSuffix) => {
     return null;
   }
   return response;
-};
-
-export const promptRequestError = (response) => {
-  window.alert(
-    "Midagi läks nihu." +
-      "\n\n" +
-      `Veakood: ${response.status}` +
-      "\n" +
-      `Kirjeldus: ${response.statusText}`
-  );
-  console.log(response);
 };

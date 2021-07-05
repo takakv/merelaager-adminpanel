@@ -8,7 +8,7 @@ import { setTitle } from "../features/pageTitle/pageTitleSlice";
 const Navigation = () => {
   const dispatch = useDispatch();
   const credentials = localStorage.getItem("credentials");
-  const role = JSON.parse(credentials).user.role;
+  const { role } = JSON.parse(credentials).user;
   return (
     <nav className="c-admin-nav">
       <ul className="u-list-blank">

@@ -6,15 +6,14 @@ const apiURL =
     ? "http://localhost:3000"
     : "https://merelaager.ee";
 
-const loginUser = async (credentials) => {
-  return fetch(`${apiURL}/api/login/`, {
+const loginUser = async (credentials) =>
+  fetch(`${apiURL}/api/login/`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(credentials),
   }).then((data) => data.json());
-};
 
 export default function Login({ setToken }) {
   const [username, setUserName] = useState();
@@ -33,10 +32,12 @@ export default function Login({ setToken }) {
     <div className="c-login-wrapper">
       <h1>Kambüüs</h1>
       <form onSubmit={handleSubmit}>
+        {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
         <label>
           <p>Nimi</p>
           <input type="text" onChange={(e) => setUserName(e.target.value)} />
         </label>
+        {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
         <label>
           <p>Salasõna</p>
           <input

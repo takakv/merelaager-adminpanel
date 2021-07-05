@@ -1,4 +1,6 @@
 import React from "react";
+import PropTypes from "prop-types";
+
 import { useDispatch } from "react-redux";
 import { setTitle } from "../features/pageTitle/pageTitleSlice";
 import { makePostRequest } from "./Common/requestAPI";
@@ -7,7 +9,7 @@ const fetchPDF = async ({ target }) => {
   const action = target.id;
   const email = document.getElementById("mail").value;
 
-  const response = await makePostRequest("bills/" + `${action}/${email}/`);
+  const response = await makePostRequest(`bills/${action}/${email}/`);
   if (!response.ok) {
     return;
   }
@@ -29,27 +31,36 @@ const fetchPDF = async ({ target }) => {
 };
 
 const BillGen = (props) => {
+  const { title } = props;
+
   const dispatch = useDispatch();
-  dispatch(setTitle(props.title));
+  dispatch(setTitle(title));
 
   return (
     <div>
-      <label htmlFor="mail">Lapsevanema meil</label>
-      <input type="email" name="meil" id="mail" />
-      <button id="fetch" onClick={fetchPDF}>
+      {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
+      <label>
+        Lapsevanema meil
+        <input type="email" name="meil" id="mail" />
+      </label>
+      <button type="button" id="fetch" onClick={fetchPDF}>
         Leia
       </button>
-      <button id="create" onClick={fetchPDF}>
+      <button type="button" id="create" onClick={fetchPDF}>
         Genereeri
       </button>
       <div className="o-banner o-banner--warning">
         <p>
-          "Genereeri" asendab olemasoleva arve uuega (tänase kuupäevaga). Leia
-          näitab viimast arvet.
+          &bdquo;Genereeri&ldquo; asendab olemasoleva arve uuega (tänase
+          kuupäevaga). Leia näitab viimast arvet.
         </p>
       </div>
     </div>
   );
+};
+
+BillGen.propTypes = {
+  title: PropTypes.string.isRequired,
 };
 
 export default BillGen;
