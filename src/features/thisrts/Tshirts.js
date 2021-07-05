@@ -1,33 +1,42 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import PropTypes from "prop-types";
+
 import { setTitle } from "../pageTitle/pageTitleSlice";
 import { fetchShirts, getShirts } from "./tshirtsSlice";
 
 const shifts = ["1v", "2v", "3v", "4v"];
 
 const ShirtCell = (props) => {
+  const { shift, shirtData } = props;
   return (
     <div className="o-box">
-      <p className="o-box-header u-text-center">{props.shift}</p>
+      <p className="o-box-header u-text-center">{shift}</p>
       <ul className="u-list-blank">
-      {Object.entries(props.shirtData)
-        .sort()
-        .map((shirt) => (
-          <li key={shirt[0]} className="u-flex u-space-between">
-            <p>{shirt[0]}:</p>
-            <p className="u-mono">{shirt[1]}</p>
-          </li>
-        ))}
+        {Object.entries(shirtData)
+          .sort()
+          .map((shirt) => (
+            <li key={shirt[0]} className="u-flex u-space-between">
+              <p>{shirt[0]}:</p>
+              <p className="u-mono">{shirt[1]}</p>
+            </li>
+          ))}
       </ul>
     </div>
   );
 };
 
+ShirtCell.propTypes = {
+  shift: PropTypes.string.isRequired,
+  shirtData: PropTypes.objectOf(PropTypes.number).isRequired,
+};
+
 const TotalShirts = (props) => {
+  const { shirtData } = props;
   return (
     <div className="o-box">
       <p className="o-box-header u-text-center">Kokku:</p>
-      {Object.entries(props.shirtData)
+      {Object.entries(shirtData)
         .sort()
         .map((shirt) => (
           <div key={shirt[0]} className="u-flex u-space-between">
@@ -39,19 +48,25 @@ const TotalShirts = (props) => {
   );
 };
 
+TotalShirts.propTypes = {
+  shirtData: PropTypes.objectOf(PropTypes.number).isRequired,
+};
+
 const ShirtCells = (props) => {
+  const { shirtData } = props;
   return (
     <div className="c-shirts-container u-flex">
       {shifts.map((shift) => (
-        <ShirtCell
-          key={shift}
-          shift={shift}
-          shirtData={props.shirtData[shift]}
-        />
+        <ShirtCell key={shift} shift={shift} shirtData={shirtData[shift]} />
       ))}
-      <TotalShirts shirtData={props.shirtData.total} />
+      <TotalShirts shirtData={shirtData.total} />
     </div>
   );
+};
+
+ShirtCells.propTypes = {
+  shirtData: PropTypes.objectOf(PropTypes.objectOf(PropTypes.number))
+    .isRequired,
 };
 
 const Shirts = (props) => {
@@ -68,22 +83,22 @@ const Shirts = (props) => {
     if (fetchStatus === "idle") dispatch(fetchShirts());
   }, [fetchStatus, dispatch]);
 
-  if (fetchStatus === "ok") {
+  const renderContent = (content) => <div>{content}</div>;
+
+  let condContent;
+  switch (fetchStatus) {
+    case "ok":
+      condContent = <ShirtCells shirtData={shirtData} />;
+      break;
+    case "nok":
+      condContent = <p>{fetchError}</p>;
+      break;
+    default:
+      condContent = <p>Laen...</p>;
+      break;
   }
 
-  const renderContent = (content) => {
-    return <div>{content}</div>;
-  };
-
-  if (fetchStatus === "ok") {
-    const condContent = <ShirtCells shirtData={shirtData} />;
-    return renderContent(condContent);
-  } else if (fetchStatus === "nok") {
-    const condContent = <p>{fetchError}</p>;
-    return renderContent(condContent);
-  } else {
-    const condContent = <p>Laen...</p>;
-    return renderContent(condContent);
-  }
+  return renderContent(condContent);
 };
+
 export default Shirts;

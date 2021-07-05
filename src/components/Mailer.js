@@ -1,13 +1,19 @@
 import React, { useEffect } from "react";
+import PropTypes from "prop-types";
+
 import { useDispatch, useSelector } from "react-redux";
 import { setTitle } from "../features/pageTitle/pageTitleSlice";
-import { makePostRequest } from "./Common/requestAPI";
 import { getShift } from "../features/userData/userDataSlice";
-import { fetchRegistrationList, getAllRegistrationLists } from "../features/registrationList/registrationListSlice";
+import {
+  fetchRegistrationList,
+  getAllRegistrationLists,
+} from "../features/registrationList/registrationListSlice";
 
 const Mailer = (props) => {
+  const { title } = props;
+
   const dispatch = useDispatch();
-  dispatch(setTitle(props.title));
+  dispatch(setTitle(title));
 
   const shiftNr = useSelector(getShift);
   // Get the registration list for all shifts from the store.
@@ -21,45 +27,63 @@ const Mailer = (props) => {
     if (regListStatus === "idle") dispatch(fetchRegistrationList());
   }, [regListStatus, dispatch]);
 
-  let parentEmails = [];
+  const parentEmails = [];
 
   if (regListStatus === "succeeded") {
-    const campers = regListData[shiftNr].campers;
-    Object.values(campers).forEach(camper => {
-      if (camper.registered && parentEmails.indexOf(camper.contactEmail) === -1) parentEmails.push(camper.contactEmail);
-    })
-  }
+    const { campers } = regListData[shiftNr];
+    Object.values(campers).forEach((camper) => {
+      if (camper.registered && parentEmails.indexOf(camper.contactEmail) === -1)
+        parentEmails.push(camper.contactEmail);
+    });
+  } else return <div>{regListError}</div>;
 
-  const sendMail = async () => {
-    const credentials = localStorage.getItem("credentials");
-    const packet = {
-      shift: JSON.parse(credentials).user.shift,
-      text: document.getElementById("mailtext").value
-    }
-    await makePostRequest(
-      "/mail/send/",
-      packet,
-    );
-  }
+  // const sendMail = async () => {
+  //   const credentials = localStorage.getItem("credentials");
+  //   const packet = {
+  //     shift: JSON.parse(credentials).user.shift,
+  //     text: document.getElementById("mailtext").value,
+  //   };
+  //   await makePostRequest("/mail/send/", packet);
+  // };
 
   return (
     <div className="c-mailer">
       <p>Meilid:</p>
       <p className="c-mailer-emails">{parentEmails.sort().join("; ")}</p>
-      <p><a href={`mailto:${parentEmails.join(";")}`} className="o-button">Ava meiliäpis</a>(ei pruugi töötada)</p>
+      <p>
+        <a href={`mailto:${parentEmails.join(";")}`} className="o-button">
+          Ava meiliäpis
+        </a>
+        (ei pruugi töötada)
+      </p>
       <br />
       <div className="u-unready">
         <p>See osa pole veel valmis</p>
         <p>Saadab meili vahetusse registreeritud laste vanematele.</p>
-        <textarea disabled id="mailtext" className="c-mailer-box" placeholder="Sisu..."/>
+        <textarea
+          disabled
+          id="mailtext"
+          className="c-mailer-box"
+          placeholder="Sisu..."
+        />
         <div className="c-mailer-controls">
-          <button disabled className="u-disabled">Saada</button>
-          <button disabled className="u-disabled">Kontrolli</button>
+          <button type="button" disabled className="u-disabled">
+            Saada
+          </button>
+          <button type="button" disabled className="u-disabled">
+            Kontrolli
+          </button>
         </div>
-        <p><q>Kontrolli</q> saadab meili oma enda meilile.</p>
+        <p>
+          <q>Kontrolli</q> saadab meili oma enda meilile.
+        </p>
       </div>
     </div>
   );
+};
+
+Mailer.propTypes = {
+  title: PropTypes.string.isRequired,
 };
 
 export default Mailer;

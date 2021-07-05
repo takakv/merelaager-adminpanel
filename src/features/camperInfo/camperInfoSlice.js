@@ -4,10 +4,8 @@ import { makeGetRequest } from "../../components/Common/requestAPI";
 export const fetchCamperInfo = createAsyncThunk(
   "camperInfo/fetchCamperInfo",
   async (shiftNr) => {
-    const response = await makeGetRequest(
-      "campers/info/fetch/" + `${shiftNr}/`
-    );
-    return await response.json();
+    const response = await makeGetRequest(`campers/info/fetch/${shiftNr}/`);
+    return response.json();
   }
 );
 

@@ -4,8 +4,8 @@ import { makeGetRequest } from "../../components/Common/requestAPI";
 export const fetchTeams = createAsyncThunk(
   "teams/fetchTeams",
   async (shiftNr) => {
-    const response = await makeGetRequest("teams/fetch/" + `${shiftNr}/`);
-    return await response.json();
+    const response = await makeGetRequest(`teams/fetch/${shiftNr}/`);
+    return response.json();
   }
 );
 
@@ -17,9 +17,6 @@ const teamSlice = createSlice({
     error: null,
   },
   reducers: {
-    addTeam: (state, action) => {
-
-    },
     addMember: (state, action) => {
       const { member, teamId } = action.payload;
       state.data.teams[teamId].members.push(member);
@@ -47,7 +44,7 @@ const teamSlice = createSlice({
   },
 });
 
-export const { addTeam, addMember, removeMember } = teamSlice.actions;
+export const { addMember, removeMember } = teamSlice.actions;
 
 export default teamSlice.reducer;
 

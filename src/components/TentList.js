@@ -1,5 +1,7 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import PropTypes from "prop-types";
+
 import { makePostRequest } from "./Common/requestAPI";
 import { setTitle } from "../features/pageTitle/pageTitleSlice";
 import {
@@ -15,9 +17,10 @@ import { getShift } from "../features/userData/userDataSlice";
 const tentNumbers = Array.from({ length: 10 }, (_, i) => i + 1);
 
 const TentList = (props) => {
+  const { title } = props;
   const shiftNr = useSelector(getShift);
   const dispatch = useDispatch();
-  dispatch(setTitle(props.title));
+  dispatch(setTitle(title));
 
   const tentData = useSelector(getCampers);
   const shiftStatus = useSelector((state) => state.campers.status);
@@ -46,23 +49,32 @@ const TentList = (props) => {
         </div>
       </div>
     );
-  } else if (shiftStatus === "failed") {
+  }
+  if (shiftStatus === "failed") {
     return <p>{error}</p>;
-  } else return <p>Laen...</p>;
+  }
+  return <p>Laen...</p>;
+};
+
+TentList.propTypes = {
+  title: PropTypes.string.isRequired,
 };
 
 export default TentList;
 
 const NoTentCamper = (props) => {
+  const { name, id } = props;
   const dispatch = useDispatch();
+
   const addCamperToTent = async ({ target }) => {
-    await makePostRequest("tents/update/" + `${props.id}/${target.value}/`);
-    dispatch(updateCamper({ id: props.id, tentNr: parseInt(target.value) }));
+    await makePostRequest(`tents/update/${id}/${target.value}/`);
+    dispatch(updateCamper({ id, tentNr: parseInt(target.value, 10) }));
   };
 
   return (
     <div className="c-tentless">
-      <p>{props.name}</p>
+      <p>{name}</p>
+      {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
       <label>
         <select name="tent" onChange={addCamperToTent}>
           <option value="0" style={{ color: "grey" }}>
@@ -79,16 +91,22 @@ const NoTentCamper = (props) => {
   );
 };
 
+NoTentCamper.propTypes = {
+  name: PropTypes.string.isRequired,
+  id: PropTypes.number.isRequired,
+};
+
 const TentBlock = (props) => {
+  const { tentMembers, tentNumber } = props;
   return (
     <div className="c-tent o-box">
-      <h3 className="o-box-header u-text-center">{props.tentNumber + 1}</h3>
+      <h3 className="o-box-header u-text-center">{tentNumber + 1}</h3>
       <ul className="u-list-blank">
-        {props.tentMembers.map((camper) => (
+        {tentMembers.map((camper) => (
           <TentBlockCamper
             camper={camper}
             key={camper.id}
-            tentNumber={props.tentNumber}
+            tentNumber={tentNumber}
           />
         ))}
       </ul>
@@ -96,25 +114,43 @@ const TentBlock = (props) => {
   );
 };
 
+TentBlock.propTypes = {
+  tentMembers: PropTypes.arrayOf(PropTypes.object).isRequired,
+  tentNumber: PropTypes.number.isRequired,
+};
+
 const TentBlockCamper = (props) => {
+  const { camper, tentNumber } = props;
   const dispatch = useDispatch();
+
   const removeCamperFromTent = async () => {
-    await makePostRequest("tents/update/" + `${props.camper.id}/0/`);
+    await makePostRequest(`tents/update/${camper.id}/0/`);
     dispatch(
       updateCamper({
-        id: props.camper.id,
+        id: camper.id,
         tentNr: 0,
-        currentNr: props.tentNumber,
+        currentNr: tentNumber,
       })
     );
   };
 
   return (
     <li className="u-flex u-space-between u-align-center">
-      <span>{props.camper.name}</span>
-      <div className="c-tent-rm" onClick={removeCamperFromTent}>
+      <span>{camper.name}</span>
+      {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events */}
+      <div
+        role="button"
+        className="c-tent-rm"
+        onClick={removeCamperFromTent}
+        tabIndex={0}
+      >
         <div />
       </div>
     </li>
   );
+};
+
+TentBlockCamper.propTypes = {
+  camper: PropTypes.objectOf(PropTypes.any).isRequired,
+  tentNumber: PropTypes.number.isRequired,
 };

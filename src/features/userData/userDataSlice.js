@@ -27,13 +27,11 @@ const userDataSlice = createSlice({
 
 export const { setData, setRole, setShift, setName } = userDataSlice.actions;
 
-export const getData = (state) => {
-  return {
-    name: state.userData.name,
-    role: state.userData.role,
-    shift: state.userData.shift,
-  };
-};
+export const getData = (state) => ({
+  name: state.userData.name,
+  role: state.userData.role,
+  shift: state.userData.shift,
+});
 export const getName = (state) => state.userData.name;
 export const getRole = (state) => state.userData.role;
 export const getShift = (state) => state.userData.shift;

@@ -5,7 +5,7 @@ export const fetchRegistrationList = createAsyncThunk(
   "registrationList/fetchRegistrationList",
   async () => {
     const response = await makeGetRequest("reglist/fetch/");
-    return await response.json();
+    return response.json();
   }
 );
 
@@ -18,17 +18,17 @@ const registrationListSlice = createSlice({
   },
   reducers: {
     updatePaidValue: (state, action) => {
-      const {shiftNr, id, value} = action.payload;
+      const { shiftNr, id, value } = action.payload;
       const camper = state.data[shiftNr].campers[id];
       camper.pricePaid = value;
     },
     updateToPayValue: (state, action) => {
-      const {shiftNr, id, value} = action.payload;
+      const { shiftNr, id, value } = action.payload;
       const camper = state.data[shiftNr].campers[id];
       camper.priceToPay = value;
     },
     toggleRegistration: (state, action) => {
-      const {shiftNr, id, status} = action.payload;
+      const { shiftNr, id, status } = action.payload;
       const isRegistered = !status;
       const shift = state.data[shiftNr];
 
@@ -38,20 +38,20 @@ const registrationListSlice = createSlice({
 
       // Update shift counters.
       if (isRegistered) {
-        shift.totalRegCount++;
-        ++shift[camper.gender === "Poiss" ? "regBoyCount" : "regGirlCount"];
-        --shift[camper.gender === "Poiss" ? "resBoyCount" : "resGirlCount"];
+        shift.totalRegCount += 1;
+        shift[camper.gender === "Poiss" ? "regBoyCount" : "regGirlCount"] += 1;
+        shift[camper.gender === "Poiss" ? "resBoyCount" : "resGirlCount"] -= 1;
       } else {
-        shift.totalRegCount--;
-        --shift[camper.gender === "Poiss" ? "regBoyCount" : "regGirlCount"];
-        ++shift[camper.gender === "Poiss" ? "resBoyCount" : "resGirlCount"];
+        shift.totalRegCount -= 1;
+        shift[camper.gender === "Poiss" ? "regBoyCount" : "regGirlCount"] -= 1;
+        shift[camper.gender === "Poiss" ? "resBoyCount" : "resGirlCount"] += 1;
       }
     },
     removeCamper: (state, action) => {
-      const {shiftNr, id} = action.payload;
-      const campers = state.data[shiftNr].campers;
+      const { shiftNr, id } = action.payload;
+      const { campers } = state.data[shiftNr];
       delete campers[id];
-    }
+    },
   },
   extraReducers: {
     [fetchRegistrationList.fulfilled]: (state, action) => {
