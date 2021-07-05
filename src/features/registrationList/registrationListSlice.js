@@ -5,7 +5,7 @@ export const fetchRegistrationList = createAsyncThunk(
   "registrationList/fetchRegistrationList",
   async () => {
     const response = await makeGetRequest("reglist/fetch/");
-    return await response.json();
+    return response.json();
   }
 );
 
@@ -38,18 +38,18 @@ const registrationListSlice = createSlice({
 
       // Update shift counters.
       if (isRegistered) {
-        shift.totalRegCount++;
-        ++shift[camper.gender === "Poiss" ? "regBoyCount" : "regGirlCount"];
-        --shift[camper.gender === "Poiss" ? "resBoyCount" : "resGirlCount"];
+        shift.totalRegCount += 1;
+        shift[camper.gender === "Poiss" ? "regBoyCount" : "regGirlCount"] += 1;
+        shift[camper.gender === "Poiss" ? "resBoyCount" : "resGirlCount"] -= 1;
       } else {
-        shift.totalRegCount--;
-        --shift[camper.gender === "Poiss" ? "regBoyCount" : "regGirlCount"];
-        ++shift[camper.gender === "Poiss" ? "resBoyCount" : "resGirlCount"];
+        shift.totalRegCount -= 1;
+        shift[camper.gender === "Poiss" ? "regBoyCount" : "regGirlCount"] -= 1;
+        shift[camper.gender === "Poiss" ? "resBoyCount" : "resGirlCount"] += 1;
       }
     },
     removeCamper: (state, action) => {
       const { shiftNr, id } = action.payload;
-      const campers = state.data[shiftNr].campers;
+      const { campers } = state.data[shiftNr];
       delete campers[id];
     },
   },

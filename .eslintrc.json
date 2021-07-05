@@ -12,6 +12,12 @@
     "no-console": "off",
     "no-alert": "off",
     "no-restricted-globals": "off",
+    "no-plusplus": [
+      "error",
+      {
+        "allowForLoopAfterthoughts": true
+      }
+    ],
     "react/jsx-filename-extension": [
       1,
       {

@@ -1,5 +1,7 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import PropTypes from "prop-types";
+
 import { setTitle } from "../pageTitle/pageTitleSlice";
 import { fetchCamperInfo, getCamperInfo } from "./camperInfoSlice";
 import { getShift } from "../userData/userDataSlice";
@@ -9,15 +11,15 @@ import {
 } from "../../components/Common/requestAPI";
 
 const CamperEntry = (props) => {
+  const { data, shiftNr } = props;
+
   const handleChange = async ({ target }) => {
     const packet = { notes: target.value };
-    await makePostRequest("/notes/update/" + `${props.data.id}/`, packet);
+    await makePostRequest(`/notes/update/${data.id}/`, packet);
   };
 
   const print = async () => {
-    const response = await makeGetRequest(
-      "notes/fetch/" + `${props.shiftNr}/${props.data.id}/`
-    );
+    const response = await makeGetRequest(`notes/fetch/${shiftNr}/${data.id}/`);
     if (!response || !response.ok) return;
 
     const blob = await response.blob();
@@ -31,10 +33,10 @@ const CamperEntry = (props) => {
       <div className="o-box-header">
         <div className="u-flex u-space-between">
           <p>
-            {props.data.name}, {props.data.gender === "M" ? "Poiss" : "Tüdruk"},
-            Telk {props.data.tentNr ?? "-"}
+            {data.name}, {data.gender === "M" ? "Poiss" : "Tüdruk"}, Telk{" "}
+            {data.tentNr ?? "-"}
           </p>
-          <button className="o-printer" onClick={print}>
+          <button type="button" className="o-printer" onClick={print}>
             Prindi
           </button>
         </div>
@@ -42,7 +44,7 @@ const CamperEntry = (props) => {
       <div className="c-camper-info__content">
         <div className="c-info-block">
           <p className="title">Info</p>
-          <div className="content">{props.data.parentNotes}</div>
+          <div className="content">{data.parentNotes}</div>
         </div>
         <div className="c-info-block">
           <p className="title">Märkused</p>
@@ -50,7 +52,7 @@ const CamperEntry = (props) => {
             onBlur={handleChange}
             className="content"
             placeholder="..."
-            defaultValue={props.data.notes}
+            defaultValue={data.notes}
           />
         </div>
       </div>
@@ -58,10 +60,16 @@ const CamperEntry = (props) => {
   );
 };
 
+CamperEntry.propTypes = {
+  shiftNr: PropTypes.number.isRequired,
+  data: PropTypes.objectOf(PropTypes.any).isRequired,
+};
+
 const CamperInfo = (props) => {
+  const { title } = props;
   const shiftNr = useSelector(getShift);
   const dispatch = useDispatch();
-  dispatch(setTitle(props.title));
+  dispatch(setTitle(title));
 
   const camperInfo = useSelector(getCamperInfo);
   const infoStatus = useSelector((state) => state.camperInfo.status);
@@ -73,7 +81,7 @@ const CamperInfo = (props) => {
 
   const print = async () => {
     document.body.style.cursor = "wait";
-    const response = await makeGetRequest("notes/fetch/" + `${shiftNr}/`);
+    const response = await makeGetRequest(`notes/fetch/${shiftNr}/`);
     if (!response || !response.ok) {
       document.body.style.cursor = "";
       return;
@@ -90,7 +98,7 @@ const CamperInfo = (props) => {
     case "ok":
       return (
         <div>
-          <button className="o-printer" onClick={print}>
+          <button type="button" className="o-printer" onClick={print}>
             Prindi kõik
           </button>
           <p>Märkused säilivad läbi aastate ja vahetuste.</p>
@@ -104,6 +112,10 @@ const CamperInfo = (props) => {
     default:
       return <p>Laen...</p>;
   }
+};
+
+CamperInfo.propTypes = {
+  title: PropTypes.string.isRequired,
 };
 
 export default CamperInfo;

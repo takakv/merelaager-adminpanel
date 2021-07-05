@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
-import RegTable from "../../components/Support Files/RegTable";
 import { useDispatch, useSelector } from "react-redux";
+import PropTypes from "prop-types";
+
+import RegTable from "../../components/Support Files/RegTable";
 import { setTitle } from "../pageTitle/pageTitleSlice";
 import {
   fetchRegistrationList,
@@ -18,7 +20,7 @@ const ShiftSwitchButtons = (props) => {
   const shiftNr = useSelector(getShift);
 
   const print = async () => {
-    const response = await makeGetRequest("reglist/print/" + `${shiftNr}/`);
+    const response = await makeGetRequest(`reglist/print/${shiftNr}/`);
     if (!response || !response.ok) return;
 
     const obj = {
@@ -44,52 +46,80 @@ const ShiftSwitchButtons = (props) => {
     <div className="c-regList-shiftBar">
       <div className="c-regList-shiftButtons">
         {shifts.map((shift) => (
-          <button key={shift} onClick={props.switcher} className="o-button--40">
+          <button
+            type="button"
+            key={shift}
+            onClick={props.switcher}
+            className="o-button--40"
+          >
             {shift}v
           </button>
         ))}
       </div>
-      <button className="o-printer" onClick={print}>
+      <button type="button" className="o-printer" onClick={print}>
         Prindi
       </button>
     </div>
   );
 };
 
+ShiftSwitchButtons.propTypes = {
+  switcher: PropTypes.func.isRequired,
+};
+
 // Counters for shift data.
 const ShiftOverviewCounter = (props) => {
-  const count = props.count ?? 0;
+  const { count, counterName } = props;
+
   return (
     <div className="c-regList-counter">
-      {props.counterName}: <span className="u-mono">{count}</span>
+      {counterName}: <span className="u-mono">{count}</span>
     </div>
   );
 };
 
+ShiftOverviewCounter.propTypes = {
+  count: PropTypes.number,
+  counterName: PropTypes.string.isRequired,
+};
+
+ShiftOverviewCounter.defaultProps = {
+  count: 0,
+};
+
 // Overview of the number of campers for each shift.
-const ShiftOverviewInfo = (props) => {
-  return (
-    <div className="c-regList-counters">
-      <div className="c-regList-counters__reg">
-        {regCounters.map((counter, index) => (
-          <ShiftOverviewCounter
-            counterName={counter}
-            key={counter}
-            count={props.regCounts[index]}
-          />
-        ))}
-      </div>
-      <div className="c-regList-counters__res">
-        {resCounters.map((counter, index) => (
-          <ShiftOverviewCounter
-            counterName={counter}
-            key={counter}
-            count={props.resCounts[index]}
-          />
-        ))}
-      </div>
+const ShiftOverviewInfo = (props) => (
+  <div className="c-regList-counters">
+    <div className="c-regList-counters__reg">
+      {regCounters.map((counter, index) => (
+        <ShiftOverviewCounter
+          counterName={counter}
+          key={counter}
+          count={props.regCounts[index]}
+        />
+      ))}
     </div>
-  );
+    <div className="c-regList-counters__res">
+      {resCounters.map((counter, index) => (
+        <ShiftOverviewCounter
+          counterName={counter}
+          key={counter}
+          count={props.resCounts[index]}
+        />
+      ))}
+    </div>
+  </div>
+);
+
+ShiftOverviewInfo.propTypes = {
+  regCounts: PropTypes.oneOfType([
+    PropTypes.number,
+    PropTypes.arrayOf(PropTypes.number),
+  ]).isRequired,
+  resCounts: PropTypes.oneOfType([
+    PropTypes.number,
+    PropTypes.arrayOf(PropTypes.number),
+  ]).isRequired,
 };
 
 const RegistrationList = (props) => {
@@ -111,11 +141,11 @@ const RegistrationList = (props) => {
 
   // Update the active shift.
   const shiftSwitcher = ({ target }) => {
-    setShiftNr(parseInt(target.innerText[0]));
+    setShiftNr(parseInt(target.innerText[0], 10));
   };
 
-  let regCounts, resCounts;
-  regCounts = resCounts = 0;
+  let regCounts = 0;
+  let resCounts = 0;
   let shiftData = null;
 
   if (regListStatus === "succeeded") {
@@ -130,28 +160,29 @@ const RegistrationList = (props) => {
     }
   }
 
-  const renderContent = (appendixContent) => {
-    return (
-      <div>
-        <ShiftSwitchButtons switcher={shiftSwitcher} />
-        <ShiftOverviewInfo regCounts={regCounts} resCounts={resCounts} />
-        {appendixContent}
-      </div>
-    );
-  };
+  const renderContent = (appendixContent) => (
+    <div>
+      <ShiftSwitchButtons switcher={shiftSwitcher} />
+      <ShiftOverviewInfo regCounts={regCounts} resCounts={resCounts} />
+      {appendixContent}
+    </div>
+  );
 
-  if (regListStatus === "succeeded") {
-    const conditionalRenderContent = (
-      <RegTable shiftData={shiftData} shiftNr={shiftNr} />
-    );
-    return renderContent(conditionalRenderContent);
-  } else if (regListStatus === "failed") {
-    const conditionalRenderContent = <p>{regListError}</p>;
-    return renderContent(conditionalRenderContent);
-  } else {
-    const conditionalRenderContent = <p>Laen...</p>;
-    return renderContent(conditionalRenderContent);
+  let conditionalRenderContent;
+  switch (regListStatus) {
+    case "succeeded":
+      conditionalRenderContent = (
+        <RegTable shiftData={shiftData} shiftNr={shiftNr} />
+      );
+      break;
+    case "failed":
+      conditionalRenderContent = <p>{regListError}</p>;
+      break;
+    default:
+      conditionalRenderContent = <p>Laen...</p>;
+      break;
   }
+  return renderContent(conditionalRenderContent);
 };
 
 export default RegistrationList;
