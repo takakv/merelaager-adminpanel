@@ -18,6 +18,7 @@ obj/
 #node stuff
 node_modules/
 package-lock.json
+yarn-error.log
 .env
 
 # Private files
