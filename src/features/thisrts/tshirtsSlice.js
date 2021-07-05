@@ -3,7 +3,7 @@ import { makeGetRequest } from "../../components/Common/requestAPI";
 
 export const fetchShirts = createAsyncThunk("shirts/fetchShirts", async () => {
   const response = await makeGetRequest("shirts/fetch/");
-  return await response.json();
+  return response.json();
 });
 
 const shirtsSlice = createSlice({
