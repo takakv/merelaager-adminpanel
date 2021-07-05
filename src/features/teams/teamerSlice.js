@@ -17,9 +17,7 @@ const teamSlice = createSlice({
     error: null,
   },
   reducers: {
-    addTeam: (state, action) => {
-
-    },
+    addTeam: (state, action) => {},
     addMember: (state, action) => {
       const { member, teamId } = action.payload;
       state.data.teams[teamId].members.push(member);

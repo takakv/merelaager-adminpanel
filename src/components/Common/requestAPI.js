@@ -9,7 +9,7 @@ export const makePostRequest = async (apiLinkSuffix, content = null) => {
 
   const headers = {
     Authorization: "Bearer " + accessToken,
-  }
+  };
 
   if (content) headers["Content-Type"] = "application/json";
 
@@ -27,7 +27,7 @@ export const makePostRequest = async (apiLinkSuffix, content = null) => {
   } catch (e) {
     window.alert(
       "Serveriga ei õnnestunud ühendust saada.\n" +
-      "Muudatused pole salvestatud."
+        "Muudatused pole salvestatud."
     );
     return null;
   }
@@ -53,10 +53,10 @@ export const makeGetRequest = async (apiLinkSuffix) => {
 export const promptRequestError = (response) => {
   window.alert(
     "Midagi läks nihu." +
-    "\n\n" +
-    `Veakood: ${response.status}` +
-    "\n" +
-    `Kirjeldus: ${response.statusText}`
+      "\n\n" +
+      `Veakood: ${response.status}` +
+      "\n" +
+      `Kirjeldus: ${response.statusText}`
   );
   console.log(response);
 };

@@ -1,25 +1,27 @@
-import React, {useEffect} from "react";
-import {useDispatch, useSelector} from "react-redux";
-import {setTitle} from "../pageTitle/pageTitleSlice";
-import {fetchCamperInfo, getCamperInfo} from "./camperInfoSlice";
-import {getShift} from "../userData/userDataSlice";
-import {makeGetRequest, makePostRequest} from "../../components/Common/requestAPI";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { setTitle } from "../pageTitle/pageTitleSlice";
+import { fetchCamperInfo, getCamperInfo } from "./camperInfoSlice";
+import { getShift } from "../userData/userDataSlice";
+import {
+  makeGetRequest,
+  makePostRequest,
+} from "../../components/Common/requestAPI";
 
 const CamperEntry = (props) => {
-  const handleChange = async ({target}) => {
-    const packet = {notes: target.value}
-    await makePostRequest(
-      "/notes/update/" + `${props.data.id}/`,
-      packet,
-    );
-  }
+  const handleChange = async ({ target }) => {
+    const packet = { notes: target.value };
+    await makePostRequest("/notes/update/" + `${props.data.id}/`, packet);
+  };
 
   const print = async () => {
-    const response = await makeGetRequest("notes/fetch/" + `${props.shiftNr}/${props.data.id}/`);
+    const response = await makeGetRequest(
+      "notes/fetch/" + `${props.shiftNr}/${props.data.id}/`
+    );
     if (!response || !response.ok) return;
 
     const blob = await response.blob();
-    const newBlob = new Blob([blob], {type: "application/pdf"});
+    const newBlob = new Blob([blob], { type: "application/pdf" });
     const objUrl = window.URL.createObjectURL(newBlob);
     window.open(objUrl, "_blank");
   };
@@ -32,7 +34,9 @@ const CamperEntry = (props) => {
             {props.data.name}, {props.data.gender === "M" ? "Poiss" : "Tüdruk"},
             Telk {props.data.tentNr ?? "-"}
           </p>
-          <button className="o-printer" onClick={print}>Prindi</button>
+          <button className="o-printer" onClick={print}>
+            Prindi
+          </button>
         </div>
       </div>
       <div className="c-camper-info__content">
@@ -42,7 +46,12 @@ const CamperEntry = (props) => {
         </div>
         <div className="c-info-block">
           <p className="title">Märkused</p>
-          <textarea onBlur={handleChange} className="content" placeholder="..." defaultValue={props.data.notes}/>
+          <textarea
+            onBlur={handleChange}
+            className="content"
+            placeholder="..."
+            defaultValue={props.data.notes}
+          />
         </div>
       </div>
     </div>
@@ -71,7 +80,7 @@ const CamperInfo = (props) => {
     }
 
     const blob = await response.blob();
-    const newBlob = new Blob([blob], {type: "application/pdf"});
+    const newBlob = new Blob([blob], { type: "application/pdf" });
     const objUrl = window.URL.createObjectURL(newBlob);
     window.open(objUrl, "_blank");
     document.body.style.cursor = "";
@@ -81,10 +90,12 @@ const CamperInfo = (props) => {
     case "ok":
       return (
         <div>
-          <button className="o-printer" onClick={print}>Prindi kõik</button>
+          <button className="o-printer" onClick={print}>
+            Prindi kõik
+          </button>
           <p>Märkused säilivad läbi aastate ja vahetuste.</p>
           {Object.values(camperInfo).map((camper) => (
-            <CamperEntry key={camper.id} data={camper} shiftNr={shiftNr}/>
+            <CamperEntry key={camper.id} data={camper} shiftNr={shiftNr} />
           ))}
         </div>
       );

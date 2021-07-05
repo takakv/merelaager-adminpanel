@@ -3,7 +3,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { setTitle } from "../features/pageTitle/pageTitleSlice";
 import { makePostRequest } from "./Common/requestAPI";
 import { getShift } from "../features/userData/userDataSlice";
-import { fetchRegistrationList, getAllRegistrationLists } from "../features/registrationList/registrationListSlice";
+import {
+  fetchRegistrationList,
+  getAllRegistrationLists,
+} from "../features/registrationList/registrationListSlice";
 
 const Mailer = (props) => {
   const dispatch = useDispatch();
@@ -25,38 +28,52 @@ const Mailer = (props) => {
 
   if (regListStatus === "succeeded") {
     const campers = regListData[shiftNr].campers;
-    Object.values(campers).forEach(camper => {
-      if (camper.registered && parentEmails.indexOf(camper.contactEmail) === -1) parentEmails.push(camper.contactEmail);
-    })
+    Object.values(campers).forEach((camper) => {
+      if (camper.registered && parentEmails.indexOf(camper.contactEmail) === -1)
+        parentEmails.push(camper.contactEmail);
+    });
   }
 
   const sendMail = async () => {
     const credentials = localStorage.getItem("credentials");
     const packet = {
       shift: JSON.parse(credentials).user.shift,
-      text: document.getElementById("mailtext").value
-    }
-    await makePostRequest(
-      "/mail/send/",
-      packet,
-    );
-  }
+      text: document.getElementById("mailtext").value,
+    };
+    await makePostRequest("/mail/send/", packet);
+  };
 
   return (
     <div className="c-mailer">
       <p>Meilid:</p>
       <p className="c-mailer-emails">{parentEmails.sort().join("; ")}</p>
-      <p><a href={`mailto:${parentEmails.join(";")}`} className="o-button">Ava meiliäpis</a>(ei pruugi töötada)</p>
+      <p>
+        <a href={`mailto:${parentEmails.join(";")}`} className="o-button">
+          Ava meiliäpis
+        </a>
+        (ei pruugi töötada)
+      </p>
       <br />
       <div className="u-unready">
         <p>See osa pole veel valmis</p>
         <p>Saadab meili vahetusse registreeritud laste vanematele.</p>
-        <textarea disabled id="mailtext" className="c-mailer-box" placeholder="Sisu..."/>
+        <textarea
+          disabled
+          id="mailtext"
+          className="c-mailer-box"
+          placeholder="Sisu..."
+        />
         <div className="c-mailer-controls">
-          <button disabled className="u-disabled">Saada</button>
-          <button disabled className="u-disabled">Kontrolli</button>
+          <button disabled className="u-disabled">
+            Saada
+          </button>
+          <button disabled className="u-disabled">
+            Kontrolli
+          </button>
         </div>
-        <p><q>Kontrolli</q> saadab meili oma enda meilile.</p>
+        <p>
+          <q>Kontrolli</q> saadab meili oma enda meilile.
+        </p>
       </div>
     </div>
   );

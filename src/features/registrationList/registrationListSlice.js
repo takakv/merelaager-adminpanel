@@ -18,17 +18,17 @@ const registrationListSlice = createSlice({
   },
   reducers: {
     updatePaidValue: (state, action) => {
-      const {shiftNr, id, value} = action.payload;
+      const { shiftNr, id, value } = action.payload;
       const camper = state.data[shiftNr].campers[id];
       camper.pricePaid = value;
     },
     updateToPayValue: (state, action) => {
-      const {shiftNr, id, value} = action.payload;
+      const { shiftNr, id, value } = action.payload;
       const camper = state.data[shiftNr].campers[id];
       camper.priceToPay = value;
     },
     toggleRegistration: (state, action) => {
-      const {shiftNr, id, status} = action.payload;
+      const { shiftNr, id, status } = action.payload;
       const isRegistered = !status;
       const shift = state.data[shiftNr];
 
@@ -48,10 +48,10 @@ const registrationListSlice = createSlice({
       }
     },
     removeCamper: (state, action) => {
-      const {shiftNr, id} = action.payload;
+      const { shiftNr, id } = action.payload;
       const campers = state.data[shiftNr].campers;
       delete campers[id];
-    }
+    },
   },
   extraReducers: {
     [fetchRegistrationList.fulfilled]: (state, action) => {

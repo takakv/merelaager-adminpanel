@@ -1,10 +1,13 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import RegTable from "../../components/Support Files/RegTable";
-import {useDispatch, useSelector} from "react-redux";
-import {setTitle} from "../pageTitle/pageTitleSlice";
-import {fetchRegistrationList, getAllRegistrationLists,} from "./registrationListSlice";
-import {getShift} from "../userData/userDataSlice";
-import {makeGetRequest} from "../../components/Common/requestAPI";
+import { useDispatch, useSelector } from "react-redux";
+import { setTitle } from "../pageTitle/pageTitleSlice";
+import {
+  fetchRegistrationList,
+  getAllRegistrationLists,
+} from "./registrationListSlice";
+import { getShift } from "../userData/userDataSlice";
+import { makeGetRequest } from "../../components/Common/requestAPI";
 
 const shifts = ["1", "2", "3", "4"];
 const regCounters = ["poisid", "tüdrukud", "kokku"];
@@ -22,7 +25,7 @@ const ShiftSwitchButtons = (props) => {
       filename: `${shiftNr}v_nimekiri.pdf`,
       blob: await response.blob(),
     };
-    const newBlob = new Blob([obj.blob], {type: "application/pdf"});
+    const newBlob = new Blob([obj.blob], { type: "application/pdf" });
     const objUrl = window.URL.createObjectURL(newBlob);
     // first method
     // const link = document.createElement("a");
@@ -35,7 +38,7 @@ const ShiftSwitchButtons = (props) => {
     // third method
     // let tab = window.open();
     // tab.location.href = objUrl;
-  }
+  };
 
   return (
     <div className="c-regList-shiftBar">
@@ -46,7 +49,9 @@ const ShiftSwitchButtons = (props) => {
           </button>
         ))}
       </div>
-      <button className="o-printer" onClick={print}>Prindi</button>
+      <button className="o-printer" onClick={print}>
+        Prindi
+      </button>
     </div>
   );
 };
@@ -105,7 +110,7 @@ const RegistrationList = (props) => {
   }, [regListStatus, dispatch]);
 
   // Update the active shift.
-  const shiftSwitcher = ({target}) => {
+  const shiftSwitcher = ({ target }) => {
     setShiftNr(parseInt(target.innerText[0]));
   };
 
@@ -128,8 +133,8 @@ const RegistrationList = (props) => {
   const renderContent = (appendixContent) => {
     return (
       <div>
-        <ShiftSwitchButtons switcher={shiftSwitcher}/>
-        <ShiftOverviewInfo regCounts={regCounts} resCounts={resCounts}/>
+        <ShiftSwitchButtons switcher={shiftSwitcher} />
+        <ShiftOverviewInfo regCounts={regCounts} resCounts={resCounts} />
         {appendixContent}
       </div>
     );
@@ -137,7 +142,7 @@ const RegistrationList = (props) => {
 
   if (regListStatus === "succeeded") {
     const conditionalRenderContent = (
-      <RegTable shiftData={shiftData} shiftNr={shiftNr}/>
+      <RegTable shiftData={shiftData} shiftNr={shiftNr} />
     );
     return renderContent(conditionalRenderContent);
   } else if (regListStatus === "failed") {

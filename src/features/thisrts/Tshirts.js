@@ -10,14 +10,14 @@ const ShirtCell = (props) => {
     <div className="o-box">
       <p className="o-box-header u-text-center">{props.shift}</p>
       <ul className="u-list-blank">
-      {Object.entries(props.shirtData)
-        .sort()
-        .map((shirt) => (
-          <li key={shirt[0]} className="u-flex u-space-between">
-            <p>{shirt[0]}:</p>
-            <p className="u-mono">{shirt[1]}</p>
-          </li>
-        ))}
+        {Object.entries(props.shirtData)
+          .sort()
+          .map((shirt) => (
+            <li key={shirt[0]} className="u-flex u-space-between">
+              <p>{shirt[0]}:</p>
+              <p className="u-mono">{shirt[1]}</p>
+            </li>
+          ))}
       </ul>
     </div>
   );
