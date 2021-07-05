@@ -800,8 +800,11 @@ button,
 
 .c-teambox {
   &-entry {
-    margin-bottom: .5em;
-    padding-bottom: .5em;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 0.5em;
+    padding-bottom: 0.5em;
     border-bottom: 1px solid var(--line-dark);
 
     &:last-child {
@@ -810,8 +813,49 @@ button,
     }
   }
 
+  &-icons {
+    display: flex;
+    align-items: flex-end;
+    margin-left: 1em;
+  }
+
   &-role {
     font-size: 0.875rem;
+  }
+
+  .material-icons {
+    position: relative;
+    transform: scale(0.9);
+
+    &.lock {
+      &::after {
+        font-family: "Space Grotesk", sans-serif;
+        font-size: 1rem;
+        position: absolute;
+        top: -1rem;
+        left: 1rem;
+        display: none;
+        content: "Näitab ligipääsuõigusi.";
+        color: var(--primary-text);
+      }
+
+      &:hover {
+        cursor: help;
+
+        &::after {
+          display: block;
+        }
+      }
+    }
+  }
+
+  ._locked .material-icons {
+    //color: #e01e5a;
+    color: #5f6368;
+  }
+
+  ._unlocked .material-icons {
+    color: #2eb67d;
   }
 }
 

@@ -29,6 +29,13 @@ const StaffEntry = (props) => {
         <p>{staff.name}</p>
         <p className="c-teambox-role">{role}</p>
       </div>
+      <div
+        className={`c-teambox-icons ${staff.linked ? "_unlocked" : "_locked"}`}
+      >
+        <span className="material-icons lock">
+          lock{staff.linked ? "_open" : ""}
+        </span>
+      </div>
     </div>
   );
 };
