@@ -16,6 +16,7 @@ import Shirts from "../features/thisrts/Tshirts";
 import ShiftInfo from "../features/camperInfo/CamperInfo";
 import Mailer from "../components/Mailer";
 import Hamburger from "../components/Hamburger";
+import MainPage from "../components/MainPage";
 
 const apiURL =
   process.env.NODE_ENV === "development"
@@ -55,6 +56,9 @@ export default function App() {
     dispatch(setData(credentials.user));
   }
 
+  const credentials = localStorage.getItem("credentials");
+  const role = JSON.parse(credentials).user.role;
+
   return (
     <div className="admin-page">
       <Hamburger />
@@ -64,33 +68,49 @@ export default function App() {
       <main role="main" className="c-content">
         <Switch>
           <Route path="/" exact={true}>
-            <p>
-              Kambüüsi uus versioon on veel töös, nii et võib esineda veidraid
-              tõrkeid, ent uus versioon peaks olema kiirem, mugavam ning
-              sujuvam, kui seda oli vana.
-            </p>
+            <MainPage title="Kambüüs" />
           </Route>
-          <Route path="/lapsed/">
-            <ShiftInfo title="Lapsed" />
-          </Route>
+          {role === "op" ? (
+            ""
+          ) : (
+            <Route path="/lapsed/">
+              <ShiftInfo title="Lapsed" />
+            </Route>
+          )}
           <Route path="/meeskonnad/">
             <TeamsPage title="Meeskonnad" />
           </Route>
           <Route path="/telgid/">
             <TentList title="Telgid" />
           </Route>
-          <Route path="/meil/">
-            <Mailer title="Meil" />
-          </Route>
-          <Route path="/nimekiri/">
-            <RegistrationList title="Nimekiri" />
-          </Route>
-          <Route path="/arvegeneraator/">
-            <BillGen title="Arvegeneraator" />
-          </Route>
-          <Route path="/sargid/">
-            <Shirts title="Särgid" />
-          </Route>
+          {role === "op" ? (
+            ""
+          ) : (
+            <Route path="/meil/">
+              <Mailer title="Meil" />
+            </Route>
+          )}
+          {role === "op" ? (
+            ""
+          ) : (
+            <Route path="/nimekiri/">
+              <RegistrationList title="Nimekiri" />
+            </Route>
+          )}
+          {role === "op" ? (
+            ""
+          ) : (
+            <Route path="/arvegeneraator/">
+              <BillGen title="Arvegeneraator" />
+            </Route>
+          )}
+          {role === "op" ? (
+            ""
+          ) : (
+            <Route path="/sargid/">
+              <Shirts title="Särgid" />
+            </Route>
+          )}
         </Switch>
       </main>
     </div>
