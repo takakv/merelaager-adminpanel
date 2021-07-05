@@ -41,6 +41,10 @@ const MainPage = (props) => {
       <button type="button" onClick={sendMail}>
         Saada link
       </button>
+      <p>
+        Ligipääsu piktogramm läheb roheliseks siis, kui kasvataja on endale
+        konto loonud.
+      </p>
     </div>
   );
 };
