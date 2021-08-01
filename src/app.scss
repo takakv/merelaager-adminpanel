@@ -658,6 +658,17 @@ button,
     margin-right: 30px;
   }
 
+  &-side {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  &-presence {
+    display: inline-block;
+    margin-right: 0.75em;
+  }
+
   // Self-contained
   &-rm {
     display: flex;
@@ -779,13 +790,14 @@ button,
 }
 
 .c-leaderboard {
-  border: 2px solid var(--line-light);
-  padding: 1em;
   margin-bottom: 30px;
+  padding: 1em;
+  border: 2px solid var(--line-light);
 
   &-title {
     width: 100%;
   }
+
   &-item {
     margin: 0 10px 10px 0;
   }

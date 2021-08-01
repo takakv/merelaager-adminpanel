@@ -8,6 +8,7 @@ import {
   fetchCampers,
   getCampers,
   updateCamper,
+  updatePresence,
 } from "../features/tents/campersSlice";
 import { getShift } from "../features/userData/userDataSlice";
 
@@ -134,17 +135,40 @@ const TentBlockCamper = (props) => {
     );
   };
 
+  const togglePresence = async ({ target }) => {
+    const result = await makePostRequest(`tents/update/presence/`, {
+      id: camper.id,
+    });
+    if (!result.ok) return;
+    dispatch(
+      updatePresence({
+        id: camper.id,
+        isPresent: target.checked,
+        currentNr: tentNumber,
+      })
+    );
+  };
+
   return (
     <li className="u-flex u-space-between u-align-center">
       <span>{camper.name}</span>
       {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events */}
-      <div
-        role="button"
-        className="c-tent-rm"
-        onClick={removeCamperFromTent}
-        tabIndex={0}
-      >
-        <div />
+      <div className="c-tent-side">
+        <input
+          className="c-tent-presence"
+          type="checkbox"
+          defaultChecked={camper.isPresent}
+          onChange={togglePresence}
+        />
+        {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events */}
+        <div
+          role="button"
+          className="c-tent-rm"
+          onClick={removeCamperFromTent}
+          tabIndex={0}
+        >
+          <div />
+        </div>
       </div>
     </li>
   );
