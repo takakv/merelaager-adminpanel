@@ -36,6 +36,11 @@ const campersSlice = createSlice({
         state.data.noTent.push(child);
       }
     },
+    updatePresence: (state, action) => {
+      const { id, isPresent, currentNr } = action.payload;
+      const child = state.data.tents[currentNr].filter((c) => c.id === id)[0];
+      child.isPresent = isPresent;
+    },
   },
   extraReducers: {
     [fetchCampers.fulfilled]: (state, action) => {
@@ -49,7 +54,7 @@ const campersSlice = createSlice({
   },
 });
 
-export const { updateCamper } = campersSlice.actions;
+export const { updateCamper, updatePresence } = campersSlice.actions;
 
 export default campersSlice.reducer;
 
