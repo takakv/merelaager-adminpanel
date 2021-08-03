@@ -889,6 +889,10 @@ button,
 
 .c-timer-countdown {
   margin-right: 1em;
+
+  &.t-red {
+    color: #e01e5a;
+  }
 }
 
 .c-timer-app {
