@@ -12,8 +12,10 @@ import {
 const sort = (child1, child2) => child1.name.localeCompare(child2.name);
 
 const ChildEntry = (props) => {
+  const length = 3 * 60;
+
   const [trigger, setTrigger] = useState(false);
-  const [time, setTime] = useState(3 * 60);
+  const [time, setTime] = useState(length);
   const { name } = props;
 
   const getMinutes = (t) => Math.floor(t / 60);
@@ -21,7 +23,13 @@ const ChildEntry = (props) => {
   const zeroPad = (num, places) => String(num).padStart(places, "0");
 
   useEffect(() => {
-    if (!trigger || time < 1) return;
+    if (!trigger) return;
+
+    if (time < 1) {
+      setTrigger(false);
+      return;
+    }
+
     const timerID = setInterval(() => setTime(time - 1), 1000);
 
     // eslint-disable-next-line consistent-return
@@ -30,7 +38,10 @@ const ChildEntry = (props) => {
     };
   });
 
-  const triggerCd = () => setTrigger(!trigger);
+  const triggerCd = () => {
+    if (time === 0) setTime(length);
+    setTrigger(!trigger);
+  };
 
   return (
     <div className="c-timer-entry">
