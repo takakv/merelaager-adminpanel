@@ -7,6 +7,19 @@ import { getShift } from "../features/userData/userDataSlice";
 import { makePostRequest } from "./Common/requestAPI";
 import StaffList from "../features/staffList/staffList";
 
+const CurrentDate = () => {
+  const [date] = useState(
+    new Intl.DateTimeFormat("et-EE", { dateStyle: "full" }).format()
+  );
+  return (
+    <div className="c-card c-dateblock">
+      <div>
+        <p>{date}</p>
+      </div>
+    </div>
+  );
+};
+
 const MainPage = (props) => {
   const { title } = props;
   const [email, setEmail] = useState();
@@ -30,7 +43,8 @@ const MainPage = (props) => {
     return <StaffList />;
   }
   return (
-    <div>
+    <div className="c-grid">
+      <CurrentDate />
       <StaffList />
       <p>Saada kasvatajale ligipääs:</p>
       {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}

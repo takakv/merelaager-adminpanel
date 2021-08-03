@@ -870,6 +870,32 @@ button,
   }
 }
 
+.c-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--grid-column-count), 1fr);
+  gap: 0 20px;
+}
+
+.c-dateblock {
+  grid-column: 1 / span 4;
+}
+
+.c-timer-entry {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 500px;
+}
+
+.c-timer-countdown {
+  margin-right: 1em;
+}
+
+.c-timer-app {
+  display: flex;
+  align-items: center;
+}
+
 #app {
   width: 100%;
   height: 100vh;
