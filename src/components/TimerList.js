@@ -24,6 +24,7 @@ const ChildEntry = (props) => {
   const length = useSelector((state) => state.timer.value);
 
   const [trigger, setTrigger] = useState(false);
+  const [, setStopped] = useState(true);
   const [time, setTime] = useState(length);
   const { name } = props;
 
@@ -48,8 +49,21 @@ const ChildEntry = (props) => {
   });
 
   const triggerCd = () => {
+    setStopped(false);
     if (time === 0) setTime(length);
     setTrigger(!trigger);
+  };
+
+  const stop = () => {
+    setTime(length);
+    setTrigger(false);
+    setStopped(true);
+  };
+
+  const handleKeyPress = (event, action) => {
+    if (event.key !== "Enter") return;
+    if (action === "toggle") triggerCd();
+    else if (action === "stop") stop();
   };
 
   return (
@@ -61,9 +75,26 @@ const ChildEntry = (props) => {
         >
           {displayTime(time)}
         </div>
-        <button type="button" onClick={triggerCd}>
-          {trigger ? "Stopp" : "Start"}
-        </button>
+        <div className="c-timer-actions">
+          <span
+            className="c-timer-action material-icons-outlined"
+            onClick={triggerCd}
+            role="button"
+            tabIndex={0}
+            onKeyPress={(e) => handleKeyPress(e, "toggle")}
+          >
+            {trigger ? "pause" : "play_arrow"}
+          </span>
+          <span
+            className="c-timer-action material-icons-outlined"
+            onClick={stop}
+            role="button"
+            tabIndex={0}
+            onKeyPress={(e) => handleKeyPress(e, "stop")}
+          >
+            stop
+          </span>
+        </div>
       </div>
     </div>
   );

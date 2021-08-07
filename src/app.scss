@@ -892,6 +892,21 @@ button,
   max-width: 500px;
 }
 
+.c-timer {
+  &-actions {
+  }
+
+  &-action {
+    padding: 0.25em;
+
+    &:hover {
+      cursor: pointer;
+      border-radius: 30px;
+      background-color: var(--dimmed);
+    }
+  }
+}
+
 .c-mailsend {
   &-input {
     display: inline-block;
