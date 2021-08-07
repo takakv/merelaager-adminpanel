@@ -870,14 +870,19 @@ button,
   }
 }
 
-.c-grid {
-  display: grid;
-  grid-template-columns: repeat(var(--grid-column-count), 1fr);
-  gap: 0 20px;
+.c-landing-grid {
+  //display: grid;
+  //grid-template-columns: 500px min-content auto;
+  //grid-template-rows: repeat(2, 1fr);
+  //gap: 0 20px;
 }
 
 .c-dateblock {
-  grid-column: 1 / span 4;
+  //grid-column: 1 / 2;
+}
+
+.c-teambox {
+  //grid-column: 2 / 3;
 }
 
 .c-timer-entry {
@@ -885,6 +890,32 @@ button,
   align-items: center;
   justify-content: space-between;
   max-width: 500px;
+}
+
+.c-mailsend {
+  &-input {
+    display: inline-block;
+    margin-right: 1em;
+
+    label {
+      margin-right: 0.5em;
+    }
+  }
+
+  &-actions {
+    display: inline-block;
+
+    button {
+      margin-right: 1em;
+
+      &:last-child {
+        margin-right: 0;
+      }
+    }
+  }
+
+  &-ia {
+  }
 }
 
 .c-timer-countdown {

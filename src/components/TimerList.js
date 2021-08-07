@@ -8,19 +8,28 @@ import {
   fetchCamperInfo,
   getCamperInfo,
 } from "../features/camperInfo/camperInfoSlice";
+import { set } from "../features/timer/timerSlice";
 
 const sort = (child1, child2) => child1.name.localeCompare(child2.name);
 
+const displayTime = (t) => {
+  const minutes = Math.floor(t / 60);
+  const seconds = t % 60;
+
+  const zeroPad = (num, places) => String(num).padStart(places, "0");
+  return `${minutes}:${zeroPad(seconds, 2)}`;
+};
+
 const ChildEntry = (props) => {
-  const length = 3 * 60;
+  const length = useSelector((state) => state.timer.value);
 
   const [trigger, setTrigger] = useState(false);
   const [time, setTime] = useState(length);
   const { name } = props;
 
-  const getMinutes = (t) => Math.floor(t / 60);
-  const getSeconds = (t) => t % 60;
-  const zeroPad = (num, places) => String(num).padStart(places, "0");
+  useEffect(() => {
+    setTime(length);
+  }, [length]);
 
   useEffect(() => {
     if (!trigger) return;
@@ -50,7 +59,7 @@ const ChildEntry = (props) => {
         <div
           className={`c-timer-countdown u-mono${time === 0 ? " t-red" : ""}`}
         >
-          {getMinutes(time)}:{zeroPad(getSeconds(time), 2)}
+          {displayTime(time)}
         </div>
         <button type="button" onClick={triggerCd}>
           {trigger ? "Stopp" : "Start"}
@@ -90,13 +99,39 @@ const TimerList = (props) => {
   const infoStatus = useSelector((state) => state.camperInfo.status);
   const error = useSelector((state) => state.camperInfo.error);
 
+  const time = useSelector((state) => state.timer.value);
+
   useEffect(() => {
     if (infoStatus === "idle") dispatch(fetchCamperInfo(shiftNr));
   }, [infoStatus, dispatch]);
 
+  const updateTime = ({ target }) => {
+    const rawForm = target.value;
+    const match = rawForm.match(/^\d{1,2}:\d{2}$/);
+    if (!match) return;
+
+    const minutes = parseInt(rawForm.match(/\d{1,2}:/), 10);
+    const seconds = parseInt(rawForm.match(/:\d{2}/)[0].slice(1), 10);
+    if (minutes >= 60 || seconds >= 60) return;
+
+    dispatch(set(minutes * 60 + seconds));
+  };
+
   switch (infoStatus) {
     case "ok":
-      return <ChildList campers={camperInfo} />;
+      return (
+        <div>
+          {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
+          <label htmlFor="timer">Aeg: </label>
+          <input
+            type=""
+            id="timer"
+            defaultValue={displayTime(time)}
+            onBlur={updateTime}
+          />
+          <ChildList campers={camperInfo} />
+        </div>
+      );
     case "nok":
       return <p>{error}</p>;
     default:

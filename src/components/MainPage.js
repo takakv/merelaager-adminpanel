@@ -43,22 +43,32 @@ const MainPage = (props) => {
     return <StaffList />;
   }
   return (
-    <div className="c-grid">
+    <div className="c-landing-grid">
       <CurrentDate />
       <StaffList />
-      <p>Saada kasvatajale ligipääs:</p>
-      {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-      <label>
-        Meil
-        <input onChange={(e) => setEmail(e.target.value)} type="email" />
-      </label>
-      <button type="button" onClick={sendMail}>
-        Saada link
-      </button>
-      <p>
-        Ligipääsu piktogramm läheb roheliseks siis, kui kasvataja on endale
-        konto loonud.
-      </p>
+      <div className="c-card c-mailsend">
+        <p>Saada kasvatajale ligipääs:</p>
+        <div className="c-mailsend-ia">
+          <div className="c-mailsend-input">
+            {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
+            <label htmlFor="usr-mail">Meil</label>
+            <input
+              id="usr-mail"
+              onChange={(e) => setEmail(e.target.value)}
+              type="email"
+            />
+          </div>
+          <div className="c-mailsend-actions">
+            <button type="button" onClick={sendMail}>
+              Saada link
+            </button>
+          </div>
+        </div>
+        <p>
+          Ligipääsu piktogramm läheb roheliseks siis, kui kasvataja on endale
+          konto loonud.
+        </p>
+      </div>
     </div>
   );
 };
