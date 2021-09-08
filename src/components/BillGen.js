@@ -38,17 +38,21 @@ const BillGen = (props) => {
 
   return (
     <div>
-      {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-      <label>
-        Lapsevanema meil
-        <input type="email" name="meil" id="mail" />
-      </label>
-      <button type="button" id="fetch" onClick={fetchPDF}>
-        Leia
-      </button>
-      <button type="button" id="create" onClick={fetchPDF}>
-        Genereeri
-      </button>
+      <div className="c-card c-mailsend">
+        <div className="c-mailsend-input">
+          {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
+          <label htmlFor="mail">Lapsevanema meil</label>
+          <input type="email" name="meil" id="mail" />
+        </div>
+        <div className="c-mailsend-actions">
+          <button type="button" id="fetch" onClick={fetchPDF}>
+            Leia
+          </button>
+          <button type="button" id="create" onClick={fetchPDF}>
+            Genereeri
+          </button>
+        </div>
+      </div>
       <div className="o-banner o-banner--warning">
         <p>
           &bdquo;Genereeri&ldquo; asendab olemasoleva arve uuega (tänase

@@ -5,6 +5,20 @@ import PropTypes from "prop-types";
 import { setTitle } from "../features/pageTitle/pageTitleSlice";
 import { getShift } from "../features/userData/userDataSlice";
 import { makePostRequest } from "./Common/requestAPI";
+import StaffList from "../features/staffList/staffList";
+
+const CurrentDate = () => {
+  const [date] = useState(
+    new Intl.DateTimeFormat("et-EE", { dateStyle: "full" }).format()
+  );
+  return (
+    <div className="c-card c-dateblock">
+      <div>
+        <p>{date}</p>
+      </div>
+    </div>
+  );
+};
 
 const MainPage = (props) => {
   const { title } = props;
@@ -26,19 +40,35 @@ const MainPage = (props) => {
   };
 
   if (role === "op") {
-    return <p>Siia tekivad asjad, ent neid asju veel pole.</p>;
+    return <StaffList />;
   }
   return (
-    <div>
-      <p>Saada kasvatajale ligipääs:</p>
-      {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-      <label>
-        Meil
-        <input onChange={(e) => setEmail(e.target.value)} type="email" />
-      </label>
-      <button type="button" onClick={sendMail}>
-        Saada link
-      </button>
+    <div className="c-landing-grid">
+      <CurrentDate />
+      <StaffList />
+      <div className="c-card c-mailsend">
+        <p>Saada kasvatajale ligipääs:</p>
+        <div className="c-mailsend-ia">
+          <div className="c-mailsend-input">
+            {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
+            <label htmlFor="usr-mail">Meil</label>
+            <input
+              id="usr-mail"
+              onChange={(e) => setEmail(e.target.value)}
+              type="email"
+            />
+          </div>
+          <div className="c-mailsend-actions">
+            <button type="button" onClick={sendMail}>
+              Saada link
+            </button>
+          </div>
+        </div>
+        <p>
+          Ligipääsu piktogramm läheb roheliseks siis, kui kasvataja on endale
+          konto loonud.
+        </p>
+      </div>
     </div>
   );
 };

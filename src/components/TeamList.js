@@ -244,6 +244,7 @@ const TeamBox = (props) => {
       <div className="o-box-header u-text-center">
         <h3>{team.name}</h3>
         <p>{team.place ?? "-"}. koht</p>
+        <p>{team.members.length} liiget</p>
       </div>
       <ul className="u-list-blank">
         {team.members.map((member) => (

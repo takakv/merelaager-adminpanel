@@ -17,6 +17,7 @@ import Mailer from "../components/Mailer";
 import Hamburger from "../components/Hamburger";
 import MainPage from "../components/MainPage";
 import { setData } from "../features/userData/userDataSlice";
+import TimerList from "../components/TimerList";
 
 const apiURL =
   process.env.NODE_ENV === "development"
@@ -110,6 +111,9 @@ export default function App() {
               <Shirts title="Särgid" />
             </Route>
           )}
+          <Route path="/taimer/">
+            <TimerList title="Taimer" />
+          </Route>
         </Switch>
       </main>
     </div>

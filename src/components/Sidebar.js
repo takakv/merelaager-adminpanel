@@ -43,13 +43,22 @@ const Navigation = () => {
             Telgid
           </Link>
         </li>
-        <li className="last">
+        <li>
           <Link
             className="_link"
             to="/meeskonnad/"
             onClick={() => dispatch(setTitle("Meeskonnad"))}
           >
             Meeskonnad
+          </Link>
+        </li>
+        <li className="last">
+          <Link
+            className="_link"
+            to="/taimer/"
+            onClick={() => dispatch(setTitle("Taimer"))}
+          >
+            Taimer
           </Link>
         </li>
         {role === "op" ? (

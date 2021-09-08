@@ -803,6 +803,149 @@ button,
   }
 }
 
+.c-card {
+  display: inline-block;
+  padding: 1em 2em;
+  border: 1px solid var(--line-dark);
+}
+
+.c-teambox {
+  &-entry {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 0.5em;
+    padding-bottom: 0.5em;
+    border-bottom: 1px solid var(--line-dark);
+
+    &:last-child {
+      margin-bottom: 0;
+      border-bottom: 0;
+    }
+  }
+
+  &-icons {
+    display: flex;
+    align-items: flex-end;
+    margin-left: 1em;
+  }
+
+  &-role {
+    font-size: 0.875rem;
+  }
+
+  .material-icons {
+    position: relative;
+    transform: scale(0.9);
+
+    &.lock {
+      &::after {
+        font-family: "Space Grotesk", sans-serif;
+        font-size: 1rem;
+        position: absolute;
+        top: -1rem;
+        left: 1rem;
+        display: none;
+        content: "Näitab ligipääsuõigusi.";
+        color: var(--primary-text);
+      }
+
+      &:hover {
+        cursor: help;
+
+        &::after {
+          display: block;
+        }
+      }
+    }
+  }
+
+  ._locked .material-icons {
+    //color: #e01e5a;
+    color: #5f6368;
+  }
+
+  ._unlocked .material-icons {
+    color: #2eb67d;
+  }
+}
+
+.c-landing-grid {
+  //display: grid;
+  //grid-template-columns: 500px min-content auto;
+  //grid-template-rows: repeat(2, 1fr);
+  //gap: 0 20px;
+}
+
+.c-dateblock {
+  //grid-column: 1 / 2;
+}
+
+.c-teambox {
+  //grid-column: 2 / 3;
+}
+
+.c-timer-entry {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 500px;
+}
+
+.c-timer {
+  &-actions {
+  }
+
+  &-action {
+    padding: 0.25em;
+
+    &:hover {
+      cursor: pointer;
+      border-radius: 30px;
+      background-color: var(--dimmed);
+    }
+  }
+}
+
+.c-mailsend {
+  &-input {
+    display: inline-block;
+    margin-right: 1em;
+
+    label {
+      margin-right: 0.5em;
+    }
+  }
+
+  &-actions {
+    display: inline-block;
+
+    button {
+      margin-right: 1em;
+
+      &:last-child {
+        margin-right: 0;
+      }
+    }
+  }
+
+  &-ia {
+  }
+}
+
+.c-timer-countdown {
+  margin-right: 0.5em;
+
+  &.t-red {
+    color: #e01e5a;
+  }
+}
+
+.c-timer-app {
+  display: flex;
+  align-items: center;
+}
+
 #app {
   width: 100%;
   height: 100vh;
