@@ -24,7 +24,7 @@ const apiURL =
     ? "http://localhost:3000"
     : "https://merelaager.ee";
 
-export default function App() {
+const App = () => {
   const dispatch = useDispatch();
   const { token, setToken } = useToken();
 
@@ -109,4 +109,6 @@ export default function App() {
       </main>
     </div>
   );
-}
+};
+
+export default App;

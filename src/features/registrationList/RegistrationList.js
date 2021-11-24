@@ -16,7 +16,7 @@ const regCounters = ["poisid", "tüdrukud", "kokku"];
 const resCounters = ["res. poisid", "res. tüdrukud"];
 
 // Buttons used to switch between each of the shifts.
-const ShiftSwitchButtons = (props) => {
+const ShiftSwitchButtons = ({ switcher }) => {
   const shiftNr = useSelector(getShift);
 
   const print = async () => {
@@ -49,7 +49,7 @@ const ShiftSwitchButtons = (props) => {
           <button
             type="button"
             key={shift}
-            onClick={props.switcher}
+            onClick={switcher}
             className="o-button--40"
           >
             {shift}v
@@ -88,14 +88,14 @@ ShiftOverviewCounter.defaultProps = {
 };
 
 // Overview of the number of campers for each shift.
-const ShiftOverviewInfo = (props) => (
+const ShiftOverviewInfo = ({ regCounts, resCounts }) => (
   <div className="c-regList-counters">
     <div className="c-regList-counters__reg">
       {regCounters.map((counter, index) => (
         <ShiftOverviewCounter
           counterName={counter}
           key={counter}
-          count={props.regCounts[index]}
+          count={regCounts[index]}
         />
       ))}
     </div>
@@ -104,7 +104,7 @@ const ShiftOverviewInfo = (props) => (
         <ShiftOverviewCounter
           counterName={counter}
           key={counter}
-          count={props.resCounts[index]}
+          count={resCounts[index]}
         />
       ))}
     </div>
