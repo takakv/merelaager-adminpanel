@@ -259,9 +259,9 @@ const RegTable = (props) => {
   // Convert object data into array format to be more manageable for React.
   Object.values(shiftData.campers).forEach((camper) => {
     if (camper.registered) {
-      if (camper.gender === "Poiss") parsedData.regBoys.push(camper);
+      if (camper.gender === "M") parsedData.regBoys.push(camper);
       else parsedData.regGirls.push(camper);
-    } else if (camper.gender === "Poiss") parsedData.resBoys.push(camper);
+    } else if (camper.gender === "M") parsedData.resBoys.push(camper);
     else parsedData.resGirls.push(camper);
   });
 

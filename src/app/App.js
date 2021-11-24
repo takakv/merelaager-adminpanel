@@ -1,5 +1,5 @@
 import React from "react";
-import { Route, Switch } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import { useDispatch } from "react-redux";
 
 import Login from "../components/Login";
@@ -66,55 +66,46 @@ export default function App() {
       <PageTitle />
       <UserBox />
       <main role="main" className="c-content">
-        <Switch>
-          <Route path="/" exact>
-            <MainPage title="Kambüüs" />
-          </Route>
+        <Routes>
+          <Route exact path="/" element={<MainPage title="Kambüüs" />} />
           {role === "op" ? (
             ""
           ) : (
-            <Route path="/lapsed/">
-              <ShiftInfo title="Lapsed" />
-            </Route>
+            <Route path="/lapsed/" element={<ShiftInfo title="Lapsed" />} />
           )}
-          <Route path="/meeskonnad/">
-            <TeamsPage title="Meeskonnad" />
-          </Route>
-          <Route path="/telgid/">
-            <TentList title="Telgid" />
-          </Route>
+          <Route
+            path="/meeskonnad/"
+            element={<TeamsPage title="Meeskonnad" />}
+          />
+          <Route path="/telgid/" element={<TentList title="Telgid" />} />
           {role === "op" ? (
             ""
           ) : (
-            <Route path="/meil/">
-              <Mailer title="Meil" />
-            </Route>
+            <Route path="/meil/" element={<Mailer title="Meil" />} />
           )}
           {role === "op" ? (
             ""
           ) : (
-            <Route path="/nimekiri/">
-              <RegistrationList title="Nimekiri" />
-            </Route>
+            <Route
+              path="/nimekiri/"
+              element={<RegistrationList title="Nimekiri" />}
+            />
           )}
           {role === "op" ? (
             ""
           ) : (
-            <Route path="/arvegeneraator/">
-              <BillGen title="Arvegeneraator" />
-            </Route>
+            <Route
+              path="/arvegeneraator/"
+              element={<BillGen title="Arvegeneraator" />}
+            />
           )}
           {role === "op" ? (
             ""
           ) : (
-            <Route path="/sargid/">
-              <Shirts title="Särgid" />
-            </Route>
+            <Route path="/sargid/" element={<Shirts title="Särgid" />} />
           )}
-          <Route path="/taimer/">
-            <TimerList title="Taimer" />
-          </Route>
-        </Switch>
+          <Route path="/taimer/" element={<TimerList title="Taimer" />} />
+        </Routes>
       </main>
     </div>
   );
