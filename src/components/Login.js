@@ -7,7 +7,7 @@ const apiURL =
     : "https://merelaager.ee";
 
 const loginUser = async (credentials) =>
-  fetch(`${apiURL}/api/login/`, {
+  fetch(`${apiURL}/api/auth/login/`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

@@ -31,7 +31,7 @@ const App = () => {
   const silentTokenRefresh = async () => {
     const credentials = JSON.parse(localStorage.getItem("credentials"));
     const { refreshToken } = credentials;
-    const response = await fetch(`${apiURL}/api/token/`, {
+    const response = await fetch(`${apiURL}/api/auth/token/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
