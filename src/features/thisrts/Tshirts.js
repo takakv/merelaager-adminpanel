@@ -84,12 +84,14 @@ const Shirts = (props) => {
   let condContent;
   switch (fetchStatus) {
     case "ok":
-      condContent = (
-        <ShirtCells
-          shirtData={shirtData}
-          shifts={[...Array(Object.keys(shirtData).length).keys()].splice(1)}
-        />
-      );
+      if (shirtData)
+        condContent = (
+          <ShirtCells
+            shirtData={shirtData}
+            shifts={[...Array(Object.keys(shirtData).length).keys()].splice(1)}
+          />
+        );
+      else condContent = <p>Info puudub</p>;
       break;
     case "nok":
       condContent = <p>{fetchError}</p>;
