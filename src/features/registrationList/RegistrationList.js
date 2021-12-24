@@ -148,7 +148,7 @@ const RegistrationList = (props) => {
   let resCounts = 0;
   let shiftData = null;
 
-  if (regListStatus === "succeeded") {
+  if (regListStatus === "succeeded" && shiftData) {
     shiftData = regListData[shiftNr];
     if (shiftData) {
       regCounts = [

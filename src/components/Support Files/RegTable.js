@@ -44,9 +44,7 @@ const RegTableHead = () => (
       <th>Vana?</th>
       <th>Sünnipäev</th>
       <th>Ts</th>
-      <th>Tln?</th>
       <th>Arve nr</th>
-      <th>Isikukood</th>
     </tr>
   </thead>
 );
@@ -227,9 +225,7 @@ const RegTableSection = (props) => {
           </td>
           <td className="u-mono">{kid.bDay}</td>
           <td>{kid.tShirtSize}</td>
-          <td>{kid.tln ? "jah" : "ei"}</td>
           <td className="u-mono">{kid.billNr}</td>
-          <td className="u-mono">{kid.idCode}</td>
         </tr>
       ))}
     </tbody>
@@ -252,6 +248,14 @@ const RegTable = (props) => {
   };
 
   const { shiftData, shiftNr } = props;
+
+  if (!shiftData) {
+    return (
+      <table>
+        <RegTableHead />
+      </table>
+    );
+  }
 
   // Convert object data into array format to be more manageable for React.
   Object.values(shiftData.campers).forEach((camper) => {
@@ -286,7 +290,11 @@ const RegTable = (props) => {
 
 RegTable.propTypes = {
   shiftNr: PropTypes.number.isRequired,
-  shiftData: PropTypes.objectOf(PropTypes.any).isRequired,
+  shiftData: PropTypes.objectOf(PropTypes.any),
+};
+
+RegTable.defaultProps = {
+  shiftData: {},
 };
 
 export default RegTable;
