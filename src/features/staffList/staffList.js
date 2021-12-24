@@ -19,7 +19,7 @@ const StaffEntry = (props) => {
       role = "Abikasvataja";
       break;
     default:
-      role = "?";
+      role = "Suvitaja";
       break;
   }
 
@@ -59,6 +59,7 @@ const StaffList = () => {
   const bossList = [];
   const fullList = [];
   const partList = [];
+  const defList = [];
 
   const sortList = (a, b) => a.name.localeCompare(b.name);
 
@@ -76,12 +77,15 @@ const StaffList = () => {
             partList.push(staff);
             break;
           default:
-            throw new Error("Unknown staff type");
+            defList.push(staff);
+            // throw new Error("Unknown staff type");
+            break;
         }
       });
       bossList.sort(sortList);
       fullList.sort(sortList);
       partList.sort(sortList);
+      defList.sort(sortList);
 
       return (
         <div className="c-card">
@@ -93,6 +97,9 @@ const StaffList = () => {
             <StaffEntry key={staff.id} staff={staff} />
           ))}
           {partList.map((staff) => (
+            <StaffEntry key={staff.id} staff={staff} />
+          ))}
+          {defList.map((staff) => (
             <StaffEntry key={staff.id} staff={staff} />
           ))}
         </div>
