@@ -39,12 +39,12 @@ const registrationListSlice = createSlice({
       // Update shift counters.
       if (isRegistered) {
         shift.totalRegCount += 1;
-        shift[camper.gender === "Poiss" ? "regBoyCount" : "regGirlCount"] += 1;
-        shift[camper.gender === "Poiss" ? "resBoyCount" : "resGirlCount"] -= 1;
+        shift[camper.gender === "M" ? "regBoyCount" : "regGirlCount"] += 1;
+        shift[camper.gender === "M" ? "resBoyCount" : "resGirlCount"] -= 1;
       } else {
         shift.totalRegCount -= 1;
-        shift[camper.gender === "Poiss" ? "regBoyCount" : "regGirlCount"] -= 1;
-        shift[camper.gender === "Poiss" ? "resBoyCount" : "resGirlCount"] += 1;
+        shift[camper.gender === "M" ? "regBoyCount" : "regGirlCount"] -= 1;
+        shift[camper.gender === "M" ? "resBoyCount" : "resGirlCount"] += 1;
       }
     },
     removeCamper: (state, action) => {

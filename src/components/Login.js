@@ -7,7 +7,7 @@ const apiURL =
     : "https://merelaager.ee";
 
 const loginUser = async (credentials) =>
-  fetch(`${apiURL}/api/login/`, {
+  fetch(`${apiURL}/api/auth/login/`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -15,7 +15,7 @@ const loginUser = async (credentials) =>
     body: JSON.stringify(credentials),
   }).then((data) => data.json());
 
-export default function Login({ setToken }) {
+const Login = ({ setToken }) => {
   const [username, setUserName] = useState();
   const [password, setPassword] = useState();
 
@@ -51,8 +51,10 @@ export default function Login({ setToken }) {
       </form>
     </div>
   );
-}
+};
 
 Login.propTypes = {
   setToken: PropTypes.func.isRequired,
 };
+
+export default Login;

@@ -107,16 +107,16 @@ TeamsPage.propTypes = {
   title: PropTypes.string.isRequired,
 };
 
-const TeamCreator = (props) => {
+const TeamCreator = () => {
   const [teamName, setTeamName] = useState();
 
   const handleChange = (event) => {
     setTeamName(event.target.value);
   };
 
-  const createTeam = async () => {
+  const createTeam = async ({ shiftNr }) => {
     const response = await makePostRequest("/teams/create/", {
-      shiftNr: props.shiftNr,
+      shiftNr,
       name: teamName,
     });
     if (!response || !response.ok) return;
@@ -135,10 +135,6 @@ const TeamCreator = (props) => {
       </button>
     </div>
   );
-};
-
-TeamCreator.propTypes = {
-  shiftNr: PropTypes.number.isRequired,
 };
 
 const Teamless = (props) => {

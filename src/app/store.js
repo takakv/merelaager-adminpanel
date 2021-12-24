@@ -8,6 +8,7 @@ import camperInfoReducer from "../features/camperInfo/camperInfoSlice";
 import teamsReducer from "../features/teams/teamerSlice";
 import staffListReducer from "../features/staffList/staffListSlice";
 import timerReducer from "../features/timer/timerSlice";
+import userInfoReducer from "../features/userAuth/userAuthSlice";
 
 export default configureStore({
   reducer: {
@@ -20,5 +21,6 @@ export default configureStore({
     teams: teamsReducer,
     staffList: staffListReducer,
     timer: timerReducer,
+    userInfo: userInfoReducer,
   },
 });

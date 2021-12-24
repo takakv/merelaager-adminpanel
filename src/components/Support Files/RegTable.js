@@ -44,9 +44,7 @@ const RegTableHead = () => (
       <th>Vana?</th>
       <th>Sünnipäev</th>
       <th>Ts</th>
-      <th>Tln?</th>
       <th>Arve nr</th>
-      <th>Isikukood</th>
     </tr>
   </thead>
 );
@@ -54,28 +52,26 @@ const RegTableHead = () => (
 const ToggleButton = (props) => {
   const dispatch = useDispatch();
 
+  const { id, field, shiftNr, status } = props;
+
   const toggleState = async ({ target }) => {
-    const response = await makePostRequest(
-      `reglist/update/${props.id}/${props.field}/`
-    );
+    const response = await makePostRequest(`reglist/update/${id}/${field}/`);
 
     if (!response || !response.ok) return;
 
     switchStatus(target);
 
     // Update store.
-    if (props.field === "registration") {
+    if (field === "registration") {
       dispatch(
         toggleRegistration({
-          shiftNr: props.shiftNr,
-          id: props.id,
-          status: props.status,
+          shiftNr,
+          id,
+          status,
         })
       );
     }
   };
-
-  const { status } = props;
 
   return (
     <button type="button" className="o-button--40" onClick={toggleState}>
@@ -94,26 +90,28 @@ ToggleButton.propTypes = {
 const InputField = (props) => {
   const dispatch = useDispatch();
 
+  const { id, field, shiftNr } = props;
+
   const handleChange = async ({ target }) => {
     const response = await makePostRequest(
-      `reglist/update/${props.id}/${props.field}/${target.value}`
+      `reglist/update/${id}/${field}/${target.value}`
     );
 
     if (!response || !response.ok) return;
 
-    if (props.field === "total-paid") {
+    if (field === "total-paid") {
       dispatch(
         updatePaidValue({
-          shiftNr: props.shiftNr,
-          id: props.id,
+          shiftNr,
+          id,
           value: parseInt(target.value, 10),
         })
       );
-    } else if (props.field === "total-due") {
+    } else if (field === "total-due") {
       dispatch(
         updateToPayValue({
-          shiftNr: props.shiftNr,
-          id: props.id,
+          shiftNr,
+          id,
           value: parseInt(target.value, 10),
         })
       );
@@ -147,16 +145,13 @@ InputField.propTypes = {
 const Deleter = (props) => {
   const dispatch = useDispatch();
 
+  const { id, shiftNr } = props;
+
   const remove = async () => {
-    const response = await makePostRequest(`reglist/remove/${props.id}/`);
+    const response = await makePostRequest(`reglist/remove/${id}/`);
     if (!response || !response.ok) return;
 
-    dispatch(
-      removeCamper({
-        shiftNr: props.shiftNr,
-        id: props.id,
-      })
-    );
+    dispatch(removeCamper({ shiftNr, id }));
   };
 
   return (
@@ -172,8 +167,8 @@ Deleter.propTypes = {
 };
 
 const RegTableSection = (props) => {
-  const { title, shiftNr } = props;
-  const { children } = props;
+  const { title, shiftNr, children } = props;
+
   return (
     <tbody>
       <tr>
@@ -230,9 +225,7 @@ const RegTableSection = (props) => {
           </td>
           <td className="u-mono">{kid.bDay}</td>
           <td>{kid.tShirtSize}</td>
-          <td>{kid.tln ? "jah" : "ei"}</td>
           <td className="u-mono">{kid.billNr}</td>
-          <td className="u-mono">{kid.idCode}</td>
         </tr>
       ))}
     </tbody>
@@ -254,14 +247,22 @@ const RegTable = (props) => {
     resGirls: [],
   };
 
-  const { shiftData } = props;
+  const { shiftData, shiftNr } = props;
+
+  if (!shiftData) {
+    return (
+      <table>
+        <RegTableHead />
+      </table>
+    );
+  }
 
   // Convert object data into array format to be more manageable for React.
   Object.values(shiftData.campers).forEach((camper) => {
     if (camper.registered) {
-      if (camper.gender === "Poiss") parsedData.regBoys.push(camper);
+      if (camper.gender === "M") parsedData.regBoys.push(camper);
       else parsedData.regGirls.push(camper);
-    } else if (camper.gender === "Poiss") parsedData.resBoys.push(camper);
+    } else if (camper.gender === "M") parsedData.resBoys.push(camper);
     else parsedData.resGirls.push(camper);
   });
 
@@ -280,7 +281,7 @@ const RegTable = (props) => {
           key={section[1]}
           title={section[0]}
           children={parsedData[section[1]]}
-          shiftNr={props.shiftNr}
+          shiftNr={shiftNr}
         />
       ))}
     </table>
@@ -289,7 +290,11 @@ const RegTable = (props) => {
 
 RegTable.propTypes = {
   shiftNr: PropTypes.number.isRequired,
-  shiftData: PropTypes.objectOf(PropTypes.any).isRequired,
+  shiftData: PropTypes.objectOf(PropTypes.any),
+};
+
+RegTable.defaultProps = {
+  shiftData: {},
 };
 
 export default RegTable;

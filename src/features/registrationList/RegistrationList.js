@@ -11,12 +11,12 @@ import {
 import { getShift } from "../userData/userDataSlice";
 import { makeGetRequest } from "../../components/Common/requestAPI";
 
-const shifts = ["1", "2", "3", "4"];
+const shifts = ["1", "2", "3", "4", "5"];
 const regCounters = ["poisid", "tüdrukud", "kokku"];
 const resCounters = ["res. poisid", "res. tüdrukud"];
 
 // Buttons used to switch between each of the shifts.
-const ShiftSwitchButtons = (props) => {
+const ShiftSwitchButtons = ({ switcher }) => {
   const shiftNr = useSelector(getShift);
 
   const print = async () => {
@@ -49,7 +49,7 @@ const ShiftSwitchButtons = (props) => {
           <button
             type="button"
             key={shift}
-            onClick={props.switcher}
+            onClick={switcher}
             className="o-button--40"
           >
             {shift}v
@@ -88,14 +88,14 @@ ShiftOverviewCounter.defaultProps = {
 };
 
 // Overview of the number of campers for each shift.
-const ShiftOverviewInfo = (props) => (
+const ShiftOverviewInfo = ({ regCounts, resCounts }) => (
   <div className="c-regList-counters">
     <div className="c-regList-counters__reg">
       {regCounters.map((counter, index) => (
         <ShiftOverviewCounter
           counterName={counter}
           key={counter}
-          count={props.regCounts[index]}
+          count={regCounts[index]}
         />
       ))}
     </div>
@@ -104,7 +104,7 @@ const ShiftOverviewInfo = (props) => (
         <ShiftOverviewCounter
           counterName={counter}
           key={counter}
-          count={props.resCounts[index]}
+          count={resCounts[index]}
         />
       ))}
     </div>
@@ -148,7 +148,7 @@ const RegistrationList = (props) => {
   let resCounts = 0;
   let shiftData = null;
 
-  if (regListStatus === "succeeded") {
+  if (regListStatus === "succeeded" && regListData) {
     shiftData = regListData[shiftNr];
     if (shiftData) {
       regCounts = [
@@ -171,9 +171,11 @@ const RegistrationList = (props) => {
   let conditionalRenderContent;
   switch (regListStatus) {
     case "succeeded":
-      conditionalRenderContent = (
-        <RegTable shiftData={shiftData} shiftNr={shiftNr} />
-      );
+      if (shiftData)
+        conditionalRenderContent = (
+          <RegTable shiftData={shiftData} shiftNr={shiftNr} />
+        );
+      else conditionalRenderContent = <p>Registreerimisi pole</p>;
       break;
     case "failed":
       conditionalRenderContent = <p>{regListError}</p>;

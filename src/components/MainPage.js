@@ -6,13 +6,14 @@ import { setTitle } from "../features/pageTitle/pageTitleSlice";
 import { getShift } from "../features/userData/userDataSlice";
 import { makePostRequest } from "./Common/requestAPI";
 import StaffList from "../features/staffList/staffList";
+import { getUserInfo } from "../features/userAuth/userAuthSlice";
 
 const CurrentDate = () => {
   const [date] = useState(
     new Intl.DateTimeFormat("et-EE", { dateStyle: "full" }).format()
   );
   return (
-    <div className="c-card c-dateblock">
+    <div className="c-card">
       <div>
         <p>{date}</p>
       </div>
@@ -27,8 +28,7 @@ const MainPage = (props) => {
   dispatch(setTitle(title));
 
   const shiftNr = useSelector(getShift);
-  const credentials = localStorage.getItem("credentials");
-  const { role } = JSON.parse(credentials).user;
+  const role = useSelector(getUserInfo);
 
   const sendMail = async () => {
     const packet = {
@@ -44,30 +44,36 @@ const MainPage = (props) => {
   }
   return (
     <div className="c-landing-grid">
-      <CurrentDate />
-      <StaffList />
-      <div className="c-card c-mailsend">
-        <p>Saada kasvatajale ligipääs:</p>
-        <div className="c-mailsend-ia">
-          <div className="c-mailsend-input">
-            {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-            <label htmlFor="usr-mail">Meil</label>
-            <input
-              id="usr-mail"
-              onChange={(e) => setEmail(e.target.value)}
-              type="email"
-            />
+      <div className="c-card-wrapper c-dateblock">
+        <CurrentDate />
+      </div>
+      <div className="c-card-wrapper c-teambox">
+        <StaffList />
+      </div>
+      <div className="c-card-wrapper c-mailsendbox">
+        <div className="c-card c-mailsend">
+          <p>Saada kasvatajale ligipääs:</p>
+          <div className="c-mailsend-ia">
+            <div className="c-mailsend-input">
+              {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
+              <label htmlFor="usr-mail">Meil</label>
+              <input
+                id="usr-mail"
+                onChange={(e) => setEmail(e.target.value)}
+                type="email"
+              />
+            </div>
+            <div className="c-mailsend-actions">
+              <button type="button" onClick={sendMail}>
+                Saada link
+              </button>
+            </div>
           </div>
-          <div className="c-mailsend-actions">
-            <button type="button" onClick={sendMail}>
-              Saada link
-            </button>
-          </div>
+          <p>
+            Ligipääsu piktogramm läheb roheliseks siis, kui kasvataja on endale
+            konto loonud.
+          </p>
         </div>
-        <p>
-          Ligipääsu piktogramm läheb roheliseks siis, kui kasvataja on endale
-          konto loonud.
-        </p>
       </div>
     </div>
   );
