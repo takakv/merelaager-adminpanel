@@ -6,6 +6,7 @@ import { setTitle } from "../features/pageTitle/pageTitleSlice";
 import { getShift } from "../features/userData/userDataSlice";
 import { makePostRequest } from "./Common/requestAPI";
 import StaffList from "../features/staffList/staffList";
+import { getUserInfo } from "../features/userAuth/userAuthSlice";
 
 const CurrentDate = () => {
   const [date] = useState(
@@ -27,8 +28,7 @@ const MainPage = (props) => {
   dispatch(setTitle(title));
 
   const shiftNr = useSelector(getShift);
-  const credentials = localStorage.getItem("credentials");
-  const { role } = JSON.parse(credentials).user;
+  const role = useSelector(getUserInfo);
 
   const sendMail = async () => {
     const packet = {

@@ -11,7 +11,7 @@ const userDataSlice = createSlice({
     setData: (state, action) => {
       state.name = action.payload.name;
       state.role = action.payload.role;
-      state.shift = action.payload.shift;
+      state.shift = action.payload.shiftNr;
     },
     setRole: (state, action) => {
       state.role = action.payload;

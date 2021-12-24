@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Route, Routes } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import Login from "../components/Login";
 import Sidebar from "../components/Sidebar";
@@ -18,6 +18,7 @@ import Hamburger from "../components/Hamburger";
 import MainPage from "../components/MainPage";
 import { setData } from "../features/userData/userDataSlice";
 import TimerList from "../components/TimerList";
+import { fetchInfo, getUserInfo } from "../features/userAuth/userAuthSlice";
 
 const apiURL =
   process.env.NODE_ENV === "development"
@@ -25,8 +26,20 @@ const apiURL =
     : "https://merelaager.ee";
 
 const App = () => {
-  const dispatch = useDispatch();
   const { token, setToken } = useToken();
+
+  if (!token) {
+    return <Login setToken={setToken} />;
+  }
+
+  const dispatch = useDispatch();
+  const userInfo = useSelector(getUserInfo);
+  const userInfoStatus = useSelector((state) => state.userInfo.status);
+  const userInfoError = useSelector((state) => state.userInfo.error);
+
+  useEffect(() => {
+    if (userInfoStatus === "idle") dispatch(fetchInfo());
+  }, [userInfoStatus, dispatch]);
 
   const silentTokenRefresh = async () => {
     const credentials = JSON.parse(localStorage.getItem("credentials"));
@@ -42,10 +55,6 @@ const App = () => {
     localStorage.setItem("credentials", JSON.stringify(credentials));
   };
 
-  if (!token) {
-    return <Login setToken={setToken} />;
-  }
-
   setInterval(silentTokenRefresh, 1200000);
   silentTokenRefresh().catch((err) => {
     alert("Sessioon on aegunud.");
@@ -54,61 +63,67 @@ const App = () => {
     console.log(err);
     // alert("Autentimisega on probleeme. Palun anna Taanielile teada.");
   });
-  const credentials = JSON.parse(localStorage.getItem("credentials"));
-  dispatch(setData(credentials.user));
 
-  const { role } = credentials.user;
+  const { role } = userInfo;
 
-  return (
-    <div className="admin-page">
-      <Hamburger />
-      <Sidebar />
-      <PageTitle />
-      <UserBox />
-      <main role="main" className="c-content">
-        <Routes>
-          <Route exact path="/" element={<MainPage title="Kambüüs" />} />
-          {role === "op" ? (
-            ""
-          ) : (
-            <Route path="/lapsed/" element={<ShiftInfo title="Lapsed" />} />
-          )}
-          <Route
-            path="/meeskonnad/"
-            element={<TeamsPage title="Meeskonnad" />}
-          />
-          <Route path="/telgid/" element={<TentList title="Telgid" />} />
-          {role === "op" ? (
-            ""
-          ) : (
-            <Route path="/meil/" element={<Mailer title="Meil" />} />
-          )}
-          {role === "op" ? (
-            ""
-          ) : (
+  if (userInfoStatus === "succeeded") {
+    dispatch(setData(userInfo));
+
+    return (
+      <div className="admin-page">
+        <Hamburger />
+        <Sidebar />
+        <PageTitle />
+        <UserBox />
+        <main role="main" className="c-content">
+          <Routes>
+            <Route exact path="/" element={<MainPage title="Kambüüs" />} />
+            {role === "op" ? (
+              ""
+            ) : (
+              <Route path="/lapsed/" element={<ShiftInfo title="Lapsed" />} />
+            )}
             <Route
-              path="/nimekiri/"
-              element={<RegistrationList title="Nimekiri" />}
+              path="/meeskonnad/"
+              element={<TeamsPage title="Meeskonnad" />}
             />
-          )}
-          {role === "op" ? (
-            ""
-          ) : (
-            <Route
-              path="/arvegeneraator/"
-              element={<BillGen title="Arvegeneraator" />}
-            />
-          )}
-          {role === "op" ? (
-            ""
-          ) : (
-            <Route path="/sargid/" element={<Shirts title="Särgid" />} />
-          )}
-          <Route path="/taimer/" element={<TimerList title="Taimer" />} />
-        </Routes>
-      </main>
-    </div>
-  );
+            <Route path="/telgid/" element={<TentList title="Telgid" />} />
+            {role === "op" ? (
+              ""
+            ) : (
+              <Route path="/meil/" element={<Mailer title="Meil" />} />
+            )}
+            {role === "op" ? (
+              ""
+            ) : (
+              <Route
+                path="/nimekiri/"
+                element={<RegistrationList title="Nimekiri" />}
+              />
+            )}
+            {role === "op" ? (
+              ""
+            ) : (
+              <Route
+                path="/arvegeneraator/"
+                element={<BillGen title="Arvegeneraator" />}
+              />
+            )}
+            {role === "op" ? (
+              ""
+            ) : (
+              <Route path="/sargid/" element={<Shirts title="Särgid" />} />
+            )}
+            <Route path="/taimer/" element={<TimerList title="Taimer" />} />
+          </Routes>
+        </main>
+      </div>
+    );
+  }
+  if (userInfoStatus === "failed") {
+    return <p>{userInfoError}</p>;
+  }
+  return <p>Laen...</p>;
 };
 
 export default App;
