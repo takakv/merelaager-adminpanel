@@ -28,10 +28,6 @@ const apiURL =
 const App = () => {
   const { token, setToken } = useToken();
 
-  if (!token) {
-    return <Login setToken={setToken} />;
-  }
-
   const dispatch = useDispatch();
   const userInfo = useSelector(getUserInfo);
   const userInfoStatus = useSelector((state) => state.userInfo.status);
@@ -41,9 +37,16 @@ const App = () => {
     if (userInfoStatus === "idle") dispatch(fetchInfo());
   }, [userInfoStatus, dispatch]);
 
+  dispatch(setData(userInfo));
+
+  if (!token) {
+    return <Login setToken={setToken} />;
+  }
+
   const silentTokenRefresh = async () => {
     const credentials = JSON.parse(localStorage.getItem("credentials"));
     const { refreshToken } = credentials;
+
     const response = await fetch(`${apiURL}/api/auth/token/`, {
       method: "POST",
       headers: {
@@ -65,7 +68,6 @@ const App = () => {
   });
 
   if (userInfoStatus === "succeeded") {
-    dispatch(setData(userInfo));
     const { role } = userInfo;
 
     return (
@@ -120,6 +122,7 @@ const App = () => {
     );
   }
   if (userInfoStatus === "failed") {
+    window.location.reload();
     return <p>{userInfoError}</p>;
   }
   return <p>Laen...</p>;
