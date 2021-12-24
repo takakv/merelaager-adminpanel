@@ -30,6 +30,9 @@ const Mailer = (props) => {
   const parentEmails = [];
 
   if (regListStatus === "succeeded") {
+    if (!regListData) {
+      return <div>Kontaktinfo puudub</div>;
+    }
     const { campers } = regListData[shiftNr];
     Object.values(campers).forEach((camper) => {
       if (camper.registered && parentEmails.indexOf(camper.contactEmail) === -1)

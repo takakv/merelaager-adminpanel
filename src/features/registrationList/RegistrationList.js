@@ -148,7 +148,7 @@ const RegistrationList = (props) => {
   let resCounts = 0;
   let shiftData = null;
 
-  if (regListStatus === "succeeded" && shiftData) {
+  if (regListStatus === "succeeded" && regListData) {
     shiftData = regListData[shiftNr];
     if (shiftData) {
       regCounts = [
@@ -171,9 +171,11 @@ const RegistrationList = (props) => {
   let conditionalRenderContent;
   switch (regListStatus) {
     case "succeeded":
-      conditionalRenderContent = (
-        <RegTable shiftData={shiftData} shiftNr={shiftNr} />
-      );
+      if (shiftData)
+        conditionalRenderContent = (
+          <RegTable shiftData={shiftData} shiftNr={shiftNr} />
+        );
+      else conditionalRenderContent = <p>Registreerimisi pole</p>;
       break;
     case "failed":
       conditionalRenderContent = <p>{regListError}</p>;
