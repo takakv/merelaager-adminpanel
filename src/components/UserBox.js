@@ -1,13 +1,8 @@
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  getName,
-  getShift,
-  setRole,
-  setShift,
-} from "../features/userData/userDataSlice";
-import { makePostRequest } from "./Common/requestAPI";
+import { useSelector } from "react-redux";
+import { getName } from "../features/userData/userDataSlice";
 
+/*
 const sendShift = async (shiftNr) => {
   const response = await makePostRequest(`su/shift/swap`, {
     shiftNr,
@@ -20,10 +15,13 @@ const sendShift = async (shiftNr) => {
 
   return response.json();
 };
+*/
 
 const UserBox = () => {
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
   const userName = useSelector(getName);
+
+  /*
   const shiftNr = useSelector(getShift);
 
   const updateShift = async ({ target }) => {
@@ -36,11 +34,12 @@ const UserBox = () => {
     dispatch(setShift(newShiftNr));
     window.location.reload();
   };
+  */
 
   return (
     <div className="admin-page__user">
-      <p>ShiftNr: {shiftNr}</p>
-      <input type="text" onBlur={updateShift} />
+      {/* <p>ShiftNr: {shiftNr}</p> */}
+      {/* <input type="text" onBlur={updateShift} /> */}
       <span>{userName}</span>
     </div>
   );

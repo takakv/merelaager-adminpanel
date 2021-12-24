@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { setTitle } from "../features/pageTitle/pageTitleSlice";
 import { getUserInfo } from "../features/userAuth/userAuthSlice";
+import ShiftSwitcher from "./ShiftSwitcher";
 
 // _link classnames serve as identifiers when to
 // close the navigation menu on mobile.
@@ -136,6 +137,7 @@ const Sidebar = () => {
         />
       </Link>
       <Navigation />
+      <ShiftSwitcher />
     </div>
   );
 };
