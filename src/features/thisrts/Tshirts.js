@@ -62,6 +62,7 @@ const ShirtCells = ({ shirtData, shifts }) => (
 ShirtCells.propTypes = {
   shirtData: PropTypes.objectOf(PropTypes.objectOf(PropTypes.number))
     .isRequired,
+  shifts: PropTypes.arrayOf(PropTypes.number).isRequired,
 };
 
 const Shirts = (props) => {
