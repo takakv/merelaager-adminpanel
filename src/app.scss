@@ -487,9 +487,11 @@ button,
   .c-content {
     overflow: auto;
     margin-top: 24px;
-    padding: 0 1em;
+    padding: 0 1em 1em;
     grid-area: content;
+
     @media only screen and (min-width: 1000px) {
+      margin-right: 40px;
       padding: 0;
     }
   }
@@ -875,14 +877,40 @@ button,
   //grid-template-columns: 500px min-content auto;
   //grid-template-rows: repeat(2, 1fr);
   //gap: 0 20px;
+  display: grid;
+  grid-auto-rows: min-content;
+  row-gap: 2em;
+
+  @media only screen and (min-width: 600px) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0 2em;
+  }
+}
+
+.c-card-wrapper {
+
 }
 
 .c-dateblock {
-  //grid-column: 1 / 2;
+
+  .c-card {
+    width: 100%;
+  }
+}
+
+.c-mailsendbox {
+  display: flex;
+  align-items: flex-end;
 }
 
 .c-teambox {
-  //grid-column: 2 / 3;
+  justify-self: center;
+
+  @media only screen and (min-width: 600px) {
+    grid-row: 1 / span 2;
+    grid-column: 2;
+    justify-self: auto;
+  }
 }
 
 .c-timer-entry {

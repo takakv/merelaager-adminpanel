@@ -84,7 +84,7 @@ const StaffList = () => {
       partList.sort(sortList);
 
       return (
-        <div className="c-card c-teambox">
+        <div className="c-card">
           <h3>Meeskond</h3>
           {bossList.map((staff) => (
             <StaffEntry key={staff.id} staff={staff} />
