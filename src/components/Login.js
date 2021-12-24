@@ -25,6 +25,9 @@ const Login = ({ setToken }) => {
       username,
       password,
     });
+    console.log(username);
+    console.log(password);
+    console.log(response);
     setToken(response);
   };
 

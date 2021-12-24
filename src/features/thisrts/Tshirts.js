@@ -5,13 +5,11 @@ import PropTypes from "prop-types";
 import { setTitle } from "../pageTitle/pageTitleSlice";
 import { fetchShirts, getShirts } from "./tshirtsSlice";
 
-const shifts = ["1v", "2v", "3v", "4v"];
-
 const ShirtCell = (props) => {
   const { shift, shirtData } = props;
   return (
     <div className="o-box">
-      <p className="o-box-header u-text-center">{shift}</p>
+      <p className="o-box-header u-text-center">{`${shift}v`}</p>
       <ul className="u-list-blank">
         {Object.entries(shirtData)
           .sort()
@@ -27,7 +25,7 @@ const ShirtCell = (props) => {
 };
 
 ShirtCell.propTypes = {
-  shift: PropTypes.string.isRequired,
+  shift: PropTypes.number.isRequired,
   shirtData: PropTypes.objectOf(PropTypes.number).isRequired,
 };
 
@@ -52,17 +50,14 @@ TotalShirts.propTypes = {
   shirtData: PropTypes.objectOf(PropTypes.number).isRequired,
 };
 
-const ShirtCells = (props) => {
-  const { shirtData } = props;
-  return (
-    <div className="c-shirts-container u-flex">
-      {shifts.map((shift) => (
-        <ShirtCell key={shift} shift={shift} shirtData={shirtData[shift]} />
-      ))}
-      <TotalShirts shirtData={shirtData.total} />
-    </div>
-  );
-};
+const ShirtCells = ({ shirtData, shifts }) => (
+  <div className="c-shirts-container u-flex">
+    {shifts.map((shift) => (
+      <ShirtCell key={shift} shift={shift} shirtData={shirtData[shift]} />
+    ))}
+    <TotalShirts shirtData={shirtData.total} />
+  </div>
+);
 
 ShirtCells.propTypes = {
   shirtData: PropTypes.objectOf(PropTypes.objectOf(PropTypes.number))
@@ -88,7 +83,12 @@ const Shirts = (props) => {
   let condContent;
   switch (fetchStatus) {
     case "ok":
-      condContent = <ShirtCells shirtData={shirtData} />;
+      condContent = (
+        <ShirtCells
+          shirtData={shirtData}
+          shifts={[...Array(Object.keys(shirtData).length).keys()].splice(1)}
+        />
+      );
       break;
     case "nok":
       condContent = <p>{fetchError}</p>;
