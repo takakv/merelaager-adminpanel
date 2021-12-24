@@ -19,6 +19,17 @@ import BillGen from "../components/BillGen";
 import Shirts from "../features/thisrts/Tshirts";
 import TimerList from "../components/TimerList";
 
+const Loader = () => (
+  <div className="c-preloader">
+    <img
+      className="_link"
+      alt="Logo"
+      src="https://merelaager.ee/media/img/merelaager_ship.svg"
+    />
+    <p>Laen...</p>
+  </div>
+);
+
 const Root = () => {
   const dispatch = useDispatch();
   const userInfo = useSelector(getUserInfo);
@@ -88,7 +99,7 @@ const Root = () => {
     window.location.reload();
     return <p>{userInfoError}</p>;
   }
-  return <p>Laen...</p>;
+  return <Loader />;
 };
 
 export default Root;
