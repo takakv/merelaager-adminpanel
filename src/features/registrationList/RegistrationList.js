@@ -11,7 +11,7 @@ import {
 import { getShift } from "../userData/userDataSlice";
 import { makeGetRequest } from "../../components/Common/requestAPI";
 
-const shifts = ["1", "2", "3", "4"];
+const shifts = ["1", "2", "3", "4", "5"];
 const regCounters = ["poisid", "tüdrukud", "kokku"];
 const resCounters = ["res. poisid", "res. tüdrukud"];
 
