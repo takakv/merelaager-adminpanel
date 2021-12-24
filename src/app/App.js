@@ -64,10 +64,9 @@ const App = () => {
     // alert("Autentimisega on probleeme. Palun anna Taanielile teada.");
   });
 
-  const { role } = userInfo;
-
   if (userInfoStatus === "succeeded") {
     dispatch(setData(userInfo));
+    const { role } = userInfo;
 
     return (
       <div className="admin-page">
