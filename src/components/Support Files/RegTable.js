@@ -184,7 +184,11 @@ const RegTableSection = (props) => {
         <tr key={kid.id}>
           <td className="u-mono u-relative">
             {kid.regOrder}
-            {kid.registered ? "" : <Deleter id={kid.id} shiftNr={shiftNr} />}
+            {kid.registered || !myShift ? (
+              ""
+            ) : (
+              <Deleter id={kid.id} shiftNr={shiftNr} />
+            )}
           </td>
           <td>{kid.name}</td>
           <td>
