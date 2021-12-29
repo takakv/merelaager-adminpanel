@@ -2,119 +2,165 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { setTitle } from "../features/pageTitle/pageTitleSlice";
-import { getUserInfo } from "../features/userAuth/userAuthSlice";
 import ShiftSwitcher from "./ShiftSwitcher";
+import { getRole } from "../features/userData/userDataSlice";
+
+const getHomePage = () => {
+  const dispatch = useDispatch();
+  return (
+    <li className="last">
+      <Link
+        className="_link"
+        to="/"
+        onClick={() => dispatch(setTitle("Kambüüs"))}
+      >
+        Kambüüs
+      </Link>
+    </li>
+  );
+};
+
+const getChildInfoPage = (role) => {
+  const dispatch = useDispatch();
+  if (role !== "root" && role !== "boss") return "";
+  return (
+    <li>
+      <Link
+        className="_link"
+        to="/lapsed/"
+        onClick={() => dispatch(setTitle("Lapsed"))}
+      >
+        Lapsed
+      </Link>
+    </li>
+  );
+};
+
+const getTentPage = () => {
+  const dispatch = useDispatch();
+  return (
+    <li>
+      <Link
+        className="_link"
+        to="/telgid/"
+        onClick={() => dispatch(setTitle("Telgid"))}
+      >
+        Telgid
+      </Link>
+    </li>
+  );
+};
+
+const getTeamsPage = () => {
+  const dispatch = useDispatch();
+  return (
+    <li>
+      <Link
+        className="_link"
+        to="/meeskonnad/"
+        onClick={() => dispatch(setTitle("Meeskonnad"))}
+      >
+        Meeskonnad
+      </Link>
+    </li>
+  );
+};
+
+const getTimerPage = () => {
+  const dispatch = useDispatch();
+  return (
+    <li className="last">
+      <Link
+        className="_link"
+        to="/taimer/"
+        onClick={() => dispatch(setTitle("Taimer"))}
+      >
+        Taimer
+      </Link>
+    </li>
+  );
+};
+
+const getRegistrationPage = () => {
+  const dispatch = useDispatch();
+  return (
+    <li>
+      <Link
+        className="_link"
+        to="/nimekiri/"
+        onClick={() => dispatch(setTitle("Nimekiri"))}
+      >
+        Nimekiri
+      </Link>
+    </li>
+  );
+};
+
+const getMailSendPage = (role) => {
+  const dispatch = useDispatch();
+  if (role !== "root" && role !== "boss") return "";
+  return (
+    <li>
+      <Link
+        className="_link"
+        to="/meil/"
+        onClick={() => dispatch(setTitle("Meil"))}
+      >
+        Meil
+      </Link>
+    </li>
+  );
+};
+
+const getBillGenPage = (role) => {
+  const dispatch = useDispatch();
+  if (role !== "root" && role !== "boss") return "";
+  return (
+    <li>
+      <Link
+        className="_link"
+        to="/arvegeneraator/"
+        onClick={() => dispatch(setTitle("Arvegeneraator"))}
+      >
+        Arvegeneraator
+      </Link>
+    </li>
+  );
+};
+
+const getTShirtPage = (role) => {
+  const dispatch = useDispatch();
+  if (role !== "root") return "";
+  return (
+    <li>
+      <Link
+        className="_link"
+        to="/sargid/"
+        onClick={() => dispatch(setTitle("Särgid"))}
+      >
+        Särgid
+      </Link>
+    </li>
+  );
+};
 
 // _link classnames serve as identifiers when to
 // close the navigation menu on mobile.
 const Navigation = () => {
-  const dispatch = useDispatch();
-  const role = useSelector(getUserInfo);
+  const role = useSelector(getRole);
 
   return (
     <nav className="c-admin-nav">
       <ul className="u-list-blank">
-        <li className="last">
-          <Link
-            className="_link"
-            to="/"
-            onClick={() => dispatch(setTitle("Kambüüs"))}
-          >
-            Kambüüs
-          </Link>
-        </li>
-        {role === "op" ? (
-          ""
-        ) : (
-          <li>
-            <Link
-              className="_link"
-              to="/lapsed/"
-              onClick={() => dispatch(setTitle("Lapsed"))}
-            >
-              Lapsed
-            </Link>
-          </li>
-        )}
-        <li>
-          <Link
-            className="_link"
-            to="/telgid/"
-            onClick={() => dispatch(setTitle("Telgid"))}
-          >
-            Telgid
-          </Link>
-        </li>
-        <li>
-          <Link
-            className="_link"
-            to="/meeskonnad/"
-            onClick={() => dispatch(setTitle("Meeskonnad"))}
-          >
-            Meeskonnad
-          </Link>
-        </li>
-        <li className="last">
-          <Link
-            className="_link"
-            to="/taimer/"
-            onClick={() => dispatch(setTitle("Taimer"))}
-          >
-            Taimer
-          </Link>
-        </li>
-        {role === "op" ? (
-          ""
-        ) : (
-          <li>
-            <Link
-              className="_link"
-              to="/nimekiri/"
-              onClick={() => dispatch(setTitle("Nimekiri"))}
-            >
-              Nimekiri
-            </Link>
-          </li>
-        )}
-        {role === "op" ? (
-          ""
-        ) : (
-          <li>
-            <Link
-              className="_link"
-              to="/meil/"
-              onClick={() => dispatch(setTitle("Meil"))}
-            >
-              Meil
-            </Link>
-          </li>
-        )}
-        {role === "op" ? (
-          ""
-        ) : (
-          <li>
-            <Link
-              className="_link"
-              to="/arvegeneraator/"
-              onClick={() => dispatch(setTitle("Arvegeneraator"))}
-            >
-              Arvegeneraator
-            </Link>
-          </li>
-        )}
-        {role === "op" ? (
-          ""
-        ) : (
-          <li>
-            <Link
-              className="_link"
-              to="/sargid/"
-              onClick={() => dispatch(setTitle("Särgid"))}
-            >
-              Särgid
-            </Link>
-          </li>
-        )}
+        {getHomePage(role)}
+        {getChildInfoPage(role)}
+        {getTentPage(role)}
+        {getTeamsPage(role)}
+        {getTimerPage(role)}
+        {getRegistrationPage(role)}
+        {getMailSendPage(role)}
+        {getBillGenPage(role)}
+        {getTShirtPage(role)}
       </ul>
     </nav>
   );
