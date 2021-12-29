@@ -439,6 +439,17 @@ button,
   margin-top: 1em;
 }
 
+.c-login-reset {
+  font-size: 0.75rem;
+  display: inline-block;
+  margin-left: 1em;
+
+  &:hover {
+    cursor: pointer;
+    text-decoration: underline;
+  }
+}
+
 .admin-page {
   display: grid;
   max-width: 100vw;

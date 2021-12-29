@@ -14,14 +14,21 @@ export const promptRequestError = (response) => {
   console.log(response);
 };
 
-export const makePostRequest = async (apiLinkSuffix, content = null) => {
-  const credentials = localStorage.getItem("credentials");
-  const { accessToken } = JSON.parse(credentials);
+export const makePostRequest = async (
+  apiLinkSuffix,
+  content = null,
+  authenticate = true
+) => {
+  let accessToken = null;
 
-  const headers = {
-    Authorization: `Bearer ${accessToken}`,
-  };
+  if (authenticate) {
+    const credentials = localStorage.getItem("credentials");
+    accessToken = JSON.parse(credentials).accessToken;
+  }
 
+  const headers = {};
+
+  if (authenticate) headers.Authorization = `Bearer ${accessToken}`;
   if (content) headers["Content-Type"] = "application/json";
 
   try {
