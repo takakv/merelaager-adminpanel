@@ -10,7 +10,7 @@ import {
   updatePaidValue,
   updateToPayValue,
 } from "../../features/registrationList/registrationListSlice";
-import { getShift } from "../../features/userData/userDataSlice";
+import { getRole, getShift } from "../../features/userData/userDataSlice";
 
 const camperListSections = [
   ["Poisid", "regBoys"],
@@ -168,12 +168,12 @@ Deleter.propTypes = {
 };
 
 const RegTableSection = (props) => {
-  // const role = useSelector(getRole);
+  const role = useSelector(getRole);
   const shift = useSelector(getShift);
 
   const { title, shiftNr, children } = props;
 
-  const myShift = shiftNr === shift;
+  const myShift = role === "root" ? true : shiftNr === shift;
 
   return (
     <tbody>
