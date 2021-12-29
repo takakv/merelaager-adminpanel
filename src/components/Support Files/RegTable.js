@@ -34,7 +34,7 @@ const switchStatus = (target) => {
 const RegTableHead = () => (
   <thead className="c-regList-table__head">
     <tr>
-      <th>Reg ID</th>
+      <th>Reg. järg</th>
       <th>Nimi</th>
       <th>Makstud</th>
       <th>Kogusumma</th>
@@ -177,7 +177,7 @@ const RegTableSection = (props) => {
       {children.map((kid) => (
         <tr key={kid.id}>
           <td className="u-mono u-relative">
-            {kid.id}
+            {kid.regOrder}
             {kid.registered ? "" : <Deleter id={kid.id} shiftNr={shiftNr} />}
           </td>
           <td>{kid.name}</td>
@@ -238,6 +238,8 @@ RegTableSection.propTypes = {
   children: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
 
+const sortByReg = (a, b) => a.regOrder - b.regOrder;
+
 const RegTable = (props) => {
   // Store reformatted raw object data.
   const parsedData = {
@@ -265,6 +267,11 @@ const RegTable = (props) => {
     } else if (camper.gender === "M") parsedData.resBoys.push(camper);
     else parsedData.resGirls.push(camper);
   });
+
+  parsedData.regBoys.sort(sortByReg);
+  parsedData.regGirls.sort(sortByReg);
+  parsedData.resBoys.sort(sortByReg);
+  parsedData.resGirls.sort(sortByReg);
 
   if (!shiftData) {
     return (
