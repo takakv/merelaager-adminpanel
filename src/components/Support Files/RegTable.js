@@ -1,7 +1,7 @@
 /* eslint-disable react/no-children-prop */
 import React from "react";
 import PropTypes from "prop-types";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import { makePostRequest } from "../Common/requestAPI";
 import {
@@ -10,6 +10,7 @@ import {
   updatePaidValue,
   updateToPayValue,
 } from "../../features/registrationList/registrationListSlice";
+import { getShift } from "../../features/userData/userDataSlice";
 
 const camperListSections = [
   ["Poisid", "regBoys"],
@@ -167,7 +168,12 @@ Deleter.propTypes = {
 };
 
 const RegTableSection = (props) => {
+  // const role = useSelector(getRole);
+  const shift = useSelector(getShift);
+
   const { title, shiftNr, children } = props;
+
+  const myShift = shiftNr === shift;
 
   return (
     <tbody>
@@ -200,12 +206,19 @@ const RegTableSection = (props) => {
             />
           </td>
           <td>
-            <ToggleButton
-              shiftNr={shiftNr}
-              id={kid.id}
-              status={kid.registered}
-              field="registration"
-            />
+            {/* eslint-disable-next-line no-nested-ternary */}
+            {myShift ? (
+              <ToggleButton
+                shiftNr={shiftNr}
+                id={kid.id}
+                status={kid.registered}
+                field="registration"
+              />
+            ) : kid.registered ? (
+              "jah"
+            ) : (
+              "ei"
+            )}
           </td>
           <td id={`${kid.id}-contact`} className="c-camper-contact">
             {kid.contactName}, {kid.contactNr}
@@ -216,12 +229,19 @@ const RegTableSection = (props) => {
             <a href={`mailto:${kid.contactEmail}`}>{kid.contactEmail}</a>
           </td>
           <td>
-            <ToggleButton
-              shiftNr={shiftNr}
-              status={kid.isOld}
-              id={kid.id}
-              field="regular"
-            />
+            {/* eslint-disable-next-line no-nested-ternary */}
+            {myShift ? (
+              <ToggleButton
+                shiftNr={shiftNr}
+                status={kid.isOld}
+                id={kid.id}
+                field="regular"
+              />
+            ) : kid.isOld ? (
+              "jah"
+            ) : (
+              "ei"
+            )}
           </td>
           <td className="u-mono">{kid.bDay}</td>
           <td>{kid.tShirtSize}</td>
