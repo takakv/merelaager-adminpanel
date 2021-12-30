@@ -27,11 +27,13 @@ const App = () => {
       },
       body: JSON.stringify({ token: refreshToken }),
     }).then((data) => data.json());
+
     credentials.accessToken = response.accessToken;
     localStorage.setItem("credentials", JSON.stringify(credentials));
   };
 
   setInterval(silentTokenRefresh, 1200000);
+
   silentTokenRefresh().catch((err) => {
     alert("Sessioon on aegunud.");
     localStorage.clear();
