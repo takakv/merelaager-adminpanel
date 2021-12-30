@@ -185,6 +185,7 @@ Deleter.propTypes = {
 
 const pricePaidCell = (role, shiftNr, kid) => {
   if (role === "full") return null;
+  if (role === "boss") return <td>{kid.pricePaid}</td>;
   return (
     <td>
       <InputField
@@ -200,6 +201,7 @@ const pricePaidCell = (role, shiftNr, kid) => {
 
 const priceToPayCell = (role, shiftNr, kid) => {
   if (role === "full") return null;
+  if (role === "boss") return <td>{kid.priceToPay}</td>;
   return (
     <td>
       <InputField
