@@ -117,7 +117,7 @@ const ChildList = (props) => {
 };
 
 ChildList.propTypes = {
-  campers: PropTypes.objectOf(PropTypes.object).isRequired,
+  campers: PropTypes.objectOf(PropTypes.objectOf(PropTypes.any)).isRequired,
 };
 
 const TimerList = (props) => {

@@ -62,6 +62,8 @@ const CamperEntry = (props) => {
 
 CamperEntry.propTypes = {
   shiftNr: PropTypes.number.isRequired,
+  // figure out why later
+  // eslint-disable-next-line react/forbid-prop-types
   data: PropTypes.objectOf(PropTypes.any).isRequired,
 };
 

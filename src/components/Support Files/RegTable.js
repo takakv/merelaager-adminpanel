@@ -310,7 +310,7 @@ const RegTableSection = (props) => {
 RegTableSection.propTypes = {
   title: PropTypes.string.isRequired,
   shiftNr: PropTypes.number.isRequired,
-  children: PropTypes.arrayOf(PropTypes.object).isRequired,
+  children: PropTypes.arrayOf(PropTypes.objectOf(PropTypes.any)).isRequired,
 };
 
 const sortByReg = (a, b) => a.regOrder - b.regOrder;
@@ -372,6 +372,8 @@ const RegTable = (props) => {
 
 RegTable.propTypes = {
   shiftNr: PropTypes.number.isRequired,
+  // figure out why later
+  // eslint-disable-next-line react/forbid-prop-types
   shiftData: PropTypes.objectOf(PropTypes.any),
 };
 
