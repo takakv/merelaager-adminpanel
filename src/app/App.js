@@ -1,27 +1,27 @@
 import React from "react";
 
+import {useSelector} from "react-redux";
 import Login from "../components/Login";
 import Root from "./Root";
-import useToken from "../useToken";
-import { requestTokenRefresh } from "../components/Common/requestAPI";
 
 const App = () => {
-  const { token, setToken } = useToken();
+  const loginStatus = useSelector((state) => state.login.status);
 
-  if (!token) {
-    return <Login setToken={setToken} />;
-  }
-
+  /*
   const silentTokenRefresh = async () => {
     const refreshIsOk = await requestTokenRefresh();
     if (!refreshIsOk) window.location.reload();
   };
+  */
 
-  setInterval(silentTokenRefresh, 1200000);
+  if (loginStatus === "ok") {
+    // setInterval(silentTokenRefresh, 1200000);
+    // silentTokenRefresh().then();
 
-  silentTokenRefresh().then();
+    return <Root />;
+  }
 
-  return <Root />;
+  return <Login />;
 };
 
 export default App;

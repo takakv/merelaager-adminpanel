@@ -9,6 +9,8 @@ import teamsReducer from "../features/teams/teamerSlice";
 import staffListReducer from "../features/staffList/staffListSlice";
 import timerReducer from "../features/timer/timerSlice";
 import userInfoReducer from "../features/userAuth/userAuthSlice";
+import appAuthReducer from "../features/appAuth/appAuthSlice";
+import loginReducer from "../features/login/loginSlice";
 
 export default configureStore({
   reducer: {
@@ -22,5 +24,7 @@ export default configureStore({
     staffList: staffListReducer,
     timer: timerReducer,
     userInfo: userInfoReducer,
+    appAuth: appAuthReducer,
+    login: loginReducer,
   },
 });

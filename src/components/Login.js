@@ -1,12 +1,18 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
+import { useDispatch, useSelector } from "react-redux";
 import { makePostRequest } from "./Common/requestAPI";
+import { getLogin, loginUser } from "../features/login/loginSlice";
 
+/*
 const apiURL =
   process.env.NODE_ENV === "development"
     ? "http://localhost:3000"
     : "https://merelaager.ee";
 
+ */
+
+/*
 const loginUser = async (credentials) =>
   fetch(`${apiURL}/api/auth/login/`, {
     method: "POST",
@@ -15,18 +21,34 @@ const loginUser = async (credentials) =>
     },
     body: JSON.stringify(credentials),
   }).then((data) => data.json());
+*/
 
-const Login = ({ setToken }) => {
+// const Login = ({ setToken }) => {
+const Login = () => {
+  const dispatch = useDispatch();
+
+  // const login = useSelector(getLogin);
+  // const loginStatus = useSelector(state => state.login.status);
+  // const loginError = useSelector(state => state.login.error);
+
   const [username, setUserName] = useState();
   const [password, setPassword] = useState();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    dispatch(loginUser({ username, password }));
+    /*
+    console.log("Server login response:");
+    console.log(response);
+    console.log(login);
+    /*
     const response = await loginUser({
       username,
       password,
     });
+    
     setToken(response);
+    */
   };
 
   const handleReset = async () => {
@@ -78,8 +100,11 @@ const Login = ({ setToken }) => {
   );
 };
 
+/*
 Login.propTypes = {
   setToken: PropTypes.func.isRequired,
 };
+
+ */
 
 export default Login;

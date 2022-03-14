@@ -21,7 +21,6 @@ export const requestTokenRefresh = async () => {
   }
 
   localStorage.clear();
-  alert("Sessioon on aegunud.");
   return false;
 };
 
