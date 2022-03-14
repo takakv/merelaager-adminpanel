@@ -1,3 +1,4 @@
+/* eslint-disable react/no-array-index-key */
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import PropTypes from "prop-types";
@@ -116,7 +117,7 @@ const TentBlock = (props) => {
 };
 
 TentBlock.propTypes = {
-  tentMembers: PropTypes.arrayOf(PropTypes.object).isRequired,
+  tentMembers: PropTypes.arrayOf(PropTypes.objectOf(PropTypes.any)).isRequired,
   tentNumber: PropTypes.number.isRequired,
 };
 
@@ -175,6 +176,7 @@ const TentBlockCamper = (props) => {
 };
 
 TentBlockCamper.propTypes = {
+  // eslint-disable-next-line react/forbid-prop-types
   camper: PropTypes.objectOf(PropTypes.any).isRequired,
   tentNumber: PropTypes.number.isRequired,
 };

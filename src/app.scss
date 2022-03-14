@@ -439,6 +439,17 @@ button,
   margin-top: 1em;
 }
 
+.c-login-reset {
+  font-size: 0.75rem;
+  display: inline-block;
+  margin-left: 1em;
+
+  &:hover {
+    cursor: pointer;
+    text-decoration: underline;
+  }
+}
+
 .admin-page {
   display: grid;
   max-width: 100vw;
@@ -557,7 +568,46 @@ button,
 }
 
 .c-switch {
-  padding: 30px;
+  position: relative;
+
+  &:hover {
+    cursor: pointer;
+  }
+
+  &-current {
+    padding: 30px;
+
+    &:hover {
+      background-color: var(--line-dark);
+    }
+
+    &.is-unique {
+      cursor: auto;
+
+      &:hover {
+        background-color: transparent;
+      }
+    }
+  }
+
+  &-options {
+    position: absolute;
+    bottom: calc(2 * 30px + 1.5 * 1rem);
+    display: none;
+    width: 100%;
+
+    &.is-visible {
+      display: block;
+    }
+  }
+
+  &-option {
+    padding: 0.5rem 30px;
+
+    &:hover {
+      background-color: var(--line-dark);
+    }
+  }
 }
 
 .c-regList {

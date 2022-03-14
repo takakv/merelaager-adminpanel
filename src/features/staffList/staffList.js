@@ -41,6 +41,8 @@ const StaffEntry = (props) => {
 };
 
 StaffEntry.propTypes = {
+  // figure out why later
+  // eslint-disable-next-line react/forbid-prop-types
   staff: PropTypes.objectOf(PropTypes.any).isRequired,
 };
 

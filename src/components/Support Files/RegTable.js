@@ -1,7 +1,7 @@
 /* eslint-disable react/no-children-prop */
 import React from "react";
 import PropTypes from "prop-types";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import { makePostRequest } from "../Common/requestAPI";
 import {
@@ -10,6 +10,7 @@ import {
   updatePaidValue,
   updateToPayValue,
 } from "../../features/registrationList/registrationListSlice";
+import { getRole, getShift } from "../../features/userData/userDataSlice";
 
 const camperListSections = [
   ["Poisid", "regBoys"],
@@ -31,23 +32,39 @@ const switchStatus = (target) => {
   }
 };
 
-const RegTableHead = () => (
-  <thead className="c-regList-table__head">
-    <tr>
-      <th>Reg ID</th>
-      <th>Nimi</th>
-      <th>Makstud</th>
-      <th>Kogusumma</th>
-      <th>Reg?</th>
-      <th>Kontakt</th>
-      <th>Meil</th>
-      <th>Vana?</th>
-      <th>Sünnipäev</th>
-      <th>Ts</th>
-      <th>Arve nr</th>
-    </tr>
-  </thead>
-);
+const RegTableHead = () => {
+  const role = useSelector(getRole);
+  if (role === "full")
+    return (
+      <thead className="c-regList-table__head">
+        <tr>
+          <th>Reg. järg</th>
+          <th>Nimi</th>
+          <th>Reg?</th>
+          <th>Vana?</th>
+          <th>Sünnipäev</th>
+          <th>Ts</th>
+        </tr>
+      </thead>
+    );
+  return (
+    <thead className="c-regList-table__head">
+      <tr>
+        <th>Reg. järg</th>
+        <th>Nimi</th>
+        <th>Makstud</th>
+        <th>Kogusumma</th>
+        <th>Reg?</th>
+        <th>Kontakt</th>
+        <th>Meil</th>
+        <th>Vana?</th>
+        <th>Sünnipäev</th>
+        <th>Ts</th>
+        <th>Arve nr</th>
+      </tr>
+    </thead>
+  );
+};
 
 const ToggleButton = (props) => {
   const dispatch = useDispatch();
@@ -166,8 +183,70 @@ Deleter.propTypes = {
   id: PropTypes.number.isRequired,
 };
 
+const pricePaidCell = (role, shiftNr, kid) => {
+  if (role === "full") return null;
+  if (role === "boss") return <td>{kid.pricePaid}</td>;
+  return (
+    <td>
+      <InputField
+        shiftNr={shiftNr}
+        id={kid.id}
+        field="total-paid"
+        className="price"
+        value={kid.pricePaid}
+      />
+    </td>
+  );
+};
+
+const priceToPayCell = (role, shiftNr, kid) => {
+  if (role === "full") return null;
+  if (role === "boss") return <td>{kid.priceToPay}</td>;
+  return (
+    <td>
+      <InputField
+        shiftNr={shiftNr}
+        id={kid.id}
+        field="total-due"
+        className="priceToPay"
+        value={kid.priceToPay}
+      />
+    </td>
+  );
+};
+
+const contactCell = (role, kid) => {
+  if (role === "full") return null;
+  return (
+    <td id={`${kid.id}-contact`} className="c-camper-contact">
+      {kid.contactName}, {kid.contactNr}
+      {/* <span className="c-camper-contact__phone"> */}
+      {/* </span> */}
+    </td>
+  );
+};
+
+const emailCell = (role, kid) => {
+  if (role === "full") return null;
+  return (
+    <td>
+      <a href={`mailto:${kid.contactEmail}`}>{kid.contactEmail}</a>
+    </td>
+  );
+};
+
+const billNrCell = (role, kid) => {
+  if (role === "full") return null;
+  return <td className="u-mono">{kid.billNr}</td>;
+};
+
 const RegTableSection = (props) => {
+  const role = useSelector(getRole);
+  const shift = useSelector(getShift);
+
   const { title, shiftNr, children } = props;
+
+  const myShift = role === "root" ? true : shiftNr === shift;
 
   return (
     <tbody>
@@ -177,55 +256,51 @@ const RegTableSection = (props) => {
       {children.map((kid) => (
         <tr key={kid.id}>
           <td className="u-mono u-relative">
-            {kid.id}
-            {kid.registered ? "" : <Deleter id={kid.id} shiftNr={shiftNr} />}
+            {kid.regOrder}
+            {kid.registered || !myShift ? (
+              ""
+            ) : (
+              <Deleter id={kid.id} shiftNr={shiftNr} />
+            )}
           </td>
           <td>{kid.name}</td>
+          {pricePaidCell(role, shiftNr, kid)}
+          {priceToPayCell(role, shiftNr, kid)}
           <td>
-            <InputField
-              shiftNr={shiftNr}
-              id={kid.id}
-              field="total-paid"
-              className="price"
-              value={kid.pricePaid}
-            />
+            {/* eslint-disable-next-line no-nested-ternary */}
+            {myShift && role !== "full" ? (
+              <ToggleButton
+                shiftNr={shiftNr}
+                id={kid.id}
+                status={kid.registered}
+                field="registration"
+              />
+            ) : kid.registered ? (
+              "jah"
+            ) : (
+              "ei"
+            )}
           </td>
+          {contactCell(role, kid)}
+          {emailCell(role, kid)}
           <td>
-            <InputField
-              shiftNr={shiftNr}
-              id={kid.id}
-              field="total-due"
-              className="priceToPay"
-              value={kid.priceToPay}
-            />
-          </td>
-          <td>
-            <ToggleButton
-              shiftNr={shiftNr}
-              id={kid.id}
-              status={kid.registered}
-              field="registration"
-            />
-          </td>
-          <td id={`${kid.id}-contact`} className="c-camper-contact">
-            {kid.contactName}, {kid.contactNr}
-            {/* <span className="c-camper-contact__phone"> */}
-            {/* </span> */}
-          </td>
-          <td>
-            <a href={`mailto:${kid.contactEmail}`}>{kid.contactEmail}</a>
-          </td>
-          <td>
-            <ToggleButton
-              shiftNr={shiftNr}
-              status={kid.isOld}
-              id={kid.id}
-              field="regular"
-            />
+            {/* eslint-disable-next-line no-nested-ternary */}
+            {myShift && role !== "full" ? (
+              <ToggleButton
+                shiftNr={shiftNr}
+                status={kid.isOld}
+                id={kid.id}
+                field="regular"
+              />
+            ) : kid.isOld ? (
+              "jah"
+            ) : (
+              "ei"
+            )}
           </td>
           <td className="u-mono">{kid.bDay}</td>
           <td>{kid.tShirtSize}</td>
-          <td className="u-mono">{kid.billNr}</td>
+          {billNrCell(role, kid)}
         </tr>
       ))}
     </tbody>
@@ -235,8 +310,10 @@ const RegTableSection = (props) => {
 RegTableSection.propTypes = {
   title: PropTypes.string.isRequired,
   shiftNr: PropTypes.number.isRequired,
-  children: PropTypes.arrayOf(PropTypes.object).isRequired,
+  children: PropTypes.arrayOf(PropTypes.objectOf(PropTypes.any)).isRequired,
 };
+
+const sortByReg = (a, b) => a.regOrder - b.regOrder;
 
 const RegTable = (props) => {
   // Store reformatted raw object data.
@@ -266,6 +343,11 @@ const RegTable = (props) => {
     else parsedData.resGirls.push(camper);
   });
 
+  parsedData.regBoys.sort(sortByReg);
+  parsedData.regGirls.sort(sortByReg);
+  parsedData.resBoys.sort(sortByReg);
+  parsedData.resGirls.sort(sortByReg);
+
   if (!shiftData) {
     return (
       <table>
@@ -290,6 +372,8 @@ const RegTable = (props) => {
 
 RegTable.propTypes = {
   shiftNr: PropTypes.number.isRequired,
+  // figure out why later
+  // eslint-disable-next-line react/forbid-prop-types
   shiftData: PropTypes.objectOf(PropTypes.any),
 };
 

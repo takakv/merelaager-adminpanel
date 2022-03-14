@@ -3,6 +3,28 @@ const apiURL =
     ? "http://localhost:3000"
     : "https://merelaager.ee";
 
+export const requestTokenRefresh = async () => {
+  const credentials = JSON.parse(localStorage.getItem("credentials"));
+  const { refreshToken } = credentials;
+
+  const responseRaw = await fetch(`${apiURL}/api/auth/token/`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ token: refreshToken }),
+  });
+
+  const responseParsed = await responseRaw.json();
+  if (responseRaw.ok) {
+    credentials.accessToken = responseParsed.accessToken;
+    localStorage.setItem("credentials", JSON.stringify(credentials));
+    return true;
+  }
+
+  localStorage.clear();
+  alert("Sessioon on aegunud.");
+  return false;
+};
+
 export const promptRequestError = (response) => {
   window.alert(
     "Midagi läks nihu." +
@@ -14,14 +36,21 @@ export const promptRequestError = (response) => {
   console.log(response);
 };
 
-export const makePostRequest = async (apiLinkSuffix, content = null) => {
-  const credentials = localStorage.getItem("credentials");
-  const { accessToken } = JSON.parse(credentials);
+export const makePostRequest = async (
+  apiLinkSuffix,
+  content = null,
+  authenticate = true
+) => {
+  let accessToken = null;
 
-  const headers = {
-    Authorization: `Bearer ${accessToken}`,
-  };
+  if (authenticate) {
+    const credentials = localStorage.getItem("credentials");
+    accessToken = JSON.parse(credentials).accessToken;
+  }
 
+  const headers = {};
+
+  if (authenticate) headers.Authorization = `Bearer ${accessToken}`;
   if (content) headers["Content-Type"] = "application/json";
 
   try {

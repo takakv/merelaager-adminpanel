@@ -53,30 +53,27 @@ const Root = () => {
         <main role="main" className="c-content">
           <Routes>
             <Route exact path="/" element={<MainPage title="Kambüüs" />} />
-            {role === "op" ? (
-              ""
-            ) : (
-              <Route path="/lapsed/" element={<ShiftInfo title="Lapsed" />} />
-            )}
+            <Route path="/telgid/" element={<TentList title="Telgid" />} />
             <Route
               path="/meeskonnad/"
               element={<TeamsPage title="Meeskonnad" />}
             />
-            <Route path="/telgid/" element={<TentList title="Telgid" />} />
-            {role === "op" ? (
+            <Route path="/taimer/" element={<TimerList title="Taimer" />} />
+            <Route
+              path="/nimekiri/"
+              element={<RegistrationList title="Nimekiri" />}
+            />
+            {role === "full" ? (
+              ""
+            ) : (
+              <Route path="/lapsed/" element={<ShiftInfo title="Lapsed" />} />
+            )}
+            {role === "full" ? (
               ""
             ) : (
               <Route path="/meil/" element={<Mailer title="Meil" />} />
             )}
-            {role === "op" ? (
-              ""
-            ) : (
-              <Route
-                path="/nimekiri/"
-                element={<RegistrationList title="Nimekiri" />}
-              />
-            )}
-            {role === "op" ? (
+            {role === "full" ? (
               ""
             ) : (
               <Route
@@ -84,12 +81,11 @@ const Root = () => {
                 element={<BillGen title="Arvegeneraator" />}
               />
             )}
-            {role === "op" ? (
+            {role === "full" ? (
               ""
             ) : (
               <Route path="/sargid/" element={<Shirts title="Särgid" />} />
             )}
-            <Route path="/taimer/" element={<TimerList title="Taimer" />} />
           </Routes>
         </main>
       </div>
