@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { setToken } from "../../components/Common/requestAPI";
 
 const apiURL =
   process.env.NODE_ENV === "development"
@@ -31,8 +32,10 @@ const loginSlice = createSlice({
   initialState: { status: "idle", token: null, ok: false },
   extraReducers: {
     [loginUser.fulfilled]: (state, action) => {
+      const { accessToken } = action.payload;
       state.status = "ok";
-      state.token = action.payload.accessToken;
+      state.token = accessToken;
+      setToken(accessToken);
     },
     [loginUser.rejected]: (state, action) => {
       state.status = "forbidden";

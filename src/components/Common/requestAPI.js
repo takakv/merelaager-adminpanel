@@ -1,7 +1,20 @@
+import { useDispatch } from "react-redux";
+
 const apiURL =
   process.env.NODE_ENV === "development"
     ? "http://localhost:3000"
     : "https://merelaager.ee";
+
+// https://daveceddia.com/access-redux-store-outside-react/#option-3-use-middleware-and-intercept-an-action
+let currentAuthToken = null;
+
+export const setToken = (token) => {
+  currentAuthToken = token;
+};
+
+export const clearToken = () => {
+  currentAuthToken = null;
+};
 
 export const requestTokenRefresh = async () => {
   const credentials = JSON.parse(localStorage.getItem("credentials"));
@@ -35,34 +48,38 @@ export const promptRequestError = (response) => {
   console.log(response);
 };
 
+const checkLogin = (res) => {
+  if (!res) return true;
+
+  if (res.error.code === "InvalidAuthenticationToken") {
+    clearToken();
+    window.location.reload();
+    return false;
+  }
+
+  return true;
+};
+
 export const makePostRequest = async (
   apiLinkSuffix,
   content = null,
   authenticate = true
 ) => {
-  let accessToken = null;
-
-  if (authenticate) {
-    const credentials = localStorage.getItem("credentials");
-    accessToken = JSON.parse(credentials).accessToken;
-  }
-
   const headers = {};
 
-  if (authenticate) headers.Authorization = `Bearer ${accessToken}`;
+  if (authenticate) headers.Authorization = `Bearer ${currentAuthToken}`;
   if (content) headers["Content-Type"] = "application/json";
 
+  console.log(currentAuthToken);
+
+  let response;
+
   try {
-    const response = await fetch(`${apiURL}/api/${apiLinkSuffix}`, {
+    response = await fetch(`${apiURL}/api/${apiLinkSuffix}`, {
       method: "POST",
       headers,
       body: JSON.stringify(content),
     });
-    if (!response.ok) {
-      promptRequestError(response);
-      return null;
-    }
-    return response;
   } catch (e) {
     window.alert(
       "Serveriga ei õnnestunud ühendust saada.\n" +
@@ -70,16 +87,23 @@ export const makePostRequest = async (
     );
     return null;
   }
+
+  if (!response.ok) {
+    const json = await response.json();
+    if (!checkLogin(json)) return null;
+
+    promptRequestError(response);
+    return null;
+  }
+
+  return response;
 };
 
 export const makeGetRequest = async (apiLinkSuffix) => {
-  const credentials = localStorage.getItem("credentials");
-  const { accessToken } = JSON.parse(credentials);
-
-  const response = await fetch(`${apiURL}/api/${apiLinkSuffix}`, {
+  const response = await fetch(`${apiURL}/api${apiLinkSuffix}`, {
     method: "GET",
     headers: {
-      Authorization: `Bearer ${accessToken}`,
+      Authorization: `Bearer ${currentAuthToken}`,
     },
   });
   if (!response.ok) {
