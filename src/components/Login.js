@@ -1,54 +1,18 @@
-import React, { useEffect, useState } from "react";
-import PropTypes from "prop-types";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { makePostRequest } from "./Common/requestAPI";
-import { getLogin, loginUser } from "../features/login/loginSlice";
+import { loginUser } from "../features/login/loginSlice";
 
-/*
-const apiURL =
-  process.env.NODE_ENV === "development"
-    ? "http://localhost:3000"
-    : "https://merelaager.ee";
-
- */
-
-/*
-const loginUser = async (credentials) =>
-  fetch(`${apiURL}/api/auth/login/`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(credentials),
-  }).then((data) => data.json());
-*/
-
-// const Login = ({ setToken }) => {
 const Login = () => {
   const dispatch = useDispatch();
 
-  // const login = useSelector(getLogin);
-  // const loginStatus = useSelector(state => state.login.status);
-  // const loginError = useSelector(state => state.login.error);
-
-  const [username, setUserName] = useState();
-  const [password, setPassword] = useState();
+  const loginError = useSelector((state) => state.login.errorCode);
 
   const handleSubmit = async (e) => {
+    const username = e.target.username.value;
+    const password = e.target.password.value;
     e.preventDefault();
     dispatch(loginUser({ username, password }));
-    /*
-    console.log("Server login response:");
-    console.log(response);
-    console.log(login);
-    /*
-    const response = await loginUser({
-      username,
-      password,
-    });
-    
-    setToken(response);
-    */
   };
 
   const handleReset = async () => {
@@ -66,22 +30,35 @@ const Login = () => {
     if (key === "Enter") await handleReset();
   };
 
+  const getErrorMessage = (code) => {
+    switch (code) {
+      case 403:
+        return "Vale salasõna või parool";
+      default:
+        return "Süsteemiviga";
+    }
+  };
+
+  const errorMessage = (
+    <div className="c-login-error">
+      <p>{getErrorMessage(loginError)}</p>
+    </div>
+  );
+
   return (
     <div className="c-login-wrapper">
       <h1>Kambüüs</h1>
+      {loginError ? errorMessage : ""}
       <form onSubmit={handleSubmit}>
         {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
         <label>
           <p>Nimi</p>
-          <input type="text" onChange={(e) => setUserName(e.target.value)} />
+          <input type="text" name="username" />
         </label>
         {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
         <label>
           <p>Salasõna</p>
-          <input
-            type="password"
-            onChange={(e) => setPassword(e.target.value)}
-          />
+          <input type="password" name="password" />
         </label>
         <div className="c-login-submit">
           <button type="submit">Sisene</button>
@@ -99,12 +76,5 @@ const Login = () => {
     </div>
   );
 };
-
-/*
-Login.propTypes = {
-  setToken: PropTypes.func.isRequired,
-};
-
- */
 
 export default Login;

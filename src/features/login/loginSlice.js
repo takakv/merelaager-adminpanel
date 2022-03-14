@@ -5,19 +5,30 @@ const apiURL =
     ? "http://localhost:3000"
     : "https://merelaager.ee";
 
-export const loginUser = createAsyncThunk("login/loginUser", async (credentials) => {
-  const response = await fetch(`${apiURL}/api/auth/login/`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(credentials)});
-  return response.json();
-});
+export const loginUser = createAsyncThunk(
+  "login/loginUser",
+  async (credentials, { rejectWithValue }) => {
+    let response;
+
+    try {
+      response = await fetch(`${apiURL}/api/auth/login/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(credentials),
+      });
+    } catch {
+      return rejectWithValue(500);
+    }
+
+    return response.ok ? response.json() : rejectWithValue(response.status);
+  }
+);
 
 const loginSlice = createSlice({
   name: "login",
-  initialState: { status: "idle" },
+  initialState: { status: "idle", token: null, ok: false },
   extraReducers: {
     [loginUser.fulfilled]: (state, action) => {
       state.status = "ok";
@@ -25,11 +36,11 @@ const loginSlice = createSlice({
     },
     [loginUser.rejected]: (state, action) => {
       state.status = "forbidden";
-      state.error = action.error.message;
+      state.errorCode = action.payload;
     },
   },
 });
 
-export const getLogin = (state) => state.login.data;
+export const getToken = (state) => state.login.token;
 
 export default loginSlice.reducer;
