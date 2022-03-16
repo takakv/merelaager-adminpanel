@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Login from "../components/Login";
 import Root from "./Root";
 import { refreshToken } from "../features/appAuth/appAuthSlice";
+import Loader from "../components/Loader";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -20,11 +21,14 @@ const App = () => {
     return () => clearInterval(interval);
   }, [authStatus, dispatch]);
 
-  if (authStatus === "ok") {
-    return <Root />;
+  switch (authStatus) {
+    case "ok":
+      return <Root />;
+    case "forbidden":
+      return <Login />;
+    default:
+      return <Loader />;
   }
-
-  return <Login />;
 };
 
 export default App;

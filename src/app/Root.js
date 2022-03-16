@@ -19,17 +19,7 @@ import BillGen from "../components/BillGen";
 import Shirts from "../features/thisrts/Tshirts";
 import TimerList from "../components/TimerList";
 import RegistrationsPage from "../features/registrations/RegistrationsPage";
-
-const Loader = () => (
-  <div className="c-preloader">
-    <img
-      className="_link"
-      alt="Logo"
-      src="https://merelaager.ee/media/img/merelaager_ship.svg"
-    />
-    <p>Laen...</p>
-  </div>
-);
+import Loader from "../components/Loader";
 
 const Root = () => {
   const dispatch = useDispatch();
