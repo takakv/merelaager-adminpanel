@@ -4,7 +4,7 @@ import { makeGetRequest } from "../../components/Common/requestAPI";
 export const fetchRegistrationList = createAsyncThunk(
   "registrationList/fetchRegistrationList",
   async () => {
-    const response = await makeGetRequest("reglist/fetch/");
+    const response = await makeGetRequest("/reglist/fetch");
     return response.json();
   }
 );

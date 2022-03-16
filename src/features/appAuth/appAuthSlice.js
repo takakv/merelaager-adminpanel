@@ -68,6 +68,7 @@ const appAuthSlice = createSlice({
     [refreshToken.rejected]: (state, action) => {
       state.status = "forbidden";
       state.errorCode = action.payload;
+      setToken(null);
     },
   },
 });
