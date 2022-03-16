@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { makeGetRequest } from "../../components/Common/requestAPI";
 
 const initialState = {
-  registrations: null,
+  registrations: [],
   status: "idle",
   error: null,
 };
@@ -35,5 +35,21 @@ const registrationsSlice = createSlice({
     },
   },
 });
+
+export const { paymentUpdate, registrationToggled, entryRemoved } =
+  registrationsSlice.actions;
+
+export const selectAllRegistrations = (state) =>
+  state.registrations.registrations;
+
+export const selectRegistrationsByShift = (state, shiftNr) =>
+  state.registrations.registrations.find(
+    (registration) => registration.shiftNr === shiftNr
+  );
+
+export const selectRegistrationById = (state, registrationId) =>
+  state.registrations.registrations.find(
+    (registration) => registration.id === registrationId
+  );
 
 export default registrationsSlice.reducer;

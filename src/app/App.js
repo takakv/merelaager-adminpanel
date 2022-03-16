@@ -1,24 +1,26 @@
-import React from "react";
+import React, { useEffect } from "react";
 
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Login from "../components/Login";
 import Root from "./Root";
+import { refreshToken } from "../features/appAuth/appAuthSlice";
 
 const App = () => {
-  const loginStatus = useSelector((state) => state.login.status);
+  const dispatch = useDispatch();
+  const authStatus = useSelector((state) => state.appAuth.status);
 
-  /*
-  const silentTokenRefresh = async () => {
-    const refreshIsOk = await requestTokenRefresh();
-    if (!refreshIsOk) window.location.reload();
-  };
-  */
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      console.log("Fetching refresh token");
+      if (authStatus === "ok") dispatch(refreshToken());
+    }, 1200000);
 
-  if (loginStatus === "ok") {
-    // setInterval(silentTokenRefresh, 1200000);
-    // silentTokenRefresh().then();
+    dispatch(refreshToken());
 
-    // return <p>{accessToken}</p>;
+    return () => clearInterval(interval);
+  }, [authStatus, dispatch]);
+
+  if (authStatus === "ok") {
     return <Root />;
   }
 

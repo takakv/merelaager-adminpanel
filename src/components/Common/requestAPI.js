@@ -17,24 +17,13 @@ export const clearToken = () => {
 };
 
 export const requestTokenRefresh = async () => {
-  const credentials = JSON.parse(localStorage.getItem("credentials"));
-  const { refreshToken } = credentials;
-
   const responseRaw = await fetch(`${apiURL}/api/auth/token/`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ token: refreshToken }),
+    credentials: "include",
   });
 
   const responseParsed = await responseRaw.json();
-  if (responseRaw.ok) {
-    credentials.accessToken = responseParsed.accessToken;
-    localStorage.setItem("credentials", JSON.stringify(credentials));
-    return true;
-  }
-
-  localStorage.clear();
-  return false;
+  return responseRaw.ok ? responseParsed.accessToken : null;
 };
 
 export const promptRequestError = (response) => {

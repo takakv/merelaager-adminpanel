@@ -1,33 +1,77 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import {makePostRequest, requestTokenRefresh} from "../../components/Common/requestAPI";
+import {
+  requestTokenRefresh,
+  setToken,
+} from "../../components/Common/requestAPI";
 
-export const authenticate = createAsyncThunk("appAuth/authenticate", async () => {
-  const response = await requestTokenRefresh();
-  console.log("I am authenticating");
-  console.log(response);
+const apiURL =
+  process.env.NODE_ENV === "development"
+    ? "http://localhost:3000"
+    : "https://merelaager.ee";
 
-  return response.json();
-});
+export const refreshToken = createAsyncThunk(
+  "appAuth/refreshToken",
+  async (_, { rejectWithValue }) => {
+    const response = await requestTokenRefresh();
+
+    // Null error code won't trigger error responses.
+    return response || rejectWithValue(0);
+  }
+);
+
+export const loginUser = createAsyncThunk(
+  "appAuth/loginUser",
+  async (credentials, { rejectWithValue }) => {
+    let response;
+
+    try {
+      response = await fetch(`${apiURL}/api/auth/login/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(credentials),
+        credentials: "include",
+      });
+    } catch {
+      return rejectWithValue(500);
+    }
+
+    return response.ok ? response.json() : rejectWithValue(response.status);
+  }
+);
 
 const appAuthSlice = createSlice({
   name: "appAuth",
   initialState: {
-    data: {},
     status: "idle",
+    token: null,
     error: null,
   },
   extraReducers: {
-    [authenticate.fulfilled]: (state, action) => {
-      state.status = "authenticated";
-      state.data = action.payload;
+    [loginUser.fulfilled]: (state, action) => {
+      const { accessToken } = action.payload;
+      state.status = "ok";
+      state.token = accessToken;
+      setToken(accessToken);
     },
-    [authenticate.rejected]: (state, action) => {
+    [loginUser.rejected]: (state, action) => {
       state.status = "forbidden";
-      state.error = action.error.message;
+      state.errorCode = action.payload;
+    },
+    [refreshToken.fulfilled]: (state, action) => {
+      const accessToken = action.payload;
+      state.status = "ok";
+      state.token = accessToken;
+      setToken(accessToken);
+    },
+    [refreshToken.rejected]: (state, action) => {
+      state.status = "forbidden";
+      state.errorCode = action.payload;
     },
   },
 });
 
-export const getAppAuth = (state) => state.appAuth.data;
+export const getAccessToken = (state) => state.login.token;
 
 export default appAuthSlice.reducer;

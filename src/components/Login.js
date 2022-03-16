@@ -1,12 +1,12 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { makePostRequest } from "./Common/requestAPI";
-import { loginUser } from "../features/login/loginSlice";
+import { loginUser } from "../features/appAuth/appAuthSlice";
 
 const Login = () => {
   const dispatch = useDispatch();
 
-  const loginError = useSelector((state) => state.login.errorCode);
+  const loginError = useSelector((state) => state.appAuth.errorCode);
 
   const handleSubmit = async (e) => {
     const username = e.target.username.value;
