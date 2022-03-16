@@ -14,7 +14,7 @@ const App = () => {
     const interval = setInterval(async () => {
       console.log("Fetching refresh token");
       if (authStatus === "ok") dispatch(refreshToken());
-    }, 1200000);
+    }, 240000);
 
     dispatch(refreshToken());
 
