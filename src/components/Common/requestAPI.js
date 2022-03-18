@@ -84,6 +84,33 @@ export const makePostRequest = async (
   return response;
 };
 
+export const makePatchRequest = async (apiLinkSuffix, content) => {
+  let response;
+
+  try {
+    response = await fetch(`${apiURL}/api${apiLinkSuffix}`, {
+      method: "PATCH",
+      headers: {
+        Authorization: `Bearer ${currentAuthToken}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(content),
+    });
+  } catch (e) {
+    window.alert(
+      "Serveriga ei õnnestunud ühendust saada.\n" +
+        "Muudatused pole salvestatud."
+    );
+    return null;
+  }
+
+  if (!response.ok) {
+    promptRequestError(response);
+    return null;
+  }
+  return response;
+};
+
 export const makeGetRequest = async (apiLinkSuffix) => {
   const response = await fetch(`${apiURL}/api${apiLinkSuffix}`, {
     method: "GET",

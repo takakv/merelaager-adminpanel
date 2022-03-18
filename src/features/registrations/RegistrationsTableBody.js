@@ -17,12 +17,10 @@ const RegistrationsTableBody = ({ shiftNr, registered, gender }) => {
     selectGroupRegistrations(state, shiftNr, registered, gender)
   );
 
-  console.log(registrations);
-
   return (
     <tbody>
       <tr>
-        <th>{title}</th>
+        <th colSpan="14">{title}</th>
       </tr>
       {registrations.map((registration) => (
         <RegistrationsTableEntry

@@ -1,5 +1,8 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { makeGetRequest } from "../../components/Common/requestAPI";
+import {
+  makeGetRequest,
+  makePatchRequest,
+} from "../../components/Common/requestAPI";
 
 const initialState = {
   registrations: [],
@@ -11,7 +14,20 @@ export const fetchRegistrations = createAsyncThunk(
   "registrations/fetchRegistrations",
   async () => {
     const response = await makeGetRequest("/registrations");
+    if (!response.ok) return [];
     return response.json();
+  }
+);
+
+export const updateRegistration = createAsyncThunk(
+  "registrations/updateRegistration",
+  async (req) => {
+    const response = await makePatchRequest(
+      `/registrations/${req.id}`,
+      req.data
+    );
+    if (!response.ok) return {};
+    return req;
   }
 );
 
@@ -42,6 +58,11 @@ const registrationsSlice = createSlice({
     [fetchRegistrations.rejected]: (state, action) => {
       state.status = "failed";
       state.error = action.error.message;
+    },
+    [updateRegistration.fulfilled]: (state, action) => {
+      const { id, field, data } = action.payload;
+      const registration = state.registrations.find((entry) => entry.id === id);
+      registration[field] = data[field];
     },
   },
 });

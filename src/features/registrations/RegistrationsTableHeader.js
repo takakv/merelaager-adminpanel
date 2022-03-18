@@ -16,7 +16,7 @@ const RegistrationsTableHeader = () => {
   addCell(cells, "Nimi");
 
   if (role === "full") {
-    cellValues = ["Reg?", "Vana?", "Sünnipäev", "Ts"];
+    cellValues = ["Reg?", "Vana?", "Vanus", "Ts"];
   } else {
     cellValues = [
       "Makstud",
@@ -25,7 +25,7 @@ const RegistrationsTableHeader = () => {
       "Kontakt",
       "Meil",
       "Vana?",
-      "Sünnipäev",
+      "Vanus",
       "Ts",
       "Arve nr",
     ];

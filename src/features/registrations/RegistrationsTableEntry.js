@@ -1,58 +1,68 @@
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import PropTypes from "prop-types";
 import React from "react";
-import { makePostRequest } from "../../components/Common/requestAPI";
-import { removeCamper } from "../registrationList/registrationListSlice";
 import { getRole, getShift } from "../userData/userDataSlice";
+import {
+  AgeCell,
+  BillNrCell,
+  ContactCell,
+  EmailCell,
+  OrderCell,
+  PircePaidCell,
+  PriceToPayCell,
+  RegisteredCell,
+  ReturningCell,
+  ShirtCell,
+} from "./registrationsTableCells";
 
-const Deleter = ({ id }) => {
-  const dispatch = useDispatch();
-
-  const remove = async () => {
-    const response = await makePostRequest(`reglist/remove/${id}/`);
-    if (!response || !response.ok) return;
-
-    dispatch(removeCamper({ id }));
-  };
-
-  return (
-    <button type="button" onClick={remove} className="c-regList-del">
-      X
-    </button>
-  );
-};
-
-Deleter.propTypes = {
-  id: PropTypes.number.isRequired,
-};
-
-const OrderEntry = ({ registration }) => {
+const RegistrationsTableEntry = ({ registration }) => {
   const role = useSelector(getRole);
   const myShift = useSelector(getShift);
 
   const isMyShift = role === "root" ? true : registration.shiftNr === myShift;
 
-  let value = `${registration.order}`;
-  if (!registration.registered && isMyShift)
-    value += <Deleter id={registration.id} />;
-
-  return <td className="u-mono u-relative">{value}</td>;
-};
-
-OrderEntry.propTypes = {
-  registration: PropTypes.objectOf(PropTypes.any).isRequired,
-};
-
-const RegistrationsTableEntry = ({ registration }) => {
   const cells = [];
 
-  cells.push(<OrderEntry key="order" registration={registration} />);
+  cells.push(
+    <OrderCell key="order" registration={registration} isMyShift={isMyShift} />
+  );
   cells.push(<td key="name">{registration.name}</td>);
+
+  if (role !== "full") {
+    cells.push(<PircePaidCell key="pricePaid" registration={registration} />);
+    cells.push(<PriceToPayCell key="priceToPay" registration={registration} />);
+  }
+
+  cells.push(
+    <RegisteredCell
+      key="isRegistered"
+      registration={registration}
+      isMyShift={isMyShift}
+    />
+  );
+
+  cells.push(<ContactCell key="contact" registration={registration} />);
+  cells.push(<EmailCell key="email" registration={registration} />);
+
+  cells.push(
+    <ReturningCell
+      key="isOld"
+      registration={registration}
+      isMyShift={isMyShift}
+    />
+  );
+
+  cells.push(<AgeCell key="age" registration={registration} />);
+  cells.push(<ShirtCell key="shirt" registration={registration} />);
+
+  if (role !== "full")
+    cells.push(<BillNrCell key="billNr" registration={registration} />);
 
   return <tr>{cells.map((cell) => cell)}</tr>;
 };
 
 RegistrationsTableEntry.propTypes = {
+  // eslint-disable-next-line react/forbid-prop-types
   registration: PropTypes.objectOf(PropTypes.any).isRequired,
 };
 
