@@ -73,6 +73,4 @@ const appAuthSlice = createSlice({
   },
 });
 
-export const getAccessToken = (state) => state.login.token;
-
 export default appAuthSlice.reducer;

@@ -1,13 +1,10 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import PropTypes from "prop-types";
 import { setTitle } from "../pageTitle/pageTitleSlice";
 import { getShift } from "../userData/userDataSlice";
 import { makeGetRequest } from "../../components/Common/requestAPI";
-import {
-  fetchRegistrations,
-  selectRegistrationsByShift,
-} from "./registrationsSlice";
+import { fetchRegistrations } from "./registrationsSlice";
 
 const shifts = ["1", "2", "3", "4", "5"];
 
@@ -58,9 +55,11 @@ const RegistrationsModule = (props) => {
   const dispatch = useDispatch();
 
   const { shiftNr } = props;
+  /*
   const registrations = useSelector((state) =>
     selectRegistrationsByShift(state, shiftNr)
   );
+  */
   const registrationStatus = useSelector((state) => state.registrations.status);
 
   useEffect(() => {

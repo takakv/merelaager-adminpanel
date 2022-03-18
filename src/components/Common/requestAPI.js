@@ -1,5 +1,3 @@
-import { useDispatch } from "react-redux";
-
 const apiURL =
   process.env.NODE_ENV === "development"
     ? "http://localhost:3000"
@@ -58,8 +56,6 @@ export const makePostRequest = async (
 
   if (authenticate) headers.Authorization = `Bearer ${currentAuthToken}`;
   if (content) headers["Content-Type"] = "application/json";
-
-  console.log(currentAuthToken);
 
   let response;
 

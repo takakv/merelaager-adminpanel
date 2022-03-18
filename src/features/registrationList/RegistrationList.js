@@ -29,17 +29,7 @@ const ShiftSwitchButtons = ({ switcher }) => {
     };
     const newBlob = new Blob([obj.blob], { type: "application/pdf" });
     const objUrl = window.URL.createObjectURL(newBlob);
-    // first method
-    // const link = document.createElement("a");
-    // link.href = objUrl;
-    // link.target = "_blank";
-    // link.download = obj.filename;
-    // link.click();
-    // second method
     window.open(objUrl, "_blank");
-    // third method
-    // let tab = window.open();
-    // tab.location.href = objUrl;
   };
 
   return (

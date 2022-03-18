@@ -4,12 +4,9 @@ import PropTypes from "prop-types";
 
 import RegTable from "../../components/Support Files/RegTable";
 import { setTitle } from "../pageTitle/pageTitleSlice";
-import {
-  fetchRegistrationList,
-  getAllRegistrationLists,
-} from "./registrationListSlice";
 import { getShift } from "../userData/userDataSlice";
 import { makeGetRequest } from "../../components/Common/requestAPI";
+import {fetchRegistrationList, getAllRegistrationLists} from "../registrationList/registrationListSlice";
 
 const shifts = ["1", "2", "3", "4", "5"];
 const regCounters = ["poisid", "tüdrukud", "kokku"];
@@ -123,7 +120,7 @@ ShiftOverviewInfo.propTypes = {
 };
 
 const RegistrationsList = (props) => {
-  const registrations = useSelector(state => state.registrations);
+  // const registrations = useSelector(state => state.registrations);
 
 
 
