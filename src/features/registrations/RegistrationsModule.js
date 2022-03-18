@@ -10,12 +10,6 @@ import RegistrationsTable from "./RegistrationsTable";
 const RegistrationsModule = ({ shiftNr }) => {
   const dispatch = useDispatch();
 
-  /*
-  const registrations = useSelector((state) =>
-    selectRegistrationsByShift(state, shiftNr)
-  );
-  */
-
   const registrations = useSelector((state) =>
     selectShiftRegistrations(state, shiftNr)
   );
@@ -30,7 +24,7 @@ const RegistrationsModule = ({ shiftNr }) => {
     return <RegistrationsTable shiftNr={shiftNr} />;
   }
 
-  return <p>Empty {shiftNr}</p>;
+  return <p>Laen...</p>;
 };
 
 RegistrationsModule.propTypes = {

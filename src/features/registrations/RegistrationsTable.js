@@ -1,15 +1,17 @@
-import { useSelector } from "react-redux";
 import PropTypes from "prop-types";
 import React from "react";
-import { selectShiftRegistrations } from "./registrationsSlice";
+import RegistrationsTableHeader from "./RegistrationsTableHeader";
+import RegistrationsTableBody from "./RegistrationsTableBody";
 
-const RegistrationsTable = ({ shiftNr }) => {
-  const registrations = useSelector((state) =>
-    selectShiftRegistrations(state, shiftNr)
-  );
-  console.log(registrations);
-  return <p>Here they are</p>;
-};
+const RegistrationsTable = ({ shiftNr }) => (
+  <table className="c-regList-table">
+    <RegistrationsTableHeader />
+    <RegistrationsTableBody shiftNr={shiftNr} registered gender="M" />
+    <RegistrationsTableBody shiftNr={shiftNr} registered gender="F" />
+    <RegistrationsTableBody shiftNr={shiftNr} gender="M" />
+    <RegistrationsTableBody shiftNr={shiftNr} gender="F" />
+  </table>
+);
 
 RegistrationsTable.propTypes = {
   shiftNr: PropTypes.number.isRequired,

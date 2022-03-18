@@ -57,6 +57,14 @@ export const selectShiftRegistrations = (state, shiftNr) =>
     (registration) => registration.shiftNr === shiftNr
   );
 
+export const selectGroupRegistrations = (state, shiftNr, registered, gender) =>
+  state.registrations.registrations.filter(
+    (registration) =>
+      registration.shiftNr === shiftNr &&
+      registration.registered === registered &&
+      registration.gender === gender
+  );
+
 export const selectRegistrationsByShift = (state, shiftNr) =>
   state.registrations.registrations.find(
     (registration) => registration.shiftNr === shiftNr
