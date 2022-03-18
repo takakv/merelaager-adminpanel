@@ -50,8 +50,10 @@ const Root = () => {
               element={<TeamsPage title="Meeskonnad" />}
             />
             <Route path="/taimer/" element={<TimerList title="Taimer" />} />
-            <Route path ="/nimekiri2/"
-                   element={<RegistrationsPage title="Nimekiri" />} />
+            <Route
+              path="/nimekiri2/"
+              element={<RegistrationsPage title="Nimekiri" />}
+            />
             <Route
               path="/nimekiri/"
               element={<RegistrationList title="Nimekiri" />}

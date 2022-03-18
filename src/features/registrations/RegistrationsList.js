@@ -6,7 +6,10 @@ import RegTable from "../../components/Support Files/RegTable";
 import { setTitle } from "../pageTitle/pageTitleSlice";
 import { getShift } from "../userData/userDataSlice";
 import { makeGetRequest } from "../../components/Common/requestAPI";
-import {fetchRegistrationList, getAllRegistrationLists} from "../registrationList/registrationListSlice";
+import {
+  fetchRegistrationList,
+  getAllRegistrationLists,
+} from "../registrationList/registrationListSlice";
 
 const shifts = ["1", "2", "3", "4", "5"];
 const regCounters = ["poisid", "tüdrukud", "kokku"];
@@ -121,8 +124,6 @@ ShiftOverviewInfo.propTypes = {
 
 const RegistrationsList = (props) => {
   // const registrations = useSelector(state => state.registrations);
-
-
 
   const dispatch = useDispatch();
   dispatch(setTitle(props.title));
