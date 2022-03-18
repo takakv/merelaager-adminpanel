@@ -18,17 +18,8 @@ import RegistrationList from "../features/registrationList/RegistrationList";
 import BillGen from "../components/BillGen";
 import Shirts from "../features/thisrts/Tshirts";
 import TimerList from "../components/TimerList";
-
-const Loader = () => (
-  <div className="c-preloader">
-    <img
-      className="_link"
-      alt="Logo"
-      src="https://merelaager.ee/media/img/merelaager_ship.svg"
-    />
-    <p>Laen...</p>
-  </div>
-);
+import RegistrationsPage from "../features/registrations/RegistrationsPage";
+import Loader from "../components/Loader";
 
 const Root = () => {
   const dispatch = useDispatch();
@@ -59,6 +50,10 @@ const Root = () => {
               element={<TeamsPage title="Meeskonnad" />}
             />
             <Route path="/taimer/" element={<TimerList title="Taimer" />} />
+            <Route
+              path="/nimekiri2/"
+              element={<RegistrationsPage title="Nimekiri" />}
+            />
             <Route
               path="/nimekiri/"
               element={<RegistrationList title="Nimekiri" />}
@@ -92,7 +87,7 @@ const Root = () => {
     );
   }
   if (userInfoStatus === "failed") {
-    window.location.reload();
+    // window.location.reload();
     return <p>{userInfoError}</p>;
   }
   return <Loader />;

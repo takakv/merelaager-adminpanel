@@ -4,7 +4,7 @@ import { makeGetRequest } from "../../components/Common/requestAPI";
 export const fetchTeams = createAsyncThunk(
   "teams/fetchTeams",
   async (shiftNr) => {
-    const response = await makeGetRequest(`teams/fetch/${shiftNr}/`);
+    const response = await makeGetRequest(`/teams/fetch/${shiftNr}`);
     return response.json();
   }
 );

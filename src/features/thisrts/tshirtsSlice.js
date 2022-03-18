@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { makeGetRequest } from "../../components/Common/requestAPI";
 
 export const fetchShirts = createAsyncThunk("shirts/fetchShirts", async () => {
-  const response = await makeGetRequest("shirts/fetch/");
+  const response = await makeGetRequest("/shirts/fetch");
   return response.json();
 });
 

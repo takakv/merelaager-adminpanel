@@ -4,12 +4,12 @@ import PropTypes from "prop-types";
 
 import RegTable from "../../components/Support Files/RegTable";
 import { setTitle } from "../pageTitle/pageTitleSlice";
+import { getShift } from "../userData/userDataSlice";
+import { makeGetRequest } from "../../components/Common/requestAPI";
 import {
   fetchRegistrationList,
   getAllRegistrationLists,
-} from "./registrationListSlice";
-import { getShift } from "../userData/userDataSlice";
-import { makeGetRequest } from "../../components/Common/requestAPI";
+} from "../registrationList/registrationListSlice";
 
 const shifts = ["1", "2", "3", "4", "5"];
 const regCounters = ["poisid", "tüdrukud", "kokku"];
@@ -29,7 +29,17 @@ const ShiftSwitchButtons = ({ switcher }) => {
     };
     const newBlob = new Blob([obj.blob], { type: "application/pdf" });
     const objUrl = window.URL.createObjectURL(newBlob);
+    // first method
+    // const link = document.createElement("a");
+    // link.href = objUrl;
+    // link.target = "_blank";
+    // link.download = obj.filename;
+    // link.click();
+    // second method
     window.open(objUrl, "_blank");
+    // third method
+    // let tab = window.open();
+    // tab.location.href = objUrl;
   };
 
   return (
@@ -112,7 +122,9 @@ ShiftOverviewInfo.propTypes = {
   ]).isRequired,
 };
 
-const RegistrationList = (props) => {
+const RegistrationsList = (props) => {
+  // const registrations = useSelector(state => state.registrations);
+
   const dispatch = useDispatch();
   dispatch(setTitle(props.title));
 
@@ -174,7 +186,8 @@ const RegistrationList = (props) => {
       conditionalRenderContent = <p>Laen...</p>;
       break;
   }
+
   return renderContent(conditionalRenderContent);
 };
 
-export default RegistrationList;
+export default RegistrationsList;

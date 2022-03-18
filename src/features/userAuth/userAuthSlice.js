@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { makePostRequest } from "../../components/Common/requestAPI";
 
 export const fetchInfo = createAsyncThunk("userAuth/fetchInfo", async () => {
-  const response = await makePostRequest("su/info");
+  const response = await makePostRequest("/su/info");
   return response.json();
 });
 

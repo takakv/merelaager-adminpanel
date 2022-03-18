@@ -1,27 +1,34 @@
-import React from "react";
+import React, { useEffect } from "react";
 
+import { useDispatch, useSelector } from "react-redux";
 import Login from "../components/Login";
 import Root from "./Root";
-import useToken from "../useToken";
-import { requestTokenRefresh } from "../components/Common/requestAPI";
+import { refreshToken } from "../features/appAuth/appAuthSlice";
+import Loader from "../components/Loader";
 
 const App = () => {
-  const { token, setToken } = useToken();
+  const dispatch = useDispatch();
+  const authStatus = useSelector((state) => state.appAuth.status);
 
-  if (!token) {
-    return <Login setToken={setToken} />;
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      console.log("Fetching refresh token");
+      if (authStatus === "ok") dispatch(refreshToken());
+    }, 240000);
+
+    dispatch(refreshToken());
+
+    return () => clearInterval(interval);
+  }, [authStatus, dispatch]);
+
+  switch (authStatus) {
+    case "ok":
+      return <Root />;
+    case "forbidden":
+      return <Login />;
+    default:
+      return <Loader />;
   }
-
-  const silentTokenRefresh = async () => {
-    const refreshIsOk = await requestTokenRefresh();
-    if (!refreshIsOk) window.location.reload();
-  };
-
-  setInterval(silentTokenRefresh, 1200000);
-
-  silentTokenRefresh().then();
-
-  return <Root />;
 };
 
 export default App;
