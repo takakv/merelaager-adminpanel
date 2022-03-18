@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import PropTypes from "prop-types";
 import { setTitle } from "../pageTitle/pageTitleSlice";
 import { getShift } from "../userData/userDataSlice";
 import { makeGetRequest } from "../../components/Common/requestAPI";
-import { fetchRegistrations } from "./registrationsSlice";
+import RegistrationsModule from "./RegistrationsModule";
 
 const shifts = ["1", "2", "3", "4", "5"];
 
@@ -49,28 +49,6 @@ const ShiftSwitchButtons = ({ switcher }) => {
 
 ShiftSwitchButtons.propTypes = {
   switcher: PropTypes.func.isRequired,
-};
-
-const RegistrationsModule = (props) => {
-  const dispatch = useDispatch();
-
-  const { shiftNr } = props;
-  /*
-  const registrations = useSelector((state) =>
-    selectRegistrationsByShift(state, shiftNr)
-  );
-  */
-  const registrationStatus = useSelector((state) => state.registrations.status);
-
-  useEffect(() => {
-    if (registrationStatus === "idle") dispatch(fetchRegistrations);
-  }, [registrationStatus, dispatch]);
-
-  return <p>Empty {shiftNr}</p>;
-};
-
-RegistrationsModule.propTypes = {
-  shiftNr: PropTypes.number.isRequired,
 };
 
 const RegistrationsPage = (props) => {

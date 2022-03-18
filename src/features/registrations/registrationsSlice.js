@@ -10,7 +10,7 @@ const initialState = {
 export const fetchRegistrations = createAsyncThunk(
   "registrations/fetchRegistrations",
   async () => {
-    const response = await makeGetRequest("/registrations/fetch");
+    const response = await makeGetRequest("/registrations");
     return response.json();
   }
 );
@@ -34,6 +34,16 @@ const registrationsSlice = createSlice({
       delete state.registrations[id];
     },
   },
+  extraReducers: {
+    [fetchRegistrations.fulfilled]: (state, action) => {
+      state.status = "succeeded";
+      state.registrations = action.payload.value;
+    },
+    [fetchRegistrations.rejected]: (state, action) => {
+      state.status = "failed";
+      state.error = action.error.message;
+    },
+  },
 });
 
 export const { paymentUpdate, registrationToggled, entryRemoved } =
@@ -41,6 +51,11 @@ export const { paymentUpdate, registrationToggled, entryRemoved } =
 
 export const selectAllRegistrations = (state) =>
   state.registrations.registrations;
+
+export const selectShiftRegistrations = (state, shiftNr) =>
+  state.registrations.registrations.filter(
+    (registration) => registration.shiftNr === shiftNr
+  );
 
 export const selectRegistrationsByShift = (state, shiftNr) =>
   state.registrations.registrations.find(
