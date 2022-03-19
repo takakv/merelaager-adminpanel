@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {
+  makeDeleteRequest,
   makeGetRequest,
   makePatchRequest,
 } from "../../components/Common/requestAPI";
@@ -28,6 +29,15 @@ export const updateRegistration = createAsyncThunk(
     );
     if (!response.ok) return {};
     return req;
+  }
+);
+
+export const deleteRegistration = createAsyncThunk(
+  "registration/deleteRegistration",
+  async (regId) => {
+    const response = await makeDeleteRequest(`/registrations/${regId}`);
+    if (!response.ok) return -1;
+    return regId;
   }
 );
 
@@ -63,6 +73,13 @@ const registrationsSlice = createSlice({
       const { id, field, data } = action.payload;
       const registration = state.registrations.find((entry) => entry.id === id);
       registration[field] = data[field];
+    },
+    [deleteRegistration.fulfilled]: (state, action) => {
+      const id = action.payload;
+      if (id < 0) return;
+      state.registrations = state.registrations.filter(
+        (entry) => entry.id !== id
+      );
     },
   },
 });

@@ -111,6 +111,31 @@ export const makePatchRequest = async (apiLinkSuffix, content) => {
   return response;
 };
 
+export const makeDeleteRequest = async (apiLinkSuffix) => {
+  let response;
+
+  try {
+    response = await fetch(`${apiURL}/api${apiLinkSuffix}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${currentAuthToken}`,
+      },
+    });
+  } catch (e) {
+    window.alert(
+      "Serveriga ei õnnestunud ühendust saada.\n" +
+        "Muudatused pole salvestatud."
+    );
+    return null;
+  }
+
+  if (!response.ok) {
+    promptRequestError(response);
+    return null;
+  }
+  return response;
+};
+
 export const makeGetRequest = async (apiLinkSuffix) => {
   const response = await fetch(`${apiURL}/api${apiLinkSuffix}`, {
     method: "GET",

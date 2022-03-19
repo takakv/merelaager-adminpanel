@@ -1,19 +1,16 @@
 import React, { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import PropTypes from "prop-types";
 import { setTitle } from "../pageTitle/pageTitleSlice";
-import { getShift } from "../userData/userDataSlice";
 import { makeGetRequest } from "../../components/Common/requestAPI";
 import RegistrationsModule from "./RegistrationsModule";
 
 const shifts = ["1", "2", "3", "4", "5"];
 
 // Buttons used to switch between each of the shifts.
-const ShiftSwitchButtons = ({ switcher }) => {
-  const shiftNr = useSelector(getShift);
-
+const ShiftSwitchButtons = ({ switcher, shiftNr }) => {
   const print = async () => {
-    const response = await makeGetRequest(`reglist/print/${shiftNr}/`);
+    const response = await makeGetRequest(`/registrations/pdf/${shiftNr}`);
     if (!response || !response.ok) return;
 
     const obj = {
@@ -49,6 +46,7 @@ const ShiftSwitchButtons = ({ switcher }) => {
 
 ShiftSwitchButtons.propTypes = {
   switcher: PropTypes.func.isRequired,
+  shiftNr: PropTypes.number.isRequired,
 };
 
 const RegistrationsPage = (props) => {
@@ -66,7 +64,7 @@ const RegistrationsPage = (props) => {
 
   return (
     <div>
-      <ShiftSwitchButtons switcher={switchShift} />
+      <ShiftSwitchButtons switcher={switchShift} shiftNr={shiftNr} />
       <RegistrationsModule shiftNr={shiftNr} />
     </div>
   );

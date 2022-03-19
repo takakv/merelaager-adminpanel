@@ -2,10 +2,8 @@
 import { useDispatch, useSelector } from "react-redux";
 import PropTypes from "prop-types";
 import React from "react";
-import { makePostRequest } from "../../components/Common/requestAPI";
-import { removeCamper } from "../registrationList/registrationListSlice";
 import { getRole } from "../userData/userDataSlice";
-import { updateRegistration } from "./registrationsSlice";
+import { deleteRegistration, updateRegistration } from "./registrationsSlice";
 
 // Helper functions.
 
@@ -81,10 +79,7 @@ const Deleter = ({ id }) => {
   const dispatch = useDispatch();
 
   const remove = async () => {
-    const response = await makePostRequest(`reglist/remove/${id}/`);
-    if (!response || !response.ok) return;
-
-    dispatch(removeCamper({ id }));
+    dispatch(deleteRegistration(id));
   };
 
   return (
@@ -117,9 +112,8 @@ OrderCell.propTypes = {
   isMyShift: PropTypes.bool.isRequired,
 };
 
-export const ContactCell = ({ registration }) => setCellValue(
-    `${registration.contactName}, ${registration.contactPhone}`
-  );
+export const ContactCell = ({ registration }) =>
+  setCellValue(`${registration.contactName}, ${registration.contactPhone}`);
 
 ContactCell.propTypes = {
   registration: PropTypes.objectOf(PropTypes.any).isRequired,

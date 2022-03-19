@@ -14,7 +14,6 @@ import ShiftInfo from "../features/camperInfo/CamperInfo";
 import TeamsPage from "../components/TeamList";
 import TentList from "../components/TentList";
 import Mailer from "../components/Mailer";
-import RegistrationList from "../features/registrationList/RegistrationList";
 import BillGen from "../components/BillGen";
 import Shirts from "../features/thisrts/Tshirts";
 import TimerList from "../components/TimerList";
@@ -51,12 +50,8 @@ const Root = () => {
             />
             <Route path="/taimer/" element={<TimerList title="Taimer" />} />
             <Route
-              path="/nimekiri2/"
-              element={<RegistrationsPage title="Nimekiri" />}
-            />
-            <Route
               path="/nimekiri/"
-              element={<RegistrationList title="Nimekiri" />}
+              element={<RegistrationsPage title="Nimekiri" />}
             />
             {role === "full" ? (
               ""
