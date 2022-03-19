@@ -42,6 +42,37 @@ ToggleButton.propTypes = {
   value: PropTypes.bool.isRequired,
 };
 
+const InputField = ({ id, field, value }) => {
+  const dispatch = useDispatch();
+
+  const reqObj = { id, field, data: {} };
+
+  const handleChange = ({ target }) => {
+    const sum = parseInt(target.value, 10);
+    if (isNaN(sum)) {
+      alert("Ainult numbrid");
+      return;
+    }
+    reqObj.data[field] = sum;
+    dispatch(updateRegistration(reqObj));
+  };
+
+  return (
+    <input
+      className="u-mono"
+      type="text"
+      defaultValue={value}
+      onBlur={handleChange}
+    />
+  );
+};
+
+InputField.propTypes = {
+  id: PropTypes.number.isRequired,
+  field: PropTypes.string.isRequired,
+  value: PropTypes.number.isRequired,
+};
+
 const Deleter = ({ id }) => {
   const dispatch = useDispatch();
 
@@ -80,18 +111,36 @@ OrderCell.propTypes = {
   isMyShift: PropTypes.bool.isRequired,
 };
 
-export const PircePaidCell = ({ registration }) => {
+export const PricePaidCell = ({ registration }) => {
   const role = useSelector(getRole);
-  return setCellValue(registration.pricePaid, true);
+  if (role !== "root") return setCellValue(registration.pricePaid, true);
+  return (
+    <td id="pricePaid">
+      <InputField
+        field="pricePaid"
+        id={registration.id}
+        value={registration.pricePaid}
+      />
+    </td>
+  );
 };
 
-PircePaidCell.propTypes = {
+PricePaidCell.propTypes = {
   registration: PropTypes.objectOf(PropTypes.any).isRequired,
 };
 
 export const PriceToPayCell = ({ registration }) => {
   const role = useSelector(getRole);
-  return setCellValue(registration.priceToPay, true);
+  if (role !== "root") return setCellValue(registration.priceToPay, true);
+  return (
+    <td id="priceToPay">
+      <InputField
+        field="priceToPay"
+        id={registration.id}
+        value={registration.priceToPay}
+      />
+    </td>
+  );
 };
 
 PriceToPayCell.propTypes = {

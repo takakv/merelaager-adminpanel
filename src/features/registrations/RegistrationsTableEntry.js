@@ -8,7 +8,7 @@ import {
   ContactCell,
   EmailCell,
   OrderCell,
-  PircePaidCell,
+  PricePaidCell,
   PriceToPayCell,
   RegisteredCell,
   ReturningCell,
@@ -29,7 +29,7 @@ const RegistrationsTableEntry = ({ registration }) => {
   cells.push(<td key="name">{registration.name}</td>);
 
   if (role !== "full") {
-    cells.push(<PircePaidCell key="pricePaid" registration={registration} />);
+    cells.push(<PricePaidCell key="pricePaid" registration={registration} />);
     cells.push(<PriceToPayCell key="priceToPay" registration={registration} />);
   }
 
