@@ -41,8 +41,10 @@ const RegistrationsTableEntry = ({ registration }) => {
     />
   );
 
-  cells.push(<ContactCell key="contact" registration={registration} />);
-  cells.push(<EmailCell key="email" registration={registration} />);
+  if (role !== "full") {
+    cells.push(<ContactCell key="contact" registration={registration}/>);
+    cells.push(<EmailCell key="email" registration={registration}/>);
+  }
 
   cells.push(
     <ReturningCell

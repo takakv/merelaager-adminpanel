@@ -7,12 +7,16 @@ import { removeCamper } from "../registrationList/registrationListSlice";
 import { getRole } from "../userData/userDataSlice";
 import { updateRegistration } from "./registrationsSlice";
 
+// Helper functions.
+
 const calculateAge = (dob, delta) => {
   const elapsed = delta - dob.getTime();
 
   const yearInMs = 3.15576e10; // 365.25 * 24 * 60 * 60 * 1000
   return Math.floor(elapsed / yearInMs);
 };
+
+// Helper modules.
 
 const setCellValue = (value, mono = false) => {
   if (mono) return <td className="u-mono">{value}</td>;
@@ -94,6 +98,8 @@ Deleter.propTypes = {
   id: PropTypes.number.isRequired,
 };
 
+// Text type cells.
+
 export const OrderCell = ({ registration, isMyShift }) => {
   if (!registration.registered && isMyShift)
     return (
@@ -111,51 +117,9 @@ OrderCell.propTypes = {
   isMyShift: PropTypes.bool.isRequired,
 };
 
-export const PricePaidCell = ({ registration }) => {
-  const role = useSelector(getRole);
-  if (role !== "root") return setCellValue(registration.pricePaid, true);
-  return (
-    <td id="pricePaid">
-      <InputField
-        field="pricePaid"
-        id={registration.id}
-        value={registration.pricePaid}
-      />
-    </td>
-  );
-};
-
-PricePaidCell.propTypes = {
-  registration: PropTypes.objectOf(PropTypes.any).isRequired,
-};
-
-export const PriceToPayCell = ({ registration }) => {
-  const role = useSelector(getRole);
-  if (role !== "root") return setCellValue(registration.priceToPay, true);
-  return (
-    <td id="priceToPay">
-      <InputField
-        field="priceToPay"
-        id={registration.id}
-        value={registration.priceToPay}
-      />
-    </td>
-  );
-};
-
-PriceToPayCell.propTypes = {
-  registration: PropTypes.objectOf(PropTypes.any).isRequired,
-};
-
-// Text type cells.
-
-export const ContactCell = ({ registration }) => {
-  const role = useSelector(getRole);
-  if (role === "full") return setCellValue("-");
-  return setCellValue(
+export const ContactCell = ({ registration }) => setCellValue(
     `${registration.contactName}, ${registration.contactPhone}`
   );
-};
 
 ContactCell.propTypes = {
   registration: PropTypes.objectOf(PropTypes.any).isRequired,
@@ -235,4 +199,42 @@ export const ReturningCell = ({ registration, isMyShift }) => {
 ReturningCell.propTypes = {
   registration: PropTypes.objectOf(PropTypes.any).isRequired,
   isMyShift: PropTypes.bool.isRequired,
+};
+
+// Input type cells.
+
+export const PricePaidCell = ({ registration }) => {
+  const role = useSelector(getRole);
+  if (role !== "root") return setCellValue(registration.pricePaid, true);
+  return (
+    <td id="pricePaid">
+      <InputField
+        field="pricePaid"
+        id={registration.id}
+        value={registration.pricePaid}
+      />
+    </td>
+  );
+};
+
+PricePaidCell.propTypes = {
+  registration: PropTypes.objectOf(PropTypes.any).isRequired,
+};
+
+export const PriceToPayCell = ({ registration }) => {
+  const role = useSelector(getRole);
+  if (role !== "root") return setCellValue(registration.priceToPay, true);
+  return (
+    <td id="priceToPay">
+      <InputField
+        field="priceToPay"
+        id={registration.id}
+        value={registration.priceToPay}
+      />
+    </td>
+  );
+};
+
+PriceToPayCell.propTypes = {
+  registration: PropTypes.objectOf(PropTypes.any).isRequired,
 };

@@ -20,7 +20,7 @@ const RegistrationsTableHeader = () => {
   } else {
     cellValues = [
       "Makstud",
-      "Kogusumma",
+      "Kokku",
       "Reg?",
       "Kontakt",
       "Meil",

@@ -1,13 +1,10 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { useSelector } from "react-redux";
-import { getRole } from "../userData/userDataSlice";
 import { selectGroupRegistrations } from "./registrationsSlice";
 import RegistrationsTableEntry from "./RegistrationsTableEntry";
 
 const RegistrationsTableBody = ({ shiftNr, registered, gender }) => {
-  const role = useSelector(getRole);
-
   let title;
 
   if (registered) title = gender === "M" ? "Poisid" : "Tüdrukud";
