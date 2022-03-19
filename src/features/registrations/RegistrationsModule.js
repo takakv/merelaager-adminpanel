@@ -6,6 +6,7 @@ import {
   selectShiftRegistrations,
 } from "./registrationsSlice";
 import RegistrationsTable from "./RegistrationsTable";
+import RegistrationsOverview from "./RegistrationsOverview";
 
 const RegistrationsModule = ({ shiftNr }) => {
   const dispatch = useDispatch();
@@ -21,7 +22,12 @@ const RegistrationsModule = ({ shiftNr }) => {
 
   if (registrationStatus === "succeeded") {
     if (!registrations.length) return <p>Registreerimisi pole</p>;
-    return <RegistrationsTable shiftNr={shiftNr} />;
+    return (
+      <div>
+        <RegistrationsOverview shiftNr={shiftNr} />
+        <RegistrationsTable shiftNr={shiftNr} />
+      </div>
+    );
   }
 
   return <p>Laen...</p>;

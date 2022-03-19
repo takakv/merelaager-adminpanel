@@ -1,14 +1,17 @@
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import PropTypes from "prop-types";
 import { setTitle } from "../pageTitle/pageTitleSlice";
 import { makeGetRequest } from "../../components/Common/requestAPI";
 import RegistrationsModule from "./RegistrationsModule";
+import { getRole } from "../userData/userDataSlice";
 
 const shifts = ["1", "2", "3", "4", "5"];
 
 // Buttons used to switch between each of the shifts.
 const ShiftSwitchButtons = ({ switcher, shiftNr }) => {
+  const role = useSelector(getRole);
+
   const print = async () => {
     const response = await makeGetRequest(`/registrations/pdf/${shiftNr}`);
     if (!response || !response.ok) return;
@@ -22,6 +25,8 @@ const ShiftSwitchButtons = ({ switcher, shiftNr }) => {
     const objUrl = window.URL.createObjectURL(newBlob);
     window.open(objUrl, "_blank");
   };
+
+  const disablePrint = role !== "boss" && role !== "root";
 
   return (
     <div className="c-regList-shiftBar">
@@ -37,7 +42,12 @@ const ShiftSwitchButtons = ({ switcher, shiftNr }) => {
           </button>
         ))}
       </div>
-      <button type="button" className="o-printer" onClick={print}>
+      <button
+        type="button"
+        className="o-printer"
+        onClick={print}
+        disabled={disablePrint}
+      >
         Prindi
       </button>
     </div>

@@ -28,7 +28,7 @@ const RegistrationsTableEntry = ({ registration }) => {
   );
   cells.push(<td key="name">{registration.name}</td>);
 
-  if (role !== "full") {
+  if (role === "boss" || role === "root") {
     cells.push(<PricePaidCell key="pricePaid" registration={registration} />);
     cells.push(<PriceToPayCell key="priceToPay" registration={registration} />);
   }
@@ -41,7 +41,7 @@ const RegistrationsTableEntry = ({ registration }) => {
     />
   );
 
-  if (role !== "full") {
+  if (role === "boss" || role === "root") {
     cells.push(<ContactCell key="contact" registration={registration}/>);
     cells.push(<EmailCell key="email" registration={registration}/>);
   }
@@ -57,7 +57,7 @@ const RegistrationsTableEntry = ({ registration }) => {
   cells.push(<AgeCell key="age" registration={registration} />);
   cells.push(<ShirtCell key="shirt" registration={registration} />);
 
-  if (role !== "full")
+  if (role === "boss" || role === "root")
     cells.push(<BillNrCell key="billNr" registration={registration} />);
 
   return <tr>{cells.map((cell) => cell)}</tr>;

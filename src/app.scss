@@ -178,6 +178,11 @@ button,
     cursor: pointer;
     background-color: var(--dimmed);
   }
+
+  &:disabled:hover {
+    cursor: not-allowed;
+    background-color: inherit;
+  }
 }
 
 // Objects

@@ -15,7 +15,7 @@ const RegistrationsTableHeader = () => {
   addCell(cells, "Reg. järg");
   addCell(cells, "Nimi");
 
-  if (role === "full") {
+  if (role !== "boss" && role !== "root") {
     cellValues = ["Reg?", "Vana?", "Vanus", "Ts"];
   } else {
     cellValues = [
