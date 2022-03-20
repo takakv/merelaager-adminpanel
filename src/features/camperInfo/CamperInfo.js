@@ -4,11 +4,11 @@ import PropTypes from "prop-types";
 
 import { setTitle } from "../pageTitle/pageTitleSlice";
 import { fetchCamperInfo, getCamperInfo } from "./camperInfoSlice";
-import { getShift } from "../userData/userDataSlice";
 import {
   makeGetRequest,
   makePostRequest,
 } from "../../components/Common/requestAPI";
+import { selectCurrentShift } from "../userAuth/userAuthSlice";
 
 const CamperEntry = (props) => {
   const { data, shiftNr } = props;
@@ -69,7 +69,7 @@ CamperEntry.propTypes = {
 
 const CamperInfo = (props) => {
   const { title } = props;
-  const shiftNr = useSelector(getShift);
+  const shiftNr = useSelector(selectCurrentShift);
   const dispatch = useDispatch();
   dispatch(setTitle(title));
 

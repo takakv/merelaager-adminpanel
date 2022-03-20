@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import PropTypes from "prop-types";
 
 import { fetchStaff, getStaffList } from "./staffListSlice";
-import { getShift } from "../userData/userDataSlice";
+import { selectCurrentShift } from "../userAuth/userAuthSlice";
 
 const StaffEntry = (props) => {
   const { staff } = props;
@@ -52,7 +52,7 @@ const StaffList = () => {
   const staffListStatus = useSelector((state) => state.staffList.status);
   const staffListError = useSelector((state) => state.staffList.error);
 
-  const shiftNr = useSelector(getShift);
+  const shiftNr = useSelector(selectCurrentShift);
 
   useEffect(() => {
     if (staffListStatus === "idle") dispatch(fetchStaff(shiftNr));

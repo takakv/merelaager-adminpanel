@@ -4,7 +4,6 @@ import PropTypes from "prop-types";
 
 import { useDispatch, useSelector } from "react-redux";
 import { setTitle } from "../features/pageTitle/pageTitleSlice";
-import { getShift } from "../features/userData/userDataSlice";
 import {
   addMember,
   fetchTeams,
@@ -12,6 +11,7 @@ import {
   removeMember,
 } from "../features/teams/teamerSlice";
 import { makePostRequest } from "./Common/requestAPI";
+import { selectCurrentShift } from "../features/userAuth/userAuthSlice";
 
 const TeamPlace = (props) => {
   const { team, teamCount } = props;
@@ -65,7 +65,7 @@ const Leaderboard = () => {
 
 const TeamsPage = (props) => {
   const { title } = props;
-  const shiftNr = useSelector(getShift);
+  const shiftNr = useSelector(selectCurrentShift);
   const dispatch = useDispatch();
   dispatch(setTitle(title));
 
