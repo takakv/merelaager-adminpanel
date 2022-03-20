@@ -25,9 +25,14 @@ export const updateCurrentShift = createAsyncThunk(
 const userAuthSlice = createSlice({
   name: "userInfo",
   initialState: {
-    userInfo: {},
+    userInfo: { useRoot: false },
     status: "idle",
     error: null,
+  },
+  reducers: {
+    setRootUsage: (state, action) => {
+      state.userInfo.useRoot = action.payload;
+    },
   },
   extraReducers: {
     [fetchInfo.fulfilled]: (state, action) => {
@@ -51,5 +56,7 @@ export const selectCurrentShift = (state) =>
   state.userInfo.userInfo.currentShift;
 export const selectUserShifts = (state) => state.userInfo.userInfo.shifts;
 export const selectRootStatus = (state) => state.userInfo.userInfo.isRoot;
+
+export const { setRootUsage } = userAuthSlice.actions;
 
 export default userAuthSlice.reducer;

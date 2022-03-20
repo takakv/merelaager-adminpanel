@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from "react-redux";
 import PropTypes from "prop-types";
 
 import { fetchStaff, getStaffList } from "./staffListSlice";
-import { selectCurrentShift } from "../userAuth/userAuthSlice";
 
 const StaffEntry = (props) => {
   const { staff } = props;
@@ -46,17 +45,15 @@ StaffEntry.propTypes = {
   staff: PropTypes.objectOf(PropTypes.any).isRequired,
 };
 
-const StaffList = () => {
+const StaffList = ({ shiftNr }) => {
   const dispatch = useDispatch();
   const staffList = useSelector(getStaffList);
   const staffListStatus = useSelector((state) => state.staffList.status);
   const staffListError = useSelector((state) => state.staffList.error);
 
-  const shiftNr = useSelector(selectCurrentShift);
-
   useEffect(() => {
-    if (staffListStatus === "idle") dispatch(fetchStaff(shiftNr));
-  });
+    dispatch(fetchStaff(shiftNr));
+  }, [shiftNr, dispatch]);
 
   const bossList = [];
   const fullList = [];
@@ -111,6 +108,10 @@ const StaffList = () => {
     default:
       return <p>Laen...</p>;
   }
+};
+
+StaffList.propTypes = {
+  shiftNr: PropTypes.number.isRequired,
 };
 
 export default StaffList;

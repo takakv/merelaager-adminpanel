@@ -3,10 +3,12 @@ import { useDispatch, useSelector } from "react-redux";
 import PropTypes from "prop-types";
 
 import { setTitle } from "../features/pageTitle/pageTitleSlice";
-import { getShift } from "../features/userData/userDataSlice";
 import { makePostRequest } from "./Common/requestAPI";
 import StaffList from "../features/staffList/staffList";
-import { selectUserInfo } from "../features/userAuth/userAuthSlice";
+import {
+  selectCurrentShift,
+  selectUserInfo,
+} from "../features/userAuth/userAuthSlice";
 
 const CurrentDate = () => {
   const [date] = useState(
@@ -27,7 +29,7 @@ const MainPage = (props) => {
   const dispatch = useDispatch();
   dispatch(setTitle(title));
 
-  const shiftNr = useSelector(getShift);
+  const shiftNr = useSelector(selectCurrentShift);
   const role = useSelector(selectUserInfo);
 
   const sendMail = async () => {
@@ -40,7 +42,7 @@ const MainPage = (props) => {
   };
 
   if (role === "op") {
-    return <StaffList />;
+    return <StaffList shiftNr={shiftNr} />;
   }
   return (
     <div className="c-landing-grid">
@@ -48,7 +50,7 @@ const MainPage = (props) => {
         <CurrentDate />
       </div>
       <div className="c-card-wrapper c-teambox">
-        <StaffList />
+        <StaffList shiftNr={shiftNr} />
       </div>
       <div className="c-card-wrapper c-mailsendbox">
         <div className="c-card c-mailsend">

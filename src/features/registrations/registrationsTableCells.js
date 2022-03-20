@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import React from "react";
 import { getRole } from "../userData/userDataSlice";
 import { deleteRegistration, updateRegistration } from "./registrationsSlice";
+import { selectRootStatus, selectRootUsage } from "../userAuth/userAuthSlice";
 
 // Helper functions.
 
@@ -198,8 +199,10 @@ ReturningCell.propTypes = {
 // Input type cells.
 
 export const PricePaidCell = ({ registration }) => {
-  const role = useSelector(getRole);
-  if (role !== "root") return setCellValue(registration.pricePaid, true);
+  const isRoot = useSelector(selectRootStatus);
+  const usesRoot = useSelector(selectRootUsage);
+
+  if (!isRoot || !usesRoot) return setCellValue(registration.pricePaid, true);
   return (
     <td id="pricePaid">
       <InputField
@@ -216,8 +219,10 @@ PricePaidCell.propTypes = {
 };
 
 export const PriceToPayCell = ({ registration }) => {
-  const role = useSelector(getRole);
-  if (role !== "root") return setCellValue(registration.priceToPay, true);
+  const isRoot = useSelector(selectRootStatus);
+  const usesRoot = useSelector(selectRootUsage);
+
+  if (!isRoot || !usesRoot) return setCellValue(registration.priceToPay, true);
   return (
     <td id="priceToPay">
       <InputField

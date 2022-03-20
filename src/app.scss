@@ -502,6 +502,16 @@ button,
     span {
       font-size: 1.25rem;
     }
+
+    .root-switch {
+      margin-right: 1em;
+      padding-right: 1em;
+      border-right: 1px solid var(--line-dark);
+
+      input {
+        margin-right: 0;
+      }
+    }
   }
 
   .c-content {
@@ -1048,6 +1058,12 @@ button,
     width: 100px;
     margin-top: 30vh;
     margin-bottom: 2em;
+  }
+}
+
+.c-toggle-switch {
+  &__container {
+    display: flex;
   }
 }
 
