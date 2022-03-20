@@ -5,8 +5,9 @@ import { setTitle } from "../pageTitle/pageTitleSlice";
 import { makeGetRequest } from "../../components/Common/requestAPI";
 import RegistrationsModule from "./RegistrationsModule";
 import { getRole } from "../userData/userDataSlice";
+import { selectCurrentShift } from "../userAuth/userAuthSlice";
 
-const shifts = ["1", "2", "3", "4", "5"];
+const shifts = [1, 2, 3, 4, 5];
 
 // Buttons used to switch between each of the shifts.
 const ShiftSwitchButtons = ({ switcher, shiftNr }) => {
@@ -36,7 +37,7 @@ const ShiftSwitchButtons = ({ switcher, shiftNr }) => {
             type="button"
             key={shift}
             onClick={switcher}
-            className="o-button--40"
+            className={`o-button--40${shift === shiftNr ? " is-active" : ""}`}
           >
             {shift}v
           </button>
@@ -65,7 +66,9 @@ const RegistrationsPage = (props) => {
   const { title } = props;
   dispatch(setTitle(title));
 
-  const [shiftNr, setShiftNr] = useState(1);
+  // Start with the current shift but don't change the
+  // display when the current shift is changed.
+  const [shiftNr, setShiftNr] = useState(useSelector(selectCurrentShift));
 
   // Switch displayed shift.
   const switchShift = ({ target }) => {

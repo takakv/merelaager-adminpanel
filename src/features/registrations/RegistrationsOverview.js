@@ -1,9 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types";
-import {useSelector} from "react-redux";
-import {selectShiftRegistrations} from "./registrationsSlice";
+import { useSelector } from "react-redux";
+import { selectShiftRegistrations } from "./registrationsSlice";
 
-const ShiftOverviewCounter = ({counterName, value}) => (
+const ShiftOverviewCounter = ({ counterName, value }) => (
   <div className="c-regList-counter">
     {counterName}: <span className="u-mono">{value}</span>
   </div>
@@ -14,20 +14,20 @@ ShiftOverviewCounter.propTypes = {
   value: PropTypes.number.isRequired,
 };
 
-const RegistrationsOverview = ({shiftNr}) => {
+const RegistrationsOverview = ({ shiftNr }) => {
   const registrations = useSelector((state) =>
     selectShiftRegistrations(state, shiftNr)
   );
 
   const regCounters = {
-    M: {value: 0, name: "poisid"},
-    F: {value: 0, name: "tüdrukud"},
-    total: {value: 0, name: "kokku"},
+    M: { value: 0, name: "poisid" },
+    F: { value: 0, name: "tüdrukud" },
+    total: { value: 0, name: "kokku" },
   };
 
   const resCounters = {
-    M: {value: 0, name: "res. poisid"},
-    F: {value: 0, name: "res. tüdrukud"},
+    M: { value: 0, name: "res. poisid" },
+    F: { value: 0, name: "res. tüdrukud" },
   };
 
   registrations.forEach((reg) => {

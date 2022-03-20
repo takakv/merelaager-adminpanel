@@ -198,6 +198,10 @@ button,
     width: 40px;
     padding: 5px 0;
     border: 1px solid;
+
+    &.is-active {
+      background-color: #23408e3f;
+    }
   }
 }
 

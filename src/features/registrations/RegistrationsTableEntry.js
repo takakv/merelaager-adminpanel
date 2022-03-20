@@ -42,8 +42,8 @@ const RegistrationsTableEntry = ({ registration }) => {
   );
 
   if (role === "boss" || role === "root") {
-    cells.push(<ContactCell key="contact" registration={registration}/>);
-    cells.push(<EmailCell key="email" registration={registration}/>);
+    cells.push(<ContactCell key="contact" registration={registration} />);
+    cells.push(<EmailCell key="email" registration={registration} />);
   }
 
   cells.push(

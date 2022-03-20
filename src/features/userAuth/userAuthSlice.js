@@ -1,30 +1,55 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { makePostRequest } from "../../components/Common/requestAPI";
+import {
+  makeGetRequest,
+  makePostRequest,
+} from "../../components/Common/requestAPI";
 
 export const fetchInfo = createAsyncThunk("userAuth/fetchInfo", async () => {
-  const response = await makePostRequest("/su/info");
+  const response = await makeGetRequest("/me");
   return response.json();
 });
+
+export const updateCurrentShift = createAsyncThunk(
+  "userAuth/updateCurrentShift",
+  async (newShiftNr) => {
+    const response = await makePostRequest(
+      "/me/currentShift",
+      { newShift: newShiftNr },
+      true
+    );
+    if (!response.ok) return 0;
+    return newShiftNr;
+  }
+);
 
 const userAuthSlice = createSlice({
   name: "userInfo",
   initialState: {
-    data: {},
+    userInfo: {},
     status: "idle",
     error: null,
   },
   extraReducers: {
     [fetchInfo.fulfilled]: (state, action) => {
       state.status = "succeeded";
-      state.data = action.payload;
+      state.userInfo = action.payload;
+      state.userInfo.useRoot = false;
     },
     [fetchInfo.rejected]: (state, action) => {
       state.status = "failed";
-      state.error = action.error.message;
+      state.userInfo = action.error.message;
+    },
+    [updateCurrentShift.fulfilled]: (state, action) => {
+      if (action.payload) state.userInfo.currentShift = action.payload;
     },
   },
 });
 
-export const getUserInfo = (state) => state.userInfo.data;
+export const selectUserInfo = (state) => state.userInfo.userInfo;
+export const selectRootUsage = (state) => state.userInfo.userInfo.useRoot;
+export const selectCurrentShift = (state) =>
+  state.userInfo.userInfo.currentShift;
+export const selectUserShifts = (state) => state.userInfo.userInfo.shifts;
+export const selectRootStatus = (state) => state.userInfo.userInfo.isRoot;
 
 export default userAuthSlice.reducer;

@@ -60,7 +60,7 @@ export const makePostRequest = async (
   let response;
 
   try {
-    response = await fetch(`${apiURL}/api/${apiLinkSuffix}`, {
+    response = await fetch(`${apiURL}/api${apiLinkSuffix}`, {
       method: "POST",
       headers,
       body: JSON.stringify(content),

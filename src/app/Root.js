@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from "react-redux";
 import React, { useEffect } from "react";
 import { Route, Routes } from "react-router-dom";
 
-import { fetchInfo, getUserInfo } from "../features/userAuth/userAuthSlice";
+import { fetchInfo, selectUserInfo } from "../features/userAuth/userAuthSlice";
 import { setData } from "../features/userData/userDataSlice";
 
 import Hamburger from "../components/Hamburger";
@@ -22,7 +22,7 @@ import Loader from "../components/Loader";
 
 const Root = () => {
   const dispatch = useDispatch();
-  const userInfo = useSelector(getUserInfo);
+  const userInfo = useSelector(selectUserInfo);
   const userInfoStatus = useSelector((state) => state.userInfo.status);
   const userInfoError = useSelector((state) => state.userInfo.error);
 
@@ -31,6 +31,7 @@ const Root = () => {
   }, [userInfoStatus, dispatch]);
 
   if (userInfoStatus === "succeeded") {
+    console.log(userInfo);
     dispatch(setData(userInfo));
     const { role } = userInfo;
 

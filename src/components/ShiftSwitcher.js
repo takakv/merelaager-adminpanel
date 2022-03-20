@@ -2,37 +2,15 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import PropTypes from "prop-types";
 import {
-  getShift,
-  getShifts,
-  setRole,
-  setShift,
-} from "../features/userData/userDataSlice";
-import { makePostRequest } from "./Common/requestAPI";
-
-const sendShift = async (shiftNr) => {
-  const response = await makePostRequest(`su/shift/swap`, {
-    shiftNr,
-  });
-
-  if (!response.ok) {
-    alert("Puuduvad juurdepääsuõigused");
-    return null;
-  }
-
-  return response.json();
-};
+  selectCurrentShift,
+  selectUserShifts,
+  updateCurrentShift,
+} from "../features/userAuth/userAuthSlice";
 
 const ShiftOption = ({ shiftNr }) => {
   const dispatch = useDispatch();
 
-  const changeShift = async () => {
-    const result = await sendShift(shiftNr);
-    if (!result) return;
-
-    dispatch(setRole(result.role));
-    dispatch(setShift(shiftNr));
-    window.location.reload();
-  };
+  const changeShift = async () => dispatch(updateCurrentShift(shiftNr));
 
   const handleKeyPress = async ({ key }) => {
     if (key === "Enter") await changeShift();
@@ -56,15 +34,13 @@ ShiftOption.propTypes = {
 };
 
 const ShiftOptions = ({ isHidden, shiftNr, shiftList }) => {
-  const shifts = [...shiftList];
-  const currentIndex = shifts.indexOf(shiftNr);
-  shifts.splice(currentIndex, 1);
-  shifts.sort();
+  const shifts = shiftList.filter((shift) => shift.id !== shiftNr);
+  shifts.sort((shift) => shift.id);
 
   return (
     <div className={`c-switch-options${isHidden ? "" : " is-visible"}`}>
-      {shifts.map((nr) => (
-        <ShiftOption shiftNr={nr} key={nr} />
+      {shifts.map((shift) => (
+        <ShiftOption shiftNr={shift.id} key={shift.id} />
       ))}
     </div>
   );
@@ -73,14 +49,14 @@ const ShiftOptions = ({ isHidden, shiftNr, shiftList }) => {
 ShiftOptions.propTypes = {
   isHidden: PropTypes.bool.isRequired,
   shiftNr: PropTypes.number.isRequired,
-  shiftList: PropTypes.arrayOf(PropTypes.number).isRequired,
+  shiftList: PropTypes.arrayOf(PropTypes.objectOf(PropTypes.any)).isRequired,
 };
 
 const ShiftSwitcher = () => {
   const [hidden, setHidden] = useState(true);
 
-  const shiftNr = useSelector(getShift);
-  const shifts = [...useSelector(getShifts)];
+  const shiftNr = useSelector(selectCurrentShift);
+  const shifts = useSelector(selectUserShifts);
 
   const unique = shifts.length === 1;
 
