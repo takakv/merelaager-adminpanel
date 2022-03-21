@@ -179,11 +179,12 @@ RegisteredCell.propTypes = {
   isMyShift: PropTypes.bool.isRequired,
 };
 
-export const ReturningCell = ({ registration, isMyShift }) => {
+export const ReturningCell = ({ registration, isMyShift, isDetailedView }) => {
   const role = useSelector(getRole);
   const { old } = registration;
 
-  if (!isMyShift || role === "full") return setCellValue(old ? "jah" : "ei");
+  if (!isDetailedView || !isMyShift || role === "full")
+    return setCellValue(old ? "jah" : "ei");
 
   const cellValue = (
     <ToggleButton id={registration.id} field="old" value={old} />
@@ -194,6 +195,7 @@ export const ReturningCell = ({ registration, isMyShift }) => {
 ReturningCell.propTypes = {
   registration: PropTypes.objectOf(PropTypes.any).isRequired,
   isMyShift: PropTypes.bool.isRequired,
+  isDetailedView: PropTypes.bool.isRequired,
 };
 
 // Input type cells.

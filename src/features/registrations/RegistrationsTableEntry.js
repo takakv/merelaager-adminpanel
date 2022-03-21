@@ -14,32 +14,40 @@ import {
   ReturningCell,
   ShirtCell,
 } from "./registrationsTableCells";
+import { selectDetailView } from "./registrationsSlice";
 
 const RegistrationsTableEntry = ({ registration }) => {
   const role = useSelector(getRole);
   const myShift = useSelector(getShift);
+  const isDetailedView = useSelector(selectDetailView);
 
   const isMyShift = role === "root" ? true : registration.shiftNr === myShift;
 
   const cells = [];
 
-  cells.push(
-    <OrderCell key="order" registration={registration} isMyShift={isMyShift} />
-  );
+  if (isDetailedView)
+    cells.push(
+      <OrderCell
+        key="order"
+        registration={registration}
+        isMyShift={isMyShift}
+      />
+    );
   cells.push(<td key="name">{registration.name}</td>);
 
-  if (role === "boss" || role === "root") {
+  if ((role === "boss" || role === "root") && isDetailedView) {
     cells.push(<PricePaidCell key="pricePaid" registration={registration} />);
     cells.push(<PriceToPayCell key="priceToPay" registration={registration} />);
   }
 
-  cells.push(
-    <RegisteredCell
-      key="isRegistered"
-      registration={registration}
-      isMyShift={isMyShift}
-    />
-  );
+  if (isDetailedView)
+    cells.push(
+      <RegisteredCell
+        key="isRegistered"
+        registration={registration}
+        isMyShift={isMyShift}
+      />
+    );
 
   if (role === "boss" || role === "root") {
     cells.push(<ContactCell key="contact" registration={registration} />);
@@ -51,13 +59,16 @@ const RegistrationsTableEntry = ({ registration }) => {
       key="isOld"
       registration={registration}
       isMyShift={isMyShift}
+      isDetailedView={isDetailedView}
     />
   );
 
   cells.push(<AgeCell key="age" registration={registration} />);
-  cells.push(<ShirtCell key="shirt" registration={registration} />);
 
-  if (role === "boss" || role === "root")
+  if (isDetailedView)
+    cells.push(<ShirtCell key="shirt" registration={registration} />);
+
+  if ((role === "boss" || role === "root") && isDetailedView)
     cells.push(<BillNrCell key="billNr" registration={registration} />);
 
   return <tr>{cells.map((cell) => cell)}</tr>;

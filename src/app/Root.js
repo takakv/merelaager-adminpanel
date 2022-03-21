@@ -31,7 +31,6 @@ const Root = () => {
   }, [userInfoStatus, dispatch]);
 
   if (userInfoStatus === "succeeded") {
-    console.log(userInfo);
     dispatch(setData(userInfo));
     const { role } = userInfo;
 

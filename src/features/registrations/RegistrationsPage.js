@@ -6,12 +6,15 @@ import { makeGetRequest } from "../../components/Common/requestAPI";
 import RegistrationsModule from "./RegistrationsModule";
 import { getRole } from "../userData/userDataSlice";
 import { selectCurrentShift } from "../userAuth/userAuthSlice";
+import { selectDetailView, setDetailView } from "./registrationsSlice";
 
 const shifts = [1, 2, 3, 4, 5];
 
 // Buttons used to switch between each of the shifts.
 const ShiftSwitchButtons = ({ switcher, shiftNr }) => {
+  const dispatch = useDispatch();
   const role = useSelector(getRole);
+  const isDetailedView = useSelector(selectDetailView);
 
   const print = async () => {
     const response = await makeGetRequest(`/registrations/pdf/${shiftNr}`);
@@ -28,6 +31,10 @@ const ShiftSwitchButtons = ({ switcher, shiftNr }) => {
   };
 
   const disablePrint = role !== "boss" && role !== "root";
+
+  const handleDetailView = ({ target }) => {
+    dispatch(setDetailView(target.checked));
+  };
 
   return (
     <div className="c-regList-shiftBar">
@@ -51,6 +58,18 @@ const ShiftSwitchButtons = ({ switcher, shiftNr }) => {
       >
         Prindi
       </button>
+      <div className="c-switcher-container">
+        <input
+          defaultChecked={isDetailedView}
+          type="checkbox"
+          id="switch"
+          onChange={handleDetailView}
+        />
+        <label htmlFor="switch">
+          <span className="c-switcher-title">Detailvaade</span>
+          <span className="c-switcher-switch" />
+        </label>
+      </div>
     </div>
   );
 };

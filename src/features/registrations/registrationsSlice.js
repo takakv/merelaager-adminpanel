@@ -7,6 +7,7 @@ import {
 
 const initialState = {
   registrations: [],
+  detailView: false,
   status: "idle",
   error: null,
 };
@@ -45,6 +46,9 @@ const registrationsSlice = createSlice({
   name: "registrations",
   initialState,
   reducers: {
+    setDetailView: (state, action) => {
+      state.detailView = action.payload;
+    },
     paymentUpdated: (state, action) => {
       const { id, type, value } = action.payload;
       const entry = state.registrations[id];
@@ -84,8 +88,7 @@ const registrationsSlice = createSlice({
   },
 });
 
-export const { paymentUpdate, registrationToggled, entryRemoved } =
-  registrationsSlice.actions;
+export const { setDetailView } = registrationsSlice.actions;
 
 export const selectAllRegistrations = (state) =>
   state.registrations.registrations;
@@ -94,6 +97,8 @@ export const selectShiftRegistrations = (state, shiftNr) =>
   state.registrations.registrations.filter(
     (registration) => registration.shiftNr === shiftNr
   );
+
+export const selectDetailView = (state) => state.registrations.detailView;
 
 export const selectGroupRegistrations = (state, shiftNr, registered, gender) =>
   state.registrations.registrations.filter(

@@ -1,6 +1,7 @@
 import { useSelector } from "react-redux";
 import React from "react";
 import { getRole } from "../userData/userDataSlice";
+import { selectDetailView } from "./registrationsSlice";
 
 const addCell = (list, text) => {
   list.push(<th key={text}>{text}</th>);
@@ -8,27 +9,24 @@ const addCell = (list, text) => {
 
 const RegistrationsTableHeader = () => {
   const role = useSelector(getRole);
+  const isDetailedView = useSelector(selectDetailView);
 
   const cells = [];
   let cellValues;
 
-  addCell(cells, "Reg. järg");
+  if (isDetailedView) addCell(cells, "Reg. järg");
+
   addCell(cells, "Nimi");
 
   if (role !== "boss" && role !== "root") {
-    cellValues = ["Reg?", "Vana?", "Vanus", "Ts"];
+    cellValues = [];
+    if (isDetailedView) cellValues.push("Reg?");
+    cellValues.push("Reg?", "Vana?", "Vanus", "Ts");
   } else {
-    cellValues = [
-      "Makstud",
-      "Kokku",
-      "Reg?",
-      "Kontakt",
-      "Meil",
-      "Vana?",
-      "Vanus",
-      "Ts",
-      "Arve nr",
-    ];
+    cellValues = [];
+    if (isDetailedView) cellValues.push("Makstud", "Kokku", "Reg?");
+    cellValues.push("Kontakt", "Meil", "Vana?", "Vanus");
+    if (isDetailedView) cellValues.push("Ts", "Arve nr");
   }
 
   cellValues.map((value) => addCell(cells, value));
