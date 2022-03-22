@@ -1,5 +1,8 @@
 {
-  "extends": ["airbnb", "prettier"],
+  "extends": [
+    "airbnb",
+    "prettier"
+  ],
   "env": {
     "node": true,
     "browser": true,
@@ -21,7 +24,10 @@
     "react/jsx-filename-extension": [
       1,
       {
-        "extensions": [".js", ".jsx"]
+        "extensions": [
+          ".js",
+          ".jsx"
+        ]
       }
     ],
     "react/function-component-definition": [
@@ -35,7 +41,15 @@
       {
         "props": false
       }
+    ],
+    "jsx-a11y/label-has-associated-control": [
+      2,
+      {
+        "assert": "either"
+      }
     ]
   },
-  "ignorePatterns": ["webpack*.js"]
+  "ignorePatterns": [
+    "webpack*.js"
+  ]
 }

@@ -700,6 +700,13 @@ button,
   border-collapse: collapse;
   text-align: left;
 
+  &__head {
+    position: sticky;
+    z-index: 10;
+    background-color: #fff;
+    inset-block-start: 0;
+  }
+
   tbody {
     border-bottom: 1px solid #000;
 
@@ -1125,6 +1132,18 @@ button,
   &-container [type="checkbox"]:checked ~ label &-switch::before {
     transform: translateX(24px);
   }
+}
+
+// From this point onwards, the CSS is attempting to be clean.
+
+.o-overflow-wrapper {
+  overflow: hidden;
+  height: 100%;
+}
+
+.o-overflow-enabler {
+  overflow: auto;
+  height: 100%;
 }
 
 #app {

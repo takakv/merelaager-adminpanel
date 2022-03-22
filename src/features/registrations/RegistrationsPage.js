@@ -95,7 +95,7 @@ const RegistrationsPage = (props) => {
   };
 
   return (
-    <div>
+    <div className="o-overflow-wrapper">
       <ShiftSwitchButtons switcher={switchShift} shiftNr={shiftNr} />
       <RegistrationsModule shiftNr={shiftNr} />
     </div>

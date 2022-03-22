@@ -23,7 +23,7 @@ const RegistrationsModule = ({ shiftNr }) => {
   if (registrationStatus === "succeeded") {
     if (!registrations.length) return <p>Registreerimisi pole</p>;
     return (
-      <div>
+      <div className="o-overflow-enabler">
         <RegistrationsOverview shiftNr={shiftNr} />
         <RegistrationsTable shiftNr={shiftNr} />
       </div>
