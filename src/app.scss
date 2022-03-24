@@ -728,8 +728,10 @@ button,
 
   input[type="text"] {
     width: 50px;
+    padding: 2px 5px;
     border: 0;
     border-bottom: 1px solid var(--primary-text);
+    border-radius: 0;
     background-color: transparent;
   }
 }
