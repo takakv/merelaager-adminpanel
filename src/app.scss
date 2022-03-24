@@ -11,6 +11,7 @@
   --line-light: #ededf0;
   --line-dark: #e6e8eb;
   --button-radius: 3px;
+  --radius: 4px;
   --box-radius: 4px;
   --grid-column-count: 12;
   --grid-colspan-half: 6;
@@ -891,7 +892,8 @@ button,
 .c-card {
   display: inline-block;
   padding: 1em 2em;
-  border: 1px solid var(--line-dark);
+  border: 2px solid var(--line-dark);
+  border-radius: var(--radius);
 }
 
 .c-teambox {
@@ -1076,7 +1078,6 @@ button,
 }
 
 .c-switcher {
-
   &-container {
     display: flex;
 
@@ -1144,6 +1145,32 @@ button,
 .o-overflow-enabler {
   overflow: auto;
   height: 100%;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+  line-height: 1.5;
+  padding: 8px;
+  border: 2px solid var(--line-dark);
+  border-radius: var(--radius);
+  background-color: #fff;
+}
+
+.o-button {
+  display: inline-block;
+  padding: 6px 24px;
+  cursor: pointer;
+  border: 2px solid transparent;
+  border-radius: var(--radius);
+}
+
+.c-login-form,
+.c-card {
+  &__button {
+    line-height: 1.8;
+    border-color: var(--line-dark);
+  }
 }
 
 #app {

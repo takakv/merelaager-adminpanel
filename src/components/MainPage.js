@@ -66,7 +66,7 @@ const MainPage = (props) => {
               />
             </div>
             <div className="c-mailsend-actions">
-              <button type="button" onClick={sendMail}>
+              <button type="button" className="o-button c-card__button" onClick={sendMail}>
                 Saada link
               </button>
             </div>

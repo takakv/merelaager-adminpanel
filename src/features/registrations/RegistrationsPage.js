@@ -52,7 +52,6 @@ const ShiftSwitchButtons = ({ switcher, shiftNr }) => {
       </div>
       <button
         type="button"
-        className="o-printer"
         onClick={print}
         disabled={disablePrint}
       >
