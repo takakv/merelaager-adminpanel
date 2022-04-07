@@ -52,7 +52,7 @@ const Login = () => {
       <form className="c-login-form" onSubmit={handleSubmit}>
         {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
         <label>
-          <p>Nimi</p>
+          <p>Kasutajanimi</p>
           <input type="text" name="username" />
         </label>
         {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}

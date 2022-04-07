@@ -40,7 +40,7 @@ export const getData = (state) => ({
 
 export const getName = (state) => state.userData.name;
 export const getRole = (state) => state.userData.role;
-export const getShift = (state) => state.userData.shift;
+export const getShift = (state) => state.userData.currentShift;
 export const getShifts = (state) => state.userData.shifts;
 
 export default userDataSlice.reducer;

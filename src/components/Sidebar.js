@@ -22,7 +22,7 @@ const getHomePage = () => {
 
 const getChildInfoPage = (role) => {
   const dispatch = useDispatch();
-  if (role !== "root" && role !== "boss") return "";
+  if (role !== "root" && role !== "master") return "";
   return (
     <li>
       <Link
@@ -98,7 +98,7 @@ const getRegistrationPage = () => {
 
 const getMailSendPage = (role) => {
   const dispatch = useDispatch();
-  if (role !== "root" && role !== "boss") return "";
+  if (role !== "root" && role !== "master") return "";
   return (
     <li>
       <Link
@@ -114,7 +114,7 @@ const getMailSendPage = (role) => {
 
 const getBillGenPage = (role) => {
   const dispatch = useDispatch();
-  if (role !== "root" && role !== "boss") return "";
+  if (role !== "root" && role !== "master") return "";
   return (
     <li>
       <Link

@@ -55,6 +55,20 @@ export const selectRootUsage = (state) => state.userInfo.userInfo.useRoot;
 export const selectCurrentShift = (state) =>
   state.userInfo.userInfo.currentShift;
 export const selectUserShifts = (state) => state.userInfo.userInfo.shifts;
+
+export const selectCurrentRole = (state) => {
+  const { currentShift } = state.userInfo.userInfo;
+  const { shifts } = state.userInfo.userInfo;
+  const data = shifts.find((el) => el.id === currentShift);
+  return data ? data.role : "full";
+};
+
+export const selectRole = (state, shiftNr) => {
+  const { shifts } = state.userInfo.userInfo;
+  const data = shifts.find((el) => el.id === shiftNr);
+  return data ? data.role : "full";
+};
+
 export const selectRootStatus = (state) => state.userInfo.userInfo.isRoot;
 
 export const { setRootUsage } = userAuthSlice.actions;

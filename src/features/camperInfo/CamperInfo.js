@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import PropTypes from "prop-types";
 
 import { setTitle } from "../pageTitle/pageTitleSlice";
-import { fetchCamperInfo, getCamperInfo } from "./camperInfoSlice";
+import { fetchCamperInfo, selectAllCampersInfo } from "./camperInfoSlice";
 import {
   makeGetRequest,
   makePostRequest,
@@ -19,7 +19,7 @@ const CamperEntry = (props) => {
   };
 
   const print = async () => {
-    const response = await makeGetRequest(`notes/fetch/${shiftNr}/${data.id}/`);
+    const response = await makeGetRequest(`/notes/fetch/${shiftNr}/${data.id}/`);
     if (!response || !response.ok) return;
 
     const blob = await response.blob();
@@ -73,7 +73,7 @@ const CamperInfo = (props) => {
   const dispatch = useDispatch();
   dispatch(setTitle(title));
 
-  const camperInfo = useSelector(getCamperInfo);
+  const camperInfo = useSelector(selectAllCampersInfo);
   const infoStatus = useSelector((state) => state.camperInfo.status);
   const error = useSelector((state) => state.camperInfo.error);
 
@@ -83,7 +83,7 @@ const CamperInfo = (props) => {
 
   const print = async () => {
     document.body.style.cursor = "wait";
-    const response = await makeGetRequest(`notes/fetch/${shiftNr}/`);
+    const response = await makeGetRequest(`/notes/fetch/${shiftNr}/`);
     if (!response || !response.ok) {
       document.body.style.cursor = "";
       return;
@@ -100,7 +100,11 @@ const CamperInfo = (props) => {
     case "ok":
       return (
         <div>
-          <button type="button" className="o-printer" onClick={print}>
+          <button
+            type="button"
+            className="o-button c-page-actions__button"
+            onClick={print}
+          >
             Prindi kõik
           </button>
           <p>Märkused säilivad läbi aastate ja vahetuste.</p>

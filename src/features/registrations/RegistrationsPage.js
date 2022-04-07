@@ -30,7 +30,7 @@ const ShiftSwitchButtons = ({ switcher, shiftNr }) => {
     window.open(objUrl, "_blank");
   };
 
-  const disablePrint = role !== "boss" && role !== "root";
+  const disablePrint = role !== "master" && role !== "root";
 
   const handleDetailView = ({ target }) => {
     dispatch(setDetailView(target.checked));
@@ -54,6 +54,7 @@ const ShiftSwitchButtons = ({ switcher, shiftNr }) => {
         type="button"
         onClick={print}
         disabled={disablePrint}
+        className="o-button c-page-actions__button"
       >
         Prindi
       </button>

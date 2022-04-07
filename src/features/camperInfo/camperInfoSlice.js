@@ -4,8 +4,10 @@ import { makeGetRequest } from "../../components/Common/requestAPI";
 export const fetchCamperInfo = createAsyncThunk(
   "camperInfo/fetchCamperInfo",
   async (shiftNr) => {
-    const response = await makeGetRequest(`/campers/info/fetch/${shiftNr}`);
-    return response.json();
+    const response = await makeGetRequest(`/campers/${shiftNr}`);
+    if (!response.ok) return [];
+    const data = await response.json();
+    return data.value;
   }
 );
 
@@ -20,7 +22,7 @@ const camperInfoSlice = createSlice({
   extraReducers: {
     [fetchCamperInfo.fulfilled]: (state, action) => {
       state.status = "ok";
-      state.data = action.payload;
+      state.camperInfo = action.payload;
     },
     [fetchCamperInfo.rejected]: (state, action) => {
       state.status = "nok";
@@ -31,4 +33,4 @@ const camperInfoSlice = createSlice({
 
 export default camperInfoSlice.reducer;
 
-export const getCamperInfo = (state) => state.camperInfo.data;
+export const selectAllCampersInfo = (state) => state.camperInfo.camperInfo;

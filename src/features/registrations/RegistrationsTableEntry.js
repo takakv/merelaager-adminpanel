@@ -1,7 +1,7 @@
 import { useSelector } from "react-redux";
 import PropTypes from "prop-types";
 import React from "react";
-import { getRole, getShift } from "../userData/userDataSlice";
+import { getRole } from "../userData/userDataSlice";
 import {
   AgeCell,
   BillNrCell,
@@ -15,13 +15,16 @@ import {
   ShirtCell,
 } from "./registrationsTableCells";
 import { selectDetailView } from "./registrationsSlice";
+import { selectRole } from "../userAuth/userAuthSlice";
 
 const RegistrationsTableEntry = ({ registration }) => {
   const role = useSelector(getRole);
-  const myShift = useSelector(getShift);
+  const shiftRole = useSelector((state) =>
+    selectRole(state, registration.shiftNr)
+  );
   const isDetailedView = useSelector(selectDetailView);
 
-  const isMyShift = role === "root" ? true : registration.shiftNr === myShift;
+  const isMyShift = role === "root" ? true : shiftRole === "boss";
 
   const cells = [];
 
@@ -35,7 +38,7 @@ const RegistrationsTableEntry = ({ registration }) => {
     );
   cells.push(<td key="name">{registration.name}</td>);
 
-  if ((role === "boss" || role === "root") && isDetailedView) {
+  if ((role === "master" || role === "root") && isDetailedView) {
     cells.push(<PricePaidCell key="pricePaid" registration={registration} />);
     cells.push(<PriceToPayCell key="priceToPay" registration={registration} />);
   }
@@ -49,7 +52,7 @@ const RegistrationsTableEntry = ({ registration }) => {
       />
     );
 
-  if (role === "boss" || role === "root") {
+  if (role === "master" || role === "root") {
     cells.push(<ContactCell key="contact" registration={registration} />);
     cells.push(<EmailCell key="email" registration={registration} />);
   }
@@ -68,7 +71,7 @@ const RegistrationsTableEntry = ({ registration }) => {
   if (isDetailedView)
     cells.push(<ShirtCell key="shirt" registration={registration} />);
 
-  if ((role === "boss" || role === "root") && isDetailedView)
+  if ((role === "master" || role === "root") && isDetailedView)
     cells.push(<BillNrCell key="billNr" registration={registration} />);
 
   return <tr>{cells.map((cell) => cell)}</tr>;

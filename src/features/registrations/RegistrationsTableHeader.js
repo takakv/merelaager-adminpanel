@@ -8,6 +8,7 @@ const addCell = (list, text) => {
 };
 
 const RegistrationsTableHeader = () => {
+  // const currentRole = useSelector(selectCurrentRole);
   const role = useSelector(getRole);
   const isDetailedView = useSelector(selectDetailView);
 
@@ -18,7 +19,7 @@ const RegistrationsTableHeader = () => {
 
   addCell(cells, "Nimi");
 
-  if (role !== "boss" && role !== "root") {
+  if (role !== "master" && role !== "root") {
     cellValues = [];
     if (isDetailedView) cellValues.push("Reg?");
     cellValues.push("Reg?", "Vana?", "Vanus", "Ts");
