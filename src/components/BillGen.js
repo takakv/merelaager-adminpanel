@@ -9,7 +9,7 @@ const fetchPDF = async ({ target }) => {
   const action = target.id;
   const email = document.getElementById("mail").value;
 
-  const response = await makePostRequest(`bills/${action}/${email}/`);
+  const response = await makePostRequest(`/bills/${action}/${email}/`);
   if (!response.ok) {
     return;
   }
