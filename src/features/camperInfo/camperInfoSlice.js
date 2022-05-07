@@ -1,5 +1,5 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { makeGetRequest } from "../../components/Common/requestAPI";
+import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
+import {makeGetRequest} from "../../components/Common/requestAPI";
 
 export const fetchCamperInfo = createAsyncThunk(
   "camperInfo/fetchCamperInfo",
@@ -14,7 +14,7 @@ export const fetchCamperInfo = createAsyncThunk(
 const camperInfoSlice = createSlice({
   name: "camperInfo",
   initialState: {
-    data: {},
+    camperInfo: [],
     status: "idle",
     error: null,
   },

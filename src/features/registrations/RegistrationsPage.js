@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import PropTypes from "prop-types";
 import { setTitle } from "../pageTitle/pageTitleSlice";
@@ -83,7 +83,9 @@ const RegistrationsPage = (props) => {
   const dispatch = useDispatch();
 
   const { title } = props;
-  dispatch(setTitle(title));
+  useEffect(() => {
+    dispatch(setTitle(title));
+  }, [title, dispatch]);
 
   // Start with the current shift but don't change the
   // display when the current shift is changed.

@@ -1,9 +1,9 @@
-import { useDispatch, useSelector } from "react-redux";
-import React, { useEffect } from "react";
-import { Route, Routes } from "react-router-dom";
+import {useDispatch, useSelector} from "react-redux";
+import React, {useEffect} from "react";
+import {Route, Routes} from "react-router-dom";
 
-import { fetchInfo, selectUserInfo } from "../features/userAuth/userAuthSlice";
-import { setData } from "../features/userData/userDataSlice";
+import {fetchInfo, selectUserInfo} from "../features/userAuth/userAuthSlice";
+import {setData} from "../features/userData/userDataSlice";
 
 import Hamburger from "../components/Hamburger";
 import Sidebar from "../components/Sidebar";
@@ -28,53 +28,53 @@ const Root = () => {
 
   useEffect(() => {
     if (userInfoStatus === "idle") dispatch(fetchInfo());
+    if (userInfoStatus === "succeeded") dispatch(setData(userInfo));
   }, [userInfoStatus, dispatch]);
 
   if (userInfoStatus === "succeeded") {
-    dispatch(setData(userInfo));
-    const { role } = userInfo;
+    const {role} = userInfo;
 
     return (
       <div className="admin-page">
-        <Hamburger />
-        <Sidebar />
-        <PageTitle />
-        <UserBox />
+        <Hamburger/>
+        <Sidebar/>
+        <PageTitle/>
+        <UserBox/>
         <main role="main" className="c-content">
           <Routes>
-            <Route exact path="/" element={<MainPage title="Kambüüs" />} />
-            <Route path="/telgid/" element={<TentList title="Telgid" />} />
+            <Route exact path="/" element={<MainPage title="Kambüüs"/>}/>
+            <Route path="/telgid/" element={<TentList title="Telgid"/>}/>
             <Route
               path="/meeskonnad/"
-              element={<TeamsPage title="Meeskonnad" />}
+              element={<TeamsPage title="Meeskonnad"/>}
             />
-            <Route path="/taimer/" element={<TimerList title="Taimer" />} />
+            <Route path="/taimer/" element={<TimerList title="Taimer"/>}/>
             <Route
               path="/nimekiri/"
-              element={<RegistrationsPage title="Nimekiri" />}
+              element={<RegistrationsPage title="Nimekiri"/>}
             />
             {role === "full" ? (
               ""
             ) : (
-              <Route path="/lapsed/" element={<ShiftInfo title="Lapsed" />} />
+              <Route path="/lapsed/" element={<ShiftInfo title="Lapsed"/>}/>
             )}
             {role === "full" ? (
               ""
             ) : (
-              <Route path="/meil/" element={<Mailer title="Meil" />} />
+              <Route path="/meil/" element={<Mailer title="Meil"/>}/>
             )}
             {role === "full" ? (
               ""
             ) : (
               <Route
                 path="/arvegeneraator/"
-                element={<BillGen title="Arvegeneraator" />}
+                element={<BillGen title="Arvegeneraator"/>}
               />
             )}
             {role === "full" ? (
               ""
             ) : (
-              <Route path="/sargid/" element={<Shirts title="Särgid" />} />
+              <Route path="/sargid/" element={<Shirts title="Särgid"/>}/>
             )}
           </Routes>
         </main>
@@ -82,10 +82,9 @@ const Root = () => {
     );
   }
   if (userInfoStatus === "failed") {
-    // window.location.reload();
     return <p>{userInfoError}</p>;
   }
-  return <Loader />;
+  return <Loader/>;
 };
 
 export default Root;
