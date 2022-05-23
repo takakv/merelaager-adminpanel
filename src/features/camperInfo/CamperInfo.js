@@ -1,29 +1,31 @@
-import React, {useEffect} from "react";
-import {useDispatch, useSelector} from "react-redux";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import PropTypes from "prop-types";
 
-import {setTitle} from "../pageTitle/pageTitleSlice";
-import {fetchCamperInfo, selectAllCampersInfo} from "./camperInfoSlice";
+import { setTitle } from "../pageTitle/pageTitleSlice";
+import { fetchCamperInfo, selectAllCampersInfo } from "./camperInfoSlice";
 import {
   makeGetRequest,
   makePostRequest,
 } from "../../components/Common/requestAPI";
-import {selectCurrentShift} from "../userAuth/userAuthSlice";
+import { selectCurrentShift } from "../userAuth/userAuthSlice";
 
 const CamperEntry = (props) => {
-  const {data, shiftNr} = props;
+  const { data, shiftNr } = props;
 
-  const handleChange = async ({target}) => {
-    const packet = {notes: target.value};
+  const handleChange = async ({ target }) => {
+    const packet = { notes: target.value };
     await makePostRequest(`/notes/update/${data.id}/`, packet);
   };
 
   const print = async () => {
-    const response = await makeGetRequest(`/notes/fetch/${shiftNr}/${data.id}/`);
+    const response = await makeGetRequest(
+      `/notes/fetch/${shiftNr}/${data.id}/`
+    );
     if (!response || !response.ok) return;
 
     const blob = await response.blob();
-    const newBlob = new Blob([blob], {type: "application/pdf"});
+    const newBlob = new Blob([blob], { type: "application/pdf" });
     const objUrl = window.URL.createObjectURL(newBlob);
     window.open(objUrl, "_blank");
   };
@@ -71,7 +73,7 @@ const CamperInfo = (props) => {
   const shiftNr = useSelector(selectCurrentShift);
   const dispatch = useDispatch();
 
-  const {title} = props;
+  const { title } = props;
   useEffect(() => {
     dispatch(setTitle(title));
   }, [title, dispatch]);
@@ -93,7 +95,7 @@ const CamperInfo = (props) => {
     }
 
     const blob = await response.blob();
-    const newBlob = new Blob([blob], {type: "application/pdf"});
+    const newBlob = new Blob([blob], { type: "application/pdf" });
     const objUrl = window.URL.createObjectURL(newBlob);
     window.open(objUrl, "_blank");
     document.body.style.cursor = "";
@@ -120,7 +122,7 @@ const CamperInfo = (props) => {
           </button>
           <p>Märkused säilivad läbi aastate ja vahetuste.</p>
           {Object.values(sortedEntries).map((camper) => (
-            <CamperEntry key={camper.childId} data={camper} shiftNr={shiftNr}/>
+            <CamperEntry key={camper.childId} data={camper} shiftNr={shiftNr} />
           ))}
         </div>
       );

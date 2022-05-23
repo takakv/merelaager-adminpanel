@@ -635,7 +635,8 @@ button,
   &-ua {
     position: relative;
 
-    &::before, &::after {
+    &::before,
+    &::after {
       display: block;
       position: absolute;
       width: 30px;

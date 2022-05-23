@@ -61,7 +61,9 @@ const Login = () => {
           <input type="password" name="password" />
         </label>
         <div className="c-login-submit">
-          <button className="o-button c-login-form__button" type="submit">Sisene</button>
+          <button className="o-button c-login-form__button" type="submit">
+            Sisene
+          </button>
           <div
             className="c-login-reset"
             role="button"

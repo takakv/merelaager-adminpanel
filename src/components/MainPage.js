@@ -1,20 +1,18 @@
-import React, {useState, useEffect} from "react";
-import {useDispatch, useSelector} from "react-redux";
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import PropTypes from "prop-types";
 
-import {setTitle} from "../features/pageTitle/pageTitleSlice";
-import {makePostRequest} from "./Common/requestAPI";
+import { setTitle } from "../features/pageTitle/pageTitleSlice";
+import { makePostRequest } from "./Common/requestAPI";
 import StaffList from "../features/staffList/staffList";
 import {
-  fetchInfo,
   selectCurrentShift,
   selectUserInfo,
 } from "../features/userAuth/userAuthSlice";
-import {setData} from "../features/userData/userDataSlice";
 
 const CurrentDate = () => {
   const [date] = useState(
-    new Intl.DateTimeFormat("et-EE", {dateStyle: "full"}).format()
+    new Intl.DateTimeFormat("et-EE", { dateStyle: "full" }).format()
   );
   return (
     <div className="c-card">
@@ -26,7 +24,7 @@ const CurrentDate = () => {
 };
 
 const MainPage = (props) => {
-  const {title} = props;
+  const { title } = props;
   const [email, setEmail] = useState();
   const dispatch = useDispatch();
 
@@ -47,15 +45,15 @@ const MainPage = (props) => {
   };
 
   if (role === "op") {
-    return <StaffList shiftNr={shiftNr}/>;
+    return <StaffList shiftNr={shiftNr} />;
   }
   return (
     <div className="c-landing-grid">
       <div className="c-card-wrapper c-dateblock">
-        <CurrentDate/>
+        <CurrentDate />
       </div>
       <div className="c-card-wrapper c-teambox">
-        <StaffList shiftNr={shiftNr}/>
+        <StaffList shiftNr={shiftNr} />
       </div>
       <div className="c-card-wrapper c-mailsendbox">
         <div className="c-card c-mailsend">
@@ -71,7 +69,11 @@ const MainPage = (props) => {
               />
             </div>
             <div className="c-mailsend-actions">
-              <button type="button" className="o-button c-card__button" onClick={sendMail}>
+              <button
+                type="button"
+                className="o-button c-card__button"
+                onClick={sendMail}
+              >
                 Saada link
               </button>
             </div>

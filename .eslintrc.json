@@ -1,8 +1,5 @@
 {
-  "extends": [
-    "airbnb",
-    "prettier"
-  ],
+  "extends": ["airbnb", "prettier"],
   "env": {
     "node": true,
     "browser": true,
@@ -24,10 +21,7 @@
     "react/jsx-filename-extension": [
       1,
       {
-        "extensions": [
-          ".js",
-          ".jsx"
-        ]
+        "extensions": [".js", ".jsx"]
       }
     ],
     "react/function-component-definition": [
@@ -49,7 +43,5 @@
       }
     ]
   },
-  "ignorePatterns": [
-    "webpack*.js"
-  ]
+  "ignorePatterns": ["webpack*.js"]
 }

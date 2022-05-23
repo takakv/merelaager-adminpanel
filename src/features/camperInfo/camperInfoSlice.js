@@ -1,5 +1,5 @@
-import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
-import {makeGetRequest} from "../../components/Common/requestAPI";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { makeGetRequest } from "../../components/Common/requestAPI";
 
 export const fetchCamperInfo = createAsyncThunk(
   "camperInfo/fetchCamperInfo",
