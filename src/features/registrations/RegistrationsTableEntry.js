@@ -7,6 +7,7 @@ import {
   BillNrCell,
   ContactCell,
   EmailCell,
+  NameCell,
   OrderCell,
   PricePaidCell,
   PriceToPayCell,
@@ -36,7 +37,8 @@ const RegistrationsTableEntry = ({ registration }) => {
         isMyShift={isMyShift}
       />
     );
-  cells.push(<td key="name">{registration.name}</td>);
+
+  cells.push(<NameCell key="name" registration={registration} />);
 
   if ((role === "master" || role === "root") && isDetailedView) {
     cells.push(<PricePaidCell key="pricePaid" registration={registration} />);

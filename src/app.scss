@@ -632,6 +632,33 @@ button,
 }
 
 .c-regList {
+  &-ua {
+    position: relative;
+
+    &::before, &::after {
+      display: block;
+      position: absolute;
+      width: 30px;
+      height: 10px;
+      content: "";
+      right: 0;
+      transform: translateY(-50%);
+      border: 1px solid #000;
+    }
+
+    &::before {
+      background-color: #0066cc;
+      top: calc(50% - 5px);
+      border-bottom: none;
+    }
+
+    &::after {
+      background-color: #ffcc00;
+      top: calc(50% + 5px);
+      border-top: none;
+    }
+  }
+
   &-shiftButtons {
     margin-right: 1em;
     @media screen and (min-width: 1000px) {
