@@ -11,7 +11,7 @@ import {
   updateCamper,
   updatePresence,
 } from "../features/tents/campersSlice";
-import { getShift } from "../features/userData/userDataSlice";
+import { selectCurrentShift } from "../features/userAuth/userAuthSlice";
 
 // THIS FILE CONTAINS TERRIBLE CODE THAT NEEDS REFACTORING!
 
@@ -20,7 +20,7 @@ const tentNumbers = Array.from({ length: 10 }, (_, i) => i + 1);
 
 const TentList = (props) => {
   const { title } = props;
-  const shiftNr = useSelector(getShift);
+  const shiftNr = useSelector(selectCurrentShift);
   const dispatch = useDispatch();
   dispatch(setTitle(title));
 

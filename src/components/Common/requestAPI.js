@@ -60,7 +60,7 @@ export const makePostRequest = async (
   let response;
 
   try {
-    response = await fetch(`${apiURL}/api/${apiLinkSuffix}`, {
+    response = await fetch(`${apiURL}/api${apiLinkSuffix}`, {
       method: "POST",
       headers,
       body: JSON.stringify(content),
@@ -81,6 +81,58 @@ export const makePostRequest = async (
     return null;
   }
 
+  return response;
+};
+
+export const makePatchRequest = async (apiLinkSuffix, content) => {
+  let response;
+
+  try {
+    response = await fetch(`${apiURL}/api${apiLinkSuffix}`, {
+      method: "PATCH",
+      headers: {
+        Authorization: `Bearer ${currentAuthToken}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(content),
+    });
+  } catch (e) {
+    window.alert(
+      "Serveriga ei õnnestunud ühendust saada.\n" +
+        "Muudatused pole salvestatud."
+    );
+    return null;
+  }
+
+  if (!response.ok) {
+    promptRequestError(response);
+    return null;
+  }
+  return response;
+};
+
+export const makeDeleteRequest = async (apiLinkSuffix) => {
+  let response;
+
+  try {
+    response = await fetch(`${apiURL}/api${apiLinkSuffix}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${currentAuthToken}`,
+      },
+    });
+  } catch (e) {
+    window.alert(
+      "Serveriga ei õnnestunud ühendust saada.\n" +
+        "Muudatused pole salvestatud."
+    );
+    return null;
+  }
+
+  if (!response.ok) {
+    promptRequestError(response);
+    return null;
+  }
   return response;
 };
 

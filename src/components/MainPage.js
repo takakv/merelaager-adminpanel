@@ -1,12 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import PropTypes from "prop-types";
 
 import { setTitle } from "../features/pageTitle/pageTitleSlice";
-import { getShift } from "../features/userData/userDataSlice";
 import { makePostRequest } from "./Common/requestAPI";
 import StaffList from "../features/staffList/staffList";
-import { getUserInfo } from "../features/userAuth/userAuthSlice";
+import {
+  selectCurrentShift,
+  selectUserInfo,
+} from "../features/userAuth/userAuthSlice";
 
 const CurrentDate = () => {
   const [date] = useState(
@@ -25,10 +27,13 @@ const MainPage = (props) => {
   const { title } = props;
   const [email, setEmail] = useState();
   const dispatch = useDispatch();
-  dispatch(setTitle(title));
 
-  const shiftNr = useSelector(getShift);
-  const role = useSelector(getUserInfo);
+  useEffect(() => {
+    dispatch(setTitle(title));
+  }, [title, dispatch]);
+
+  const shiftNr = useSelector(selectCurrentShift);
+  const role = useSelector(selectUserInfo);
 
   const sendMail = async () => {
     const packet = {
@@ -40,7 +45,7 @@ const MainPage = (props) => {
   };
 
   if (role === "op") {
-    return <StaffList />;
+    return <StaffList shiftNr={shiftNr} />;
   }
   return (
     <div className="c-landing-grid">
@@ -48,7 +53,7 @@ const MainPage = (props) => {
         <CurrentDate />
       </div>
       <div className="c-card-wrapper c-teambox">
-        <StaffList />
+        <StaffList shiftNr={shiftNr} />
       </div>
       <div className="c-card-wrapper c-mailsendbox">
         <div className="c-card c-mailsend">
@@ -64,7 +69,11 @@ const MainPage = (props) => {
               />
             </div>
             <div className="c-mailsend-actions">
-              <button type="button" onClick={sendMail}>
+              <button
+                type="button"
+                className="o-button c-card__button"
+                onClick={sendMail}
+              >
                 Saada link
               </button>
             </div>

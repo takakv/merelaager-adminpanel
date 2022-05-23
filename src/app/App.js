@@ -12,7 +12,6 @@ const App = () => {
 
   useEffect(() => {
     const interval = setInterval(async () => {
-      console.log("Fetching refresh token");
       if (authStatus === "ok") dispatch(refreshToken());
     }, 240000);
 

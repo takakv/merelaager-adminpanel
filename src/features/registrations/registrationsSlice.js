@@ -1,8 +1,13 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { makeGetRequest } from "../../components/Common/requestAPI";
+import {
+  makeDeleteRequest,
+  makeGetRequest,
+  makePatchRequest,
+} from "../../components/Common/requestAPI";
 
 const initialState = {
   registrations: [],
+  detailView: false,
   status: "idle",
   error: null,
 };
@@ -10,8 +15,30 @@ const initialState = {
 export const fetchRegistrations = createAsyncThunk(
   "registrations/fetchRegistrations",
   async () => {
-    const response = await makeGetRequest("/registrations/fetch");
+    const response = await makeGetRequest("/registrations");
+    if (!response.ok) return [];
     return response.json();
+  }
+);
+
+export const updateRegistration = createAsyncThunk(
+  "registrations/updateRegistration",
+  async (req) => {
+    const response = await makePatchRequest(
+      `/registrations/${req.id}`,
+      req.data
+    );
+    if (!response.ok) return {};
+    return req;
+  }
+);
+
+export const deleteRegistration = createAsyncThunk(
+  "registration/deleteRegistration",
+  async (regId) => {
+    const response = await makeDeleteRequest(`/registrations/${regId}`);
+    if (!response.ok) return -1;
+    return regId;
   }
 );
 
@@ -19,6 +46,9 @@ const registrationsSlice = createSlice({
   name: "registrations",
   initialState,
   reducers: {
+    setDetailView: (state, action) => {
+      state.detailView = action.payload;
+    },
     paymentUpdated: (state, action) => {
       const { id, type, value } = action.payload;
       const entry = state.registrations[id];
@@ -34,13 +64,49 @@ const registrationsSlice = createSlice({
       delete state.registrations[id];
     },
   },
+  extraReducers: {
+    [fetchRegistrations.fulfilled]: (state, action) => {
+      state.status = "succeeded";
+      state.registrations = action.payload.value;
+    },
+    [fetchRegistrations.rejected]: (state, action) => {
+      state.status = "failed";
+      state.error = action.error.message;
+    },
+    [updateRegistration.fulfilled]: (state, action) => {
+      const { id, field, data } = action.payload;
+      const registration = state.registrations.find((entry) => entry.id === id);
+      registration[field] = data[field];
+    },
+    [deleteRegistration.fulfilled]: (state, action) => {
+      const id = action.payload;
+      if (id < 0) return;
+      state.registrations = state.registrations.filter(
+        (entry) => entry.id !== id
+      );
+    },
+  },
 });
 
-export const { paymentUpdate, registrationToggled, entryRemoved } =
-  registrationsSlice.actions;
+export const { setDetailView } = registrationsSlice.actions;
 
 export const selectAllRegistrations = (state) =>
   state.registrations.registrations;
+
+export const selectShiftRegistrations = (state, shiftNr) =>
+  state.registrations.registrations.filter(
+    (registration) => registration.shiftNr === shiftNr
+  );
+
+export const selectDetailView = (state) => state.registrations.detailView;
+
+export const selectGroupRegistrations = (state, shiftNr, registered, gender) =>
+  state.registrations.registrations.filter(
+    (registration) =>
+      registration.shiftNr === shiftNr &&
+      registration.registered === registered &&
+      registration.gender === gender
+  );
 
 export const selectRegistrationsByShift = (state, shiftNr) =>
   state.registrations.registrations.find(

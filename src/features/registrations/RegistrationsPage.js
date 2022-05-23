@@ -1,19 +1,23 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import PropTypes from "prop-types";
 import { setTitle } from "../pageTitle/pageTitleSlice";
-import { getShift } from "../userData/userDataSlice";
 import { makeGetRequest } from "../../components/Common/requestAPI";
-import { fetchRegistrations } from "./registrationsSlice";
+import RegistrationsModule from "./RegistrationsModule";
+import { getRole } from "../userData/userDataSlice";
+import { selectCurrentShift } from "../userAuth/userAuthSlice";
+import { selectDetailView, setDetailView } from "./registrationsSlice";
 
-const shifts = ["1", "2", "3", "4", "5"];
+const shifts = [1, 2, 3, 4, 5];
 
 // Buttons used to switch between each of the shifts.
-const ShiftSwitchButtons = ({ switcher }) => {
-  const shiftNr = useSelector(getShift);
+const ShiftSwitchButtons = ({ switcher, shiftNr }) => {
+  const dispatch = useDispatch();
+  const role = useSelector(getRole);
+  const isDetailedView = useSelector(selectDetailView);
 
   const print = async () => {
-    const response = await makeGetRequest(`reglist/print/${shiftNr}/`);
+    const response = await makeGetRequest(`/registrations/pdf/${shiftNr}`);
     if (!response || !response.ok) return;
 
     const obj = {
@@ -26,6 +30,12 @@ const ShiftSwitchButtons = ({ switcher }) => {
     window.open(objUrl, "_blank");
   };
 
+  const disablePrint = role !== "master" && role !== "root";
+
+  const handleDetailView = ({ target }) => {
+    dispatch(setDetailView(target.checked));
+  };
+
   return (
     <div className="c-regList-shiftBar">
       <div className="c-regList-shiftButtons">
@@ -34,42 +44,38 @@ const ShiftSwitchButtons = ({ switcher }) => {
             type="button"
             key={shift}
             onClick={switcher}
-            className="o-button--40"
+            className={`o-button--40${shift === shiftNr ? " is-active" : ""}`}
           >
             {shift}v
           </button>
         ))}
       </div>
-      <button type="button" className="o-printer" onClick={print}>
+      <button
+        type="button"
+        onClick={print}
+        disabled={disablePrint}
+        className="o-button c-page-actions__button"
+      >
         Prindi
       </button>
+      <div className="c-switcher-container">
+        <input
+          defaultChecked={isDetailedView}
+          type="checkbox"
+          id="switch"
+          onChange={handleDetailView}
+        />
+        <label htmlFor="switch">
+          <span className="c-switcher-title">Detailvaade</span>
+          <span className="c-switcher-switch" />
+        </label>
+      </div>
     </div>
   );
 };
 
 ShiftSwitchButtons.propTypes = {
   switcher: PropTypes.func.isRequired,
-};
-
-const RegistrationsModule = (props) => {
-  const dispatch = useDispatch();
-
-  const { shiftNr } = props;
-  /*
-  const registrations = useSelector((state) =>
-    selectRegistrationsByShift(state, shiftNr)
-  );
-  */
-  const registrationStatus = useSelector((state) => state.registrations.status);
-
-  useEffect(() => {
-    if (registrationStatus === "idle") dispatch(fetchRegistrations);
-  }, [registrationStatus, dispatch]);
-
-  return <p>Empty {shiftNr}</p>;
-};
-
-RegistrationsModule.propTypes = {
   shiftNr: PropTypes.number.isRequired,
 };
 
@@ -77,9 +83,13 @@ const RegistrationsPage = (props) => {
   const dispatch = useDispatch();
 
   const { title } = props;
-  dispatch(setTitle(title));
+  useEffect(() => {
+    dispatch(setTitle(title));
+  }, [title, dispatch]);
 
-  const [shiftNr, setShiftNr] = useState(1);
+  // Start with the current shift but don't change the
+  // display when the current shift is changed.
+  const [shiftNr, setShiftNr] = useState(useSelector(selectCurrentShift));
 
   // Switch displayed shift.
   const switchShift = ({ target }) => {
@@ -87,8 +97,8 @@ const RegistrationsPage = (props) => {
   };
 
   return (
-    <div>
-      <ShiftSwitchButtons switcher={switchShift} />
+    <div className="o-overflow-wrapper">
+      <ShiftSwitchButtons switcher={switchShift} shiftNr={shiftNr} />
       <RegistrationsModule shiftNr={shiftNr} />
     </div>
   );

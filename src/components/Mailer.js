@@ -1,13 +1,9 @@
-import React, { useEffect } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 
 import { useDispatch, useSelector } from "react-redux";
 import { setTitle } from "../features/pageTitle/pageTitleSlice";
 import { getShift } from "../features/userData/userDataSlice";
-import {
-  fetchRegistrationList,
-  getAllRegistrationLists,
-} from "../features/registrationList/registrationListSlice";
 
 const Mailer = (props) => {
   const { title } = props;
@@ -17,15 +13,17 @@ const Mailer = (props) => {
 
   const shiftNr = useSelector(getShift);
   // Get the registration list for all shifts from the store.
-  const regListData = useSelector(getAllRegistrationLists);
+  const regListData = null;
   // Get the status of fetching the registration list from the backend.
   const regListStatus = useSelector((state) => state.registrationList.status);
   const regListError = useSelector((state) => state.registrationList.error);
 
   // Fetch all camper registration lists when the page has been rendered.
+  /*
   useEffect(() => {
-    if (regListStatus === "idle") dispatch(fetchRegistrationList());
+    if (regListStatus === "idle") return 1;
   }, [regListStatus, dispatch]);
+  */
 
   const parentEmails = [];
 

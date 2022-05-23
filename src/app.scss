@@ -11,10 +11,12 @@
   --line-light: #ededf0;
   --line-dark: #e6e8eb;
   --button-radius: 3px;
+  --radius: 4px;
   --box-radius: 4px;
   --grid-column-count: 12;
   --grid-colspan-half: 6;
   --grid-colspan-full: 12;
+  --primary-dimmed: #23408e3f;
 }
 
 :root {
@@ -178,6 +180,11 @@ button,
     cursor: pointer;
     background-color: var(--dimmed);
   }
+
+  &:disabled:hover {
+    cursor: not-allowed;
+    background-color: inherit;
+  }
 }
 
 // Objects
@@ -193,6 +200,10 @@ button,
     width: 40px;
     padding: 5px 0;
     border: 1px solid;
+
+    &.is-active {
+      background-color: #23408e3f;
+    }
   }
 }
 
@@ -493,6 +504,16 @@ button,
     span {
       font-size: 1.25rem;
     }
+
+    .root-switch {
+      margin-right: 1em;
+      padding-right: 1em;
+      border-right: 1px solid var(--line-dark);
+
+      input {
+        margin-right: 0;
+      }
+    }
   }
 
   .c-content {
@@ -611,6 +632,34 @@ button,
 }
 
 .c-regList {
+  &-ua {
+    position: relative;
+
+    &::before,
+    &::after {
+      display: block;
+      position: absolute;
+      width: 30px;
+      height: 10px;
+      content: "";
+      right: 0;
+      transform: translateY(-50%);
+      border: 1px solid #000;
+    }
+
+    &::before {
+      background-color: #0066cc;
+      top: calc(50% - 5px);
+      border-bottom: none;
+    }
+
+    &::after {
+      background-color: #ffcc00;
+      top: calc(50% + 5px);
+      border-top: none;
+    }
+  }
+
   &-shiftButtons {
     margin-right: 1em;
     @media screen and (min-width: 1000px) {
@@ -620,7 +669,7 @@ button,
 
   &-del {
     position: absolute;
-    right: -0.25em;
+    margin-left: 1em;
     padding: 0.25rem 0.5rem;
     color: #e01e5a;
     border-radius: 30px;
@@ -680,6 +729,13 @@ button,
   border-collapse: collapse;
   text-align: left;
 
+  &__head {
+    position: sticky;
+    z-index: 10;
+    background-color: #fff;
+    inset-block-start: 0;
+  }
+
   tbody {
     border-bottom: 1px solid #000;
 
@@ -700,8 +756,10 @@ button,
 
   input[type="text"] {
     width: 50px;
+    padding: 2px 5px;
     border: 0;
     border-bottom: 1px solid var(--primary-text);
+    border-radius: 0;
     background-color: transparent;
   }
 }
@@ -864,7 +922,8 @@ button,
 .c-card {
   display: inline-block;
   padding: 1em 2em;
-  border: 1px solid var(--line-dark);
+  border: 2px solid var(--line-dark);
+  border-radius: var(--radius);
 }
 
 .c-teambox {
@@ -1039,6 +1098,114 @@ button,
     width: 100px;
     margin-top: 30vh;
     margin-bottom: 2em;
+  }
+}
+
+.c-toggle-switch {
+  &__container {
+    display: flex;
+  }
+}
+
+.c-switcher {
+  &-container {
+    display: flex;
+
+    input {
+      display: none;
+    }
+
+    label {
+      display: flex;
+      align-items: center;
+    }
+  }
+
+  &-title {
+    margin-right: 5px;
+  }
+
+  &-switch {
+    position: relative;
+    display: block;
+    width: 50px;
+    height: 26px;
+    transition: all 0.3s;
+    transform: scale(0.8);
+    border: 1px solid #bfbfbf;
+    border-radius: 15px;
+    background: var(--dimmed);
+
+    &:hover {
+      cursor: pointer;
+    }
+
+    &::before {
+      position: absolute;
+      z-index: 1;
+      top: 2px;
+      left: 2px;
+      width: 20px;
+      height: 20px;
+      content: "";
+      transition: transform 0.3s;
+      border-radius: 50%;
+      background: #fff;
+    }
+  }
+
+  &-container [type="checkbox"]:checked ~ label &-switch {
+    border-color: transparent;
+    // background: #2eb67d;
+    background: var(--primary-dimmed);
+  }
+
+  &-container [type="checkbox"]:checked ~ label &-switch::before {
+    transform: translateX(24px);
+  }
+}
+
+// From this point onwards, the CSS is attempting to be clean.
+
+.o-overflow-wrapper {
+  overflow: hidden;
+  height: 100%;
+}
+
+.o-overflow-enabler {
+  overflow: auto;
+  height: 100%;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+  line-height: 1.5;
+  padding: 8px;
+  border: 2px solid var(--line-dark);
+  border-radius: var(--radius);
+  background-color: #fff;
+}
+
+.o-button {
+  display: inline-block;
+  padding: 0.5em 1em;
+  cursor: pointer;
+  border: 2px solid transparent;
+  border-radius: var(--radius);
+}
+
+.c-login-form,
+.c-card {
+  &__button {
+    line-height: 1.8;
+    border-color: var(--line-dark);
+  }
+}
+
+.c-page-actions {
+  &__button {
+    border-color: var(--line-dark);
   }
 }
 

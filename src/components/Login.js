@@ -49,10 +49,10 @@ const Login = () => {
     <div className="c-login-wrapper">
       <h1>Kambüüs</h1>
       {loginError ? errorMessage : ""}
-      <form onSubmit={handleSubmit}>
+      <form className="c-login-form" onSubmit={handleSubmit}>
         {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
         <label>
-          <p>Nimi</p>
+          <p>Kasutajanimi</p>
           <input type="text" name="username" />
         </label>
         {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
@@ -61,7 +61,9 @@ const Login = () => {
           <input type="password" name="password" />
         </label>
         <div className="c-login-submit">
-          <button type="submit">Sisene</button>
+          <button className="o-button c-login-form__button" type="submit">
+            Sisene
+          </button>
           <div
             className="c-login-reset"
             role="button"

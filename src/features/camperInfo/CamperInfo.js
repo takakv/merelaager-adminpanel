@@ -3,12 +3,12 @@ import { useDispatch, useSelector } from "react-redux";
 import PropTypes from "prop-types";
 
 import { setTitle } from "../pageTitle/pageTitleSlice";
-import { fetchCamperInfo, getCamperInfo } from "./camperInfoSlice";
-import { getShift } from "../userData/userDataSlice";
+import { fetchCamperInfo, selectAllCampersInfo } from "./camperInfoSlice";
 import {
   makeGetRequest,
   makePostRequest,
 } from "../../components/Common/requestAPI";
+import { selectCurrentShift } from "../userAuth/userAuthSlice";
 
 const CamperEntry = (props) => {
   const { data, shiftNr } = props;
@@ -19,7 +19,9 @@ const CamperEntry = (props) => {
   };
 
   const print = async () => {
-    const response = await makeGetRequest(`notes/fetch/${shiftNr}/${data.id}/`);
+    const response = await makeGetRequest(
+      `/notes/fetch/${shiftNr}/${data.id}/`
+    );
     if (!response || !response.ok) return;
 
     const blob = await response.blob();
@@ -68,12 +70,15 @@ CamperEntry.propTypes = {
 };
 
 const CamperInfo = (props) => {
-  const { title } = props;
-  const shiftNr = useSelector(getShift);
+  const shiftNr = useSelector(selectCurrentShift);
   const dispatch = useDispatch();
-  dispatch(setTitle(title));
 
-  const camperInfo = useSelector(getCamperInfo);
+  const { title } = props;
+  useEffect(() => {
+    dispatch(setTitle(title));
+  }, [title, dispatch]);
+
+  const camperInfo = useSelector(selectAllCampersInfo);
   const infoStatus = useSelector((state) => state.camperInfo.status);
   const error = useSelector((state) => state.camperInfo.error);
 
@@ -83,7 +88,7 @@ const CamperInfo = (props) => {
 
   const print = async () => {
     document.body.style.cursor = "wait";
-    const response = await makeGetRequest(`notes/fetch/${shiftNr}/`);
+    const response = await makeGetRequest(`/notes/fetch/${shiftNr}/`);
     if (!response || !response.ok) {
       document.body.style.cursor = "";
       return;
@@ -96,16 +101,28 @@ const CamperInfo = (props) => {
     document.body.style.cursor = "";
   };
 
+  let sortedEntries;
+
   switch (infoStatus) {
     case "ok":
+      sortedEntries = [...camperInfo];
+      sortedEntries.sort((a, b) => {
+        if (a.name < b.name) return -1;
+        if (a.name > b.name) return 1;
+        return 0;
+      });
       return (
         <div>
-          <button type="button" className="o-printer" onClick={print}>
+          <button
+            type="button"
+            className="o-button c-page-actions__button"
+            onClick={print}
+          >
             Prindi kõik
           </button>
           <p>Märkused säilivad läbi aastate ja vahetuste.</p>
-          {Object.values(camperInfo).map((camper) => (
-            <CamperEntry key={camper.id} data={camper} shiftNr={shiftNr} />
+          {Object.values(sortedEntries).map((camper) => (
+            <CamperEntry key={camper.childId} data={camper} shiftNr={shiftNr} />
           ))}
         </div>
       );

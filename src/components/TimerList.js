@@ -6,7 +6,7 @@ import { setTitle } from "../features/pageTitle/pageTitleSlice";
 import { getShift } from "../features/userData/userDataSlice";
 import {
   fetchCamperInfo,
-  getCamperInfo,
+  selectAllCampersInfo,
 } from "../features/camperInfo/camperInfoSlice";
 import { set } from "../features/timer/timerSlice";
 
@@ -126,7 +126,7 @@ const TimerList = (props) => {
   const dispatch = useDispatch();
   dispatch(setTitle(title));
 
-  const camperInfo = useSelector(getCamperInfo);
+  const camperInfo = useSelector(selectAllCampersInfo);
   const infoStatus = useSelector((state) => state.camperInfo.status);
   const error = useSelector((state) => state.camperInfo.error);
 

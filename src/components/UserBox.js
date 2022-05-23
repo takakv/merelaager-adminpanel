@@ -1,6 +1,11 @@
 import React from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { getName } from "../features/userData/userDataSlice";
+import {
+  selectRootStatus,
+  selectRootUsage,
+  setRootUsage,
+} from "../features/userAuth/userAuthSlice";
 
 /*
 const sendShift = async (shiftNr) => {
@@ -18,28 +23,35 @@ const sendShift = async (shiftNr) => {
 */
 
 const UserBox = () => {
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
+
   const userName = useSelector(getName);
+  const isRoot = useSelector(selectRootStatus);
+  const useRoot = useSelector(selectRootUsage);
 
-  /*
-  const shiftNr = useSelector(getShift);
-
-  const updateShift = async ({ target }) => {
-    const newShiftNr = parseInt(target.value, 10);
-
-    const result = await sendShift(newShiftNr);
-    if (!result) return;
-
-    dispatch(setRole(result.role));
-    dispatch(setShift(newShiftNr));
-    window.location.reload();
+  const handleChange = ({ target }) => {
+    dispatch(setRootUsage(target.checked));
   };
-  */
+
+  let rootSwitcher = null;
+  if (isRoot)
+    rootSwitcher = (
+      <div className="c-toggle-switch__container root-switch">
+        <label htmlFor="root-switch">Juurpääs</label>
+        <input
+          id="root-switch"
+          type="checkbox"
+          defaultChecked={useRoot}
+          onChange={handleChange}
+        />
+      </div>
+    );
 
   return (
     <div className="admin-page__user">
       {/* <p>ShiftNr: {shiftNr}</p> */}
       {/* <input type="text" onBlur={updateShift} /> */}
+      {rootSwitcher}
       <span>{userName}</span>
     </div>
   );
