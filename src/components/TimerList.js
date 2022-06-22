@@ -3,12 +3,12 @@ import PropTypes from "prop-types";
 
 import { useDispatch, useSelector } from "react-redux";
 import { setTitle } from "../features/pageTitle/pageTitleSlice";
-import { getShift } from "../features/userData/userDataSlice";
 import {
   fetchCamperInfo,
   selectAllCampersInfo,
 } from "../features/camperInfo/camperInfoSlice";
 import { set } from "../features/timer/timerSlice";
+import { selectCurrentShift } from "../features/userAuth/userAuthSlice";
 
 const sort = (child1, child2) => child1.name.localeCompare(child2.name);
 
@@ -81,7 +81,7 @@ const ChildEntry = (props) => {
             onClick={triggerCd}
             role="button"
             tabIndex={0}
-            onKeyPress={(e) => handleKeyPress(e, "toggle")}
+            onKeyDown={(e) => handleKeyPress(e, "toggle")}
           >
             {trigger ? "pause" : "play_arrow"}
           </span>
@@ -90,7 +90,7 @@ const ChildEntry = (props) => {
             onClick={stop}
             role="button"
             tabIndex={0}
-            onKeyPress={(e) => handleKeyPress(e, "stop")}
+            onKeyDown={(e) => handleKeyPress(e, "stop")}
           >
             stop
           </span>
@@ -110,31 +110,34 @@ const ChildList = (props) => {
   return (
     <div>
       {campers.map((camper) => (
-        <ChildEntry name={camper.name} key={camper.id} />
+        <ChildEntry name={camper.name} key={camper.childId} />
       ))}
     </div>
   );
 };
 
 ChildList.propTypes = {
-  campers: PropTypes.objectOf(PropTypes.objectOf(PropTypes.any)).isRequired,
+  campers: PropTypes.arrayOf(PropTypes.objectOf(PropTypes.any)).isRequired,
 };
 
 const TimerList = (props) => {
-  const { title } = props;
-  const shiftNr = useSelector(getShift);
   const dispatch = useDispatch();
-  dispatch(setTitle(title));
 
+  const { title } = props;
+  useEffect(() => {
+    dispatch(setTitle(title));
+  }, [title, dispatch]);
+
+  const shiftNr = useSelector(selectCurrentShift);
   const camperInfo = useSelector(selectAllCampersInfo);
   const infoStatus = useSelector((state) => state.camperInfo.status);
   const error = useSelector((state) => state.camperInfo.error);
 
-  const time = useSelector((state) => state.timer.value);
-
   useEffect(() => {
     if (infoStatus === "idle") dispatch(fetchCamperInfo(shiftNr));
   }, [infoStatus, dispatch]);
+
+  const time = useSelector((state) => state.timer.value);
 
   const updateTime = ({ target }) => {
     const rawForm = target.value;

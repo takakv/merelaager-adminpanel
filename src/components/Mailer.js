@@ -1,42 +1,47 @@
-import React from "react";
+import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 
 import { useDispatch, useSelector } from "react-redux";
 import { setTitle } from "../features/pageTitle/pageTitleSlice";
-import { getShift } from "../features/userData/userDataSlice";
+import { selectCurrentShift } from "../features/userAuth/userAuthSlice";
+import {
+  fetchRegistrations,
+  selectShiftRegistrations,
+} from "../features/registrations/registrationsSlice";
 
 const Mailer = (props) => {
-  const { title } = props;
-
   const dispatch = useDispatch();
-  dispatch(setTitle(title));
 
-  const shiftNr = useSelector(getShift);
-  // Get the registration list for all shifts from the store.
-  const regListData = null;
-  // Get the status of fetching the registration list from the backend.
-  const regListStatus = useSelector((state) => state.registrationList.status);
-  const regListError = useSelector((state) => state.registrationList.error);
-
-  // Fetch all camper registration lists when the page has been rendered.
-  /*
+  const { title } = props;
   useEffect(() => {
-    if (regListStatus === "idle") return 1;
-  }, [regListStatus, dispatch]);
-  */
+    dispatch(setTitle(title));
+  }, [title, dispatch]);
+
+  const shiftNr = useSelector(selectCurrentShift);
+  const registrations = useSelector((state) =>
+    selectShiftRegistrations(state, shiftNr)
+  );
+  const registrationStatus = useSelector((state) => state.registrations.status);
+  const registrationError = useSelector((state) => state.registrations.error);
+
+  useEffect(() => {
+    if (registrationStatus === "idle") dispatch(fetchRegistrations());
+  }, [registrationStatus, dispatch]);
 
   const parentEmails = [];
 
-  if (regListStatus === "succeeded") {
-    if (!regListData) {
+  if (registrationStatus === "succeeded") {
+    if (!registrations) {
       return <div>Kontaktinfo puudub</div>;
     }
-    const { campers } = regListData[shiftNr];
-    Object.values(campers).forEach((camper) => {
-      if (camper.registered && parentEmails.indexOf(camper.contactEmail) === -1)
-        parentEmails.push(camper.contactEmail);
+    Object.values(registrations).forEach((registration) => {
+      if (
+        registration.registered &&
+        parentEmails.indexOf(registration.contactEmail) === -1
+      )
+        parentEmails.push(registration.contactEmail);
     });
-  } else return <div>{regListError}</div>;
+  } else return <div>{registrationError}</div>;
 
   // const sendMail = async () => {
   //   const credentials = localStorage.getItem("credentials");
@@ -50,9 +55,12 @@ const Mailer = (props) => {
   return (
     <div className="c-mailer">
       <p>Meilid:</p>
-      <p className="c-mailer-emails">{parentEmails.sort().join("; ")}</p>
+      <p className="c-card">{parentEmails.sort().join("; ")}</p>
       <p>
-        <a href={`mailto:${parentEmails.join(";")}`} className="o-button">
+        <a
+          href={`mailto:${parentEmails.join(";")}`}
+          className="o-button c-card__button"
+        >
           Ava meiliäpis
         </a>
         (ei pruugi töötada)
