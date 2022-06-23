@@ -3,18 +3,18 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import PropTypes from "prop-types";
 
-import { setTitle } from "../features/pageTitle/pageTitleSlice";
-import { selectCurrentShift } from "../features/userAuth/userAuthSlice";
+import { setTitle } from "../pageTitle/pageTitleSlice";
+import { selectCurrentShift } from "../userAuth/userAuthSlice";
 import {
   fetchCamperInfo,
   selectAllCampersInfo,
   updateCamperInfo,
-} from "../features/camperInfo/camperInfoSlice";
+} from "../camperInfo/camperInfoSlice";
 
 // Populate the options dropdown for campers with a tent.
 const tentNumbers = Array.from({ length: 10 }, (_, i) => i + 1);
 
-const TentList = (props) => {
+const TentsPage = (props) => {
   const shiftNr = useSelector(selectCurrentShift);
   const dispatch = useDispatch();
 
@@ -32,7 +32,14 @@ const TentList = (props) => {
   }, [infoStatus, dispatch]);
 
   const tents = {};
-  const noTent = [];
+  const noTent = { M: [], F: [] };
+
+  const sortByName = (camper1, camper2) => {
+    if (camper1.name === camper2.name) return 0;
+    if (camper1.name > camper2.name) return 1;
+    return -1;
+  };
+
   tentNumbers.forEach((nr) => {
     tents[nr] = [];
   });
@@ -40,19 +47,36 @@ const TentList = (props) => {
   if (infoStatus === "ok") {
     camperInfo.forEach((camper) => {
       if (camper.tentNr) tents[camper.tentNr].push(camper);
-      else noTent.push(camper);
+      else noTent[camper.gender].push(camper);
     });
+
+    noTent.M.sort(sortByName);
+    noTent.F.sort(sortByName);
+
+    const entryGenerator = (camper) => (
+      <NoTentCamper
+        key={camper.childId}
+        id={camper.childId}
+        name={camper.name}
+      />
+    );
+
+    const boxGenerator = (gender) => (
+      <div className="o-box c-tentless-box">
+        <div className="o-box-header">
+          {gender === "M" ? "Poisid" : "Tüdrukud"}
+        </div>
+        <div className="c-tentless-box__content">
+          {noTent[gender].map(entryGenerator)}
+        </div>
+      </div>
+    );
 
     return (
       <div>
-        <div className="c-tentless-container u-flex u-flex-wrap">
-          {noTent.map((camper) => (
-            <NoTentCamper
-              key={camper.childId}
-              id={camper.childId}
-              name={camper.name}
-            />
-          ))}
+        <div className="c-tentless-container">
+          {noTent.M.length ? boxGenerator("M") : ""}
+          {noTent.F.length ? boxGenerator("F") : ""}
         </div>
         <p>Märkeruut näitab, kas laps on laagris kohal.</p>
         <div className="u-flex u-flex-wrap">
@@ -73,11 +97,11 @@ const TentList = (props) => {
   return <p>Laen...</p>;
 };
 
-TentList.propTypes = {
+TentsPage.propTypes = {
   title: PropTypes.string.isRequired,
 };
 
-export default TentList;
+export default TentsPage;
 
 const NoTentCamper = (props) => {
   const { name, id } = props;

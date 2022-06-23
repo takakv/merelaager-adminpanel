@@ -155,6 +155,16 @@ body {
   background-color: var(--default-bg);
 }
 
+input[type="checkbox"] {
+  border: 2px solid #8f8f9d;
+  border-radius: 1px;
+
+  &:hover {
+    cursor: pointer;
+    border-color: #484851;
+  }
+}
+
 a {
   text-decoration: none;
   color: inherit;
@@ -793,7 +803,7 @@ button,
     width: 30px;
     height: 30px;
     margin: 0.75em;
-    border: 3px solid #e6e8eb;
+    border: 3px solid #8f8f9d;
     border-radius: 30px;
 
     @media screen and (min-width: 1000px) {
@@ -807,7 +817,7 @@ button,
     div {
       width: 70%;
       height: 3px;
-      background-color: #e6e8eb;
+      background-color: #8f8f9d;
 
       @media screen and (min-width: 1000px) {
         height: 1px;
@@ -816,10 +826,10 @@ button,
 
     &:hover {
       cursor: pointer;
-      border-color: var(--primary-text);
+      border-color: #484851;
 
       div {
-        background-color: var(--primary-text);
+        background-color: #484851;
       }
     }
   }
@@ -828,6 +838,24 @@ button,
 .c-team {
   input {
     width: 1rem;
+  }
+}
+
+.c-tentless-container {
+  display: flex;
+  // justify-content: space-between;
+  gap: 30px;
+  flex-direction: column;
+
+  @media only screen and (min-width: $tablet-break) {
+    flex-direction: row;
+  }
+}
+
+.c-tentless-box {
+  &__content {
+    display: flex;
+    flex-wrap: wrap;
   }
 }
 
