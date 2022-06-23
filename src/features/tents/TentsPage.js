@@ -64,7 +64,7 @@ const TentsPage = (props) => {
     const boxGenerator = (gender) => (
       <div className="o-box c-tentless-box">
         <div className="o-box-header">
-          {gender === "M" ? "Poisid" : "Tüdrukud"}
+          <p>{gender === "M" ? "Poisid" : "Tüdrukud"}</p>
         </div>
         <div className="c-tentless-box__content">
           {noTent[gender].map(entryGenerator)}

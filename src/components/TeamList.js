@@ -6,8 +6,8 @@ import PropTypes from "prop-types";
 import { setTitle } from "../features/pageTitle/pageTitleSlice";
 import {
   createTeam,
+  deleteTeam,
   fetchTeams,
-  removeMember,
   selectTeams,
 } from "../features/teams/teamerSlice";
 import { makePostRequest } from "./Common/requestAPI";
@@ -56,16 +56,20 @@ const Leaderboard = () => {
   console.log(teams);
 
   return (
-    <div className="c-leaderboard u-flex u-flex-wrap">
-      <p className="c-leaderboard-title">Kohad:</p>
-      {teams.map((team) => (
-        <div className="c-leaderboard-item" key={team.id}>
-          <div className="c-leaderboard-team">{team.name}</div>
-          <div className="c-leaderboard-place">
-            <TeamPlace team={team} teamCount={teamCount} />
+    <div className="o-box c-leaderboard-box">
+      <div className="o-box-header">
+        <p>Kohad</p>
+      </div>
+      <div className="c-leaderboard-box__content">
+        {teams.map((team) => (
+          <div className="c-leaderboard-item" key={team.id}>
+            <div className="c-leaderboard-team">{team.name}</div>
+            <div className="c-leaderboard-place">
+              <TeamPlace team={team} teamCount={teamCount} />
+            </div>
           </div>
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
   );
 };
@@ -92,17 +96,6 @@ const TeamsPage = (props) => {
   useEffect(() => {
     if (teamStatus === "idle") dispatch(fetchTeams({ year, shiftNr }));
   }, [teamStatus, dispatch]);
-
-  /*
-  // Get the teams.
-  useSelector(getTeams);
-  const teamsStatus = useSelector((state) => state.teams.status);
-  const teamsError = useSelector((state) => state.teams.error);
-
-  useEffect(() => {
-    if (teamsStatus === "idle") dispatch(fetchTeams(shiftNr));
-  }, [teamsStatus, dispatch]);
-  */
 
   if (camperStatus === "ok" && teamStatus === "ok") {
     return (
@@ -155,15 +148,16 @@ const TeamCreator = () => {
   };
 
   return (
-    <div>
-      {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-      <label>
-        Meeskonna nimi:
-        <input type="text" onChange={handleChange} />
-      </label>
-      <button type="button" onClick={create}>
-        Loo meeskond
-      </button>
+    <div className="o-infield">
+      <div className="o-infield-input">
+        <label htmlFor="teamname">Meeskonna nimi:</label>
+        <input id="teamname" type="text" onChange={handleChange} />
+      </div>
+      <div className="o-infield-actions">
+        <button className="o-button" type="button" onClick={create}>
+          Loo meeskond
+        </button>
+      </div>
     </div>
   );
 };
@@ -180,6 +174,7 @@ const Teamless = (props) => {
 
     reqObj.data[field] = target.value;
     dispatch(updateCamperInfo(reqObj));
+    console.log("Updated camper info");
   };
 
   return (
@@ -225,21 +220,17 @@ const TeamlessList = () => {
 };
 
 const Member = (props) => {
-  const { member, teamId } = props;
+  const { member } = props;
 
   const dispatch = useDispatch();
-  const removeCamperFromTeam = async () => {
-    const response = await makePostRequest("teams/member/remove/", {
-      dataId: member.id,
-    });
-    if (!response || !response.ok) return;
 
-    dispatch(
-      removeMember({
-        member,
-        currentTeam: teamId,
-      })
-    );
+  const removeCamperFromTeam = () => {
+    const id = member.childId;
+    const field = "teamId";
+    const reqObj = { id, field, data: {} };
+
+    reqObj.data[field] = null;
+    dispatch(updateCamperInfo(reqObj));
   };
 
   return (
@@ -260,14 +251,18 @@ const Member = (props) => {
 
 Member.propTypes = {
   member: PropTypes.objectOf(PropTypes.any).isRequired,
-  teamId: PropTypes.number.isRequired,
 };
 
 const TeamBox = (props) => {
   const { team } = props;
+  const dispatch = useDispatch();
 
   const campers = useSelector(selectAllCampersInfo);
   const teamMembers = campers.filter((camper) => camper.teamId === team.id);
+
+  const removeTeam = () => {
+    dispatch(deleteTeam(team.id));
+  };
 
   return (
     <div className="c-team o-box">
@@ -275,10 +270,17 @@ const TeamBox = (props) => {
         <h3>{team.name}</h3>
         <p>{team.place ?? "-"}. koht</p>
         <p>{teamMembers.length} liiget</p>
+        {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/control-has-associated-label */}
+        <div
+          role="button"
+          className="c-team-rm"
+          onClick={removeTeam}
+          tabIndex={0}
+        />
       </div>
       <ul className="u-list-blank">
         {teamMembers.map((member) => (
-          <Member key={member.childId} member={member} teamId={team.id} />
+          <Member key={member.childId} member={member} />
         ))}
       </ul>
     </div>

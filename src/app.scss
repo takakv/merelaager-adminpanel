@@ -852,11 +852,16 @@ button,
   }
 }
 
-.c-tentless-box {
+.c-tentless-box,
+.c-leaderboard-box {
   &__content {
     display: flex;
     flex-wrap: wrap;
   }
+}
+
+.c-leaderboard-box {
+  margin: 1em 0;
 }
 
 .c-tentless,
@@ -1240,4 +1245,31 @@ input[type="password"] {
 #app {
   width: 100%;
   height: 100vh;
+}
+
+// Only not terrible code after this line (hopefully)
+
+.o-infield {
+  &-input {
+    display: inline-block;
+    margin-right: 1em;
+
+    label {
+      margin-right: 0.5em;
+    }
+  }
+
+  &-actions {
+    display: inline-block;
+
+    button {
+      border-color: var(--line-dark);
+      line-height: 1.5;
+      padding: 8px;
+
+      &:last-child {
+        margin-right: 0;
+      }
+    }
+  }
 }
