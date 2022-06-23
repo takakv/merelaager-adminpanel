@@ -1,18 +1,26 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { makeGetRequest } from "../../components/Common/requestAPI";
+import {
+  makeGetRequest,
+  makePostRequest,
+} from "../../components/Common/requestAPI";
 
-export const fetchTeams = createAsyncThunk(
-  "teams/fetchTeams",
-  async (shiftNr) => {
-    const response = await makeGetRequest(`/teams/fetch/${shiftNr}`);
-    return response.json();
-  }
-);
+export const fetchTeams = createAsyncThunk("teams/fetchTeams", async (data) => {
+  const response = await makeGetRequest(
+    `/teams/bulk/${data.year}/${data.shiftNr}`
+  );
+  return response.json();
+});
+
+export const createTeam = createAsyncThunk("teams/createTeam", async (data) => {
+  const response = await makePostRequest(`/teams/`, data);
+  return response.ok;
+});
 
 const teamSlice = createSlice({
   name: "teams",
   initialState: {
     data: {},
+    teams: [],
     status: "idle",
     error: null,
   },
@@ -35,7 +43,7 @@ const teamSlice = createSlice({
   extraReducers: {
     [fetchTeams.fulfilled]: (state, action) => {
       state.status = "ok";
-      state.data = action.payload;
+      state.teams = action.payload;
     },
     [fetchTeams.rejected]: (state, action) => {
       state.status = "nok";
@@ -49,3 +57,5 @@ export const { addMember, removeMember } = teamSlice.actions;
 export default teamSlice.reducer;
 
 export const getTeams = (state) => state.teams.data;
+
+export const selectTeams = (state) => state.teams.teams;

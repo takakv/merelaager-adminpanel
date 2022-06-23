@@ -1,17 +1,22 @@
 /* eslint-disable react/forbid-prop-types */
 import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import PropTypes from "prop-types";
 
-import { useDispatch, useSelector } from "react-redux";
 import { setTitle } from "../features/pageTitle/pageTitleSlice";
 import {
-  addMember,
+  createTeam,
   fetchTeams,
-  getTeams,
   removeMember,
+  selectTeams,
 } from "../features/teams/teamerSlice";
 import { makePostRequest } from "./Common/requestAPI";
 import { selectCurrentShift } from "../features/userAuth/userAuthSlice";
+import {
+  fetchCamperInfo,
+  selectAllCampersInfo,
+  updateCamperInfo,
+} from "../features/camperInfo/camperInfoSlice";
 
 const TeamPlace = (props) => {
   const { team, teamCount } = props;
@@ -45,13 +50,15 @@ TeamPlace.propTypes = {
 };
 
 const Leaderboard = () => {
-  const { teams } = useSelector(getTeams);
-  const teamCount = Object.keys(teams).length;
+  const teams = useSelector(selectTeams);
+  const teamCount = teams.length;
+
+  console.log(teams);
 
   return (
     <div className="c-leaderboard u-flex u-flex-wrap">
       <p className="c-leaderboard-title">Kohad:</p>
-      {Object.values(teams).map((team) => (
+      {teams.map((team) => (
         <div className="c-leaderboard-item" key={team.id}>
           <div className="c-leaderboard-team">{team.name}</div>
           <div className="c-leaderboard-place">
@@ -64,11 +71,29 @@ const Leaderboard = () => {
 };
 
 const TeamsPage = (props) => {
-  const { title } = props;
   const shiftNr = useSelector(selectCurrentShift);
   const dispatch = useDispatch();
-  dispatch(setTitle(title));
 
+  const { title } = props;
+  useEffect(() => {
+    dispatch(setTitle(title));
+  }, [title, dispatch]);
+
+  const camperStatus = useSelector((state) => state.camperInfo.status);
+  const teamStatus = useSelector((state) => state.teams.status);
+
+  const error = useSelector((state) => state.camperInfo.error);
+
+  useEffect(() => {
+    if (camperStatus === "idle") dispatch(fetchCamperInfo(shiftNr));
+  }, [camperStatus, dispatch]);
+
+  const year = new Date().getFullYear();
+  useEffect(() => {
+    if (teamStatus === "idle") dispatch(fetchTeams({ year, shiftNr }));
+  }, [teamStatus, dispatch]);
+
+  /*
   // Get the teams.
   useSelector(getTeams);
   const teamsStatus = useSelector((state) => state.teams.status);
@@ -77,8 +102,9 @@ const TeamsPage = (props) => {
   useEffect(() => {
     if (teamsStatus === "idle") dispatch(fetchTeams(shiftNr));
   }, [teamsStatus, dispatch]);
+  */
 
-  if (teamsStatus === "ok") {
+  if (camperStatus === "ok" && teamStatus === "ok") {
     return (
       <div>
         <TeamCreator shiftNr={shiftNr} />
@@ -88,11 +114,11 @@ const TeamsPage = (props) => {
       </div>
     );
   }
-  if (teamsStatus === "nok") {
+  if (camperStatus === "nok") {
     return (
       <div>
         <TeamCreator shiftNr={shiftNr} />
-        <p>{teamsError}</p>
+        <p>{error}</p>
       </div>
     );
   }
@@ -110,18 +136,22 @@ TeamsPage.propTypes = {
 
 const TeamCreator = () => {
   const [teamName, setTeamName] = useState();
+  const dispatch = useDispatch();
+  const shiftNr = useSelector(selectCurrentShift);
 
   const handleChange = (event) => {
     setTeamName(event.target.value);
   };
 
-  const createTeam = async ({ shiftNr }) => {
-    const response = await makePostRequest("/teams/create/", {
-      shiftNr,
-      name: teamName,
-    });
-    if (!response || !response.ok) return;
-    window.location.reload();
+  const create = async () => {
+    if (!teamName) return;
+    dispatch(
+      createTeam({
+        year: new Date().getFullYear(),
+        shiftNr,
+        name: teamName,
+      })
+    );
   };
 
   return (
@@ -131,7 +161,7 @@ const TeamCreator = () => {
         Meeskonna nimi:
         <input type="text" onChange={handleChange} />
       </label>
-      <button type="button" onClick={createTeam}>
+      <button type="button" onClick={create}>
         Loo meeskond
       </button>
     </div>
@@ -139,22 +169,17 @@ const TeamCreator = () => {
 };
 
 const Teamless = (props) => {
-  const { camper, teams } = props;
+  const { camper } = props;
+  const teams = useSelector(selectTeams);
   const dispatch = useDispatch();
 
   const addCamperToTeam = async ({ target }) => {
-    const response = await makePostRequest("teams/member/add/", {
-      teamId: target.value,
-      dataId: camper.id,
-    });
-    if (!response || !response.ok) return;
+    const id = camper.childId;
+    const field = "teamId";
+    const reqObj = { id, field, data: {} };
 
-    dispatch(
-      addMember({
-        member: camper,
-        teamId: target.value,
-      })
-    );
+    reqObj.data[field] = target.value;
+    dispatch(updateCamperInfo(reqObj));
   };
 
   return (
@@ -166,7 +191,7 @@ const Teamless = (props) => {
           <option value={null} style={{ color: "grey" }}>
             Vali meeskond
           </option>
-          {Object.values(teams).map((team) => (
+          {teams.map((team) => (
             <option key={team.id} value={team.id}>
               {team.name}
             </option>
@@ -179,17 +204,21 @@ const Teamless = (props) => {
 
 Teamless.propTypes = {
   camper: PropTypes.objectOf(PropTypes.any).isRequired,
-  teams: PropTypes.objectOf(PropTypes.object).isRequired,
 };
 
 const TeamlessList = () => {
-  const data = useSelector(getTeams);
-  const { teams, teamless } = data;
+  const data = useSelector(selectAllCampersInfo);
+
+  const teamless = [];
+
+  data.forEach((camper) => {
+    if (!camper.teamId) teamless.push(camper);
+  });
 
   return (
     <div className="u-flex u-flex-wrap">
       {teamless.map((camper) => (
-        <Teamless key={camper.id} camper={camper} teams={teams} />
+        <Teamless key={camper.childId} camper={camper} />
       ))}
     </div>
   );
@@ -236,16 +265,20 @@ Member.propTypes = {
 
 const TeamBox = (props) => {
   const { team } = props;
+
+  const campers = useSelector(selectAllCampersInfo);
+  const teamMembers = campers.filter((camper) => camper.teamId === team.id);
+
   return (
     <div className="c-team o-box">
       <div className="o-box-header u-text-center">
         <h3>{team.name}</h3>
         <p>{team.place ?? "-"}. koht</p>
-        <p>{team.members.length} liiget</p>
+        <p>{teamMembers.length} liiget</p>
       </div>
       <ul className="u-list-blank">
-        {team.members.map((member) => (
-          <Member key={member.id} member={member} teamId={team.id} />
+        {teamMembers.map((member) => (
+          <Member key={member.childId} member={member} teamId={team.id} />
         ))}
       </ul>
     </div>
@@ -257,11 +290,11 @@ TeamBox.propTypes = {
 };
 
 const TeamsList = () => {
-  const { teams } = useSelector(getTeams);
+  const teams = useSelector(selectTeams);
 
   return (
     <div className="u-flex u-flex-wrap">
-      {Object.values(teams).map((team) => (
+      {teams.map((team) => (
         <TeamBox key={team.id} team={team} />
       ))}
     </div>
