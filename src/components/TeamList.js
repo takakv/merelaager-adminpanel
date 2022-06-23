@@ -53,8 +53,6 @@ const Leaderboard = () => {
   const teams = useSelector(selectTeams);
   const teamCount = teams.length;
 
-  console.log(teams);
-
   return (
     <div className="o-box c-leaderboard-box">
       <div className="o-box-header">
@@ -172,9 +170,8 @@ const Teamless = (props) => {
     const field = "teamId";
     const reqObj = { id, field, data: {} };
 
-    reqObj.data[field] = target.value;
+    reqObj.data[field] = parseInt(target.value, 10);
     dispatch(updateCamperInfo(reqObj));
-    console.log("Updated camper info");
   };
 
   return (
