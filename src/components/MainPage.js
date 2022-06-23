@@ -56,11 +56,10 @@ const MainPage = (props) => {
         <StaffList shiftNr={shiftNr} />
       </div>
       <div className="c-card-wrapper c-mailsendbox">
-        <div className="c-card c-mailsend">
+        <div className="c-card">
           <p>Saada kasvatajale ligipääs:</p>
-          <div className="c-mailsend-ia">
-            <div className="c-mailsend-input">
-              {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
+          <div className="o-infield">
+            <div className="o-infield-input">
               <label htmlFor="usr-mail">Meil</label>
               <input
                 id="usr-mail"
@@ -68,12 +67,8 @@ const MainPage = (props) => {
                 type="email"
               />
             </div>
-            <div className="c-mailsend-actions">
-              <button
-                type="button"
-                className="o-button c-card__button"
-                onClick={sendMail}
-              >
+            <div className="o-infield-actions">
+              <button type="button" className="o-button" onClick={sendMail}>
                 Saada link
               </button>
             </div>

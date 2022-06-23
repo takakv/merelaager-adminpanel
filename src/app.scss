@@ -1081,32 +1081,6 @@ button,
   }
 }
 
-.c-mailsend {
-  &-input {
-    display: inline-block;
-    margin-right: 1em;
-
-    label {
-      margin-right: 0.5em;
-    }
-  }
-
-  &-actions {
-    display: inline-block;
-
-    button {
-      margin-right: 1em;
-
-      &:last-child {
-        margin-right: 0;
-      }
-    }
-  }
-
-  &-ia {
-  }
-}
-
 .c-timer-countdown {
   margin-right: 0.5em;
 
@@ -1266,6 +1240,7 @@ input[type="password"] {
       border-color: var(--line-dark);
       line-height: 1.5;
       padding: 8px;
+      margin-right: 1em;
 
       &:last-child {
         margin-right: 0;

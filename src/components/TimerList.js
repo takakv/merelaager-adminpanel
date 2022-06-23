@@ -155,14 +155,22 @@ const TimerList = (props) => {
     case "ok":
       return (
         <div>
-          {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-          <label htmlFor="timer">Aeg: </label>
-          <input
-            type=""
-            id="timer"
-            defaultValue={displayTime(time)}
-            onBlur={updateTime}
-          />
+          <div className="o-infield">
+            <div className="o-infield-input">
+              <label htmlFor="timer">Aeg:</label>
+              <input
+                type="text"
+                id="timer"
+                defaultValue={displayTime(time)}
+                onBlur={updateTime}
+              />
+            </div>
+            <div className="o-infield-actions">
+              <button type="button" className="o-button">
+                Uuenda
+              </button>
+            </div>
+          </div>
           <ChildList campers={camperInfo} />
         </div>
       );

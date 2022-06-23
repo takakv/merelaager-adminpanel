@@ -39,18 +39,29 @@ const BillGen = (props) => {
   return (
     <div>
       <div className="c-card c-mailsend">
-        <div className="c-mailsend-input">
-          {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-          <label htmlFor="mail">Lapsevanema meil</label>
-          <input type="email" name="meil" id="mail" />
-        </div>
-        <div className="c-mailsend-actions">
-          <button type="button" id="fetch" onClick={fetchPDF}>
-            Leia
-          </button>
-          <button type="button" id="create" onClick={fetchPDF}>
-            Genereeri
-          </button>
+        <div className="o-infield">
+          <div className="o-infield-input">
+            <label htmlFor="email">Lapsevanema meil</label>
+            <input type="email" name="meil" id="email" />
+          </div>
+          <div className="o-infield-actions">
+            <button
+              type="button"
+              className="o-button"
+              id="fetch"
+              onClick={fetchPDF}
+            >
+              Leia
+            </button>
+            <button
+              type="button"
+              className="o-button"
+              id="create"
+              onClick={fetchPDF}
+            >
+              Genereeri
+            </button>
+          </div>
         </div>
       </div>
       <div className="o-banner o-banner--warning">
