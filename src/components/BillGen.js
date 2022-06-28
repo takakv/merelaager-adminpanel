@@ -1,14 +1,11 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 
 import { useDispatch } from "react-redux";
 import { setTitle } from "../features/pageTitle/pageTitleSlice";
 import { makePostRequest } from "./Common/requestAPI";
 
-const fetchPDF = async ({ target }) => {
-  const action = target.id;
-  const email = document.getElementById("mail").value;
-
+const fetchPDF = async (action, email) => {
   const response = await makePostRequest(`/bills/${action}/${email}/`);
   if (!response.ok) {
     return;
@@ -31,10 +28,22 @@ const fetchPDF = async ({ target }) => {
 };
 
 const BillGen = (props) => {
-  const { title } = props;
-
   const dispatch = useDispatch();
-  dispatch(setTitle(title));
+  const [email, setEmail] = useState();
+
+  const { title } = props;
+  useEffect(() => {
+    dispatch(setTitle(title));
+  }, [title, dispatch]);
+
+  const updateEmail = ({ target }) => {
+    setEmail(target.value);
+  };
+
+  const getPDF = async ({ target }) => {
+    const action = target.id;
+    if (email) await fetchPDF(action, email);
+  };
 
   return (
     <div>
@@ -42,14 +51,14 @@ const BillGen = (props) => {
         <div className="o-infield">
           <div className="o-infield-input">
             <label htmlFor="email">Lapsevanema meil</label>
-            <input type="email" name="meil" id="email" />
+            <input type="email" name="meil" id="email" onBlur={updateEmail} />
           </div>
           <div className="o-infield-actions">
             <button
               type="button"
               className="o-button"
               id="fetch"
-              onClick={fetchPDF}
+              onClick={getPDF}
             >
               Leia
             </button>
@@ -57,7 +66,7 @@ const BillGen = (props) => {
               type="button"
               className="o-button"
               id="create"
-              onClick={fetchPDF}
+              onClick={getPDF}
             >
               Genereeri
             </button>
