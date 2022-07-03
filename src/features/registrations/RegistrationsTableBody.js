@@ -9,7 +9,7 @@ const calculateMeanAge = (registrations) => {
   let ageSum = 0;
 
   registrations.forEach((registration) => {
-    const {dob} = registration;
+    const { dob } = registration;
     const birthDate = new Date(dob);
     let age = now.getFullYear() - birthDate.getFullYear();
     // Calculate the standing for June of the current year.
@@ -18,7 +18,7 @@ const calculateMeanAge = (registrations) => {
     ageSum += age;
   });
 
-  return Math.round(ageSum / registrations.length * 10) / 10;
+  return Math.round((ageSum / registrations.length) * 10) / 10;
 };
 
 const RegistrationsTableBody = ({ shiftNr, registered, gender }) => {
@@ -32,7 +32,7 @@ const RegistrationsTableBody = ({ shiftNr, registered, gender }) => {
   else title = gender === "M" ? "Reserv poisid" : "Reserv tüdrukud";
 
   const meanAge = calculateMeanAge(registrations);
-  title += ` | Keskmine vanus: ${meanAge}a`
+  if (!isNaN(meanAge)) title += ` | Keskmine vanus: ${meanAge}a`;
 
   return (
     <tbody>
