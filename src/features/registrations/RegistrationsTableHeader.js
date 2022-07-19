@@ -33,7 +33,7 @@ const RegistrationsTableHeader = () => {
   cellValues.map((value) => addCell(cells, value));
 
   return (
-    <thead className="c-regList-table__head">
+    <thead>
       <tr>{cells.map((cell) => cell)}</tr>
     </thead>
   );
