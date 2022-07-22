@@ -527,8 +527,9 @@ button,
   }
 
   .c-content {
-    overflow-x: scroll;
-    overflow-y: hidden;
+    overflow: auto;
+    // overflow-x: scroll;
+    // overflow-y: hidden;
     margin-top: 24px;
     padding: 0 1em 1em;
     grid-area: content;
