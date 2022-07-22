@@ -1225,13 +1225,17 @@ input[type="password"] {
 // Only not terrible code after this line (hopefully)
 
 select {
-  padding: 0.1em;
+  // appearance: none;
+  background-color: #fff;
+  padding: 2px 2px 2px 0;
   border-radius: var(--radius);
-  border: 2px solid #8f8f9d;
+  border: 2px solid var(--line-dark);
+  line-height: 1.5;
 
-  &:hover {
-    //color: red;
-    //ackground-color: var(--line-dark);
+  &:hover,
+  &:focus {
+    // border-color: #484851;
+    background-color: var(--dimmed);
   }
 }
 
@@ -1260,8 +1264,8 @@ select {
   row-gap: 1em;
 
   // @media screen and (min-width: 1000px) {
-    border-right: 1px solid var(--line-dark);
-    margin-right: 1em;
+  border-right: 1px solid var(--line-dark);
+  margin-right: 1em;
   // }
 }
 
