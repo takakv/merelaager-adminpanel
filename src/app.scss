@@ -1322,15 +1322,16 @@ select {
 .c-team {
   .M,
   .F {
-    display: flex;
-    align-items: center;
+    position: relative;
 
     &::before {
+      position: absolute;
+      bottom: 0;
       display: block;
       content: "";
-      width: 8px;
-      height: 8px;
-      background-color: greenyellow;
+      width: 0.5rem;
+      height: 1px;
+      background-color: #000;
       margin-right: 0.5em;
     }
   }
