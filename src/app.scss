@@ -1324,6 +1324,7 @@ select {
   .F {
     &::first-letter {
       text-decoration: underline;
+      text-underline-offset: 3px;
     }
   }
 
