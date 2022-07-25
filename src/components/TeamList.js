@@ -258,8 +258,13 @@ const TeamBox = (props) => {
   const teamMembers = campers.filter((camper) => camper.teamId === team.id);
 
   teamMembers.sort((a, b) => {
-    if (a.name < b.name || a.gender < b.gender) return -1;
-    if (a.name > b.name || a.gender > b.gender) return 1;
+    if (a.gender === b.gender) {
+      if (a.name < b.name) return -1;
+      if (a.name > b.name) return 1;
+      return 0;
+    }
+    if (a.gender < b.gender) return -1;
+    if (a.gender > b.gender) return 1;
     return 0;
   });
 
