@@ -49,6 +49,7 @@ const Root = () => {
               element={<TeamsPage title="Meeskonnad" />}
             />
             <Route path="/taimer/" element={<TimerList title="Taimer" />} />
+            <Route path="/mapp/" element={<TimerList title="Mapp" />} />
             <Route
               path="/nimekiri/"
               element={<RegistrationsPage title="Nimekiri" />}

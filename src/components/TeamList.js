@@ -232,7 +232,7 @@ const Member = (props) => {
 
   return (
     <li className="u-flex u-space-between u-align-center">
-      <span>{member.name}</span>
+      <span className={member.gender}>{member.name}</span>
       {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events */}
       <div
         role="button"
@@ -256,6 +256,12 @@ const TeamBox = (props) => {
 
   const campers = useSelector(selectAllCampersInfo);
   const teamMembers = campers.filter((camper) => camper.teamId === team.id);
+
+  teamMembers.sort((a, b) => {
+    if (a.name < b.name) return -1;
+    if (a.name > b.name) return 1;
+    return 0;
+  });
 
   const removeTeam = () => {
     dispatch(deleteTeam(team.id));

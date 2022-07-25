@@ -20,6 +20,21 @@ const getHomePage = () => {
   );
 };
 
+const getDocumentsPage = () => {
+  const dispatch = useDispatch();
+  return (
+    <li>
+      <Link
+        className="_link"
+        to="/mapp/"
+        onClick={() => dispatch(setTitle("Mapp"))}
+      >
+        Mapp
+      </Link>
+    </li>
+  );
+};
+
 const getChildInfoPage = (role) => {
   const dispatch = useDispatch();
   if (role !== "root" && role !== "master") return "";
@@ -161,6 +176,7 @@ const Navigation = () => {
         {getMailSendPage(role)}
         {getBillGenPage(role)}
         {getTShirtPage(role)}
+        {getDocumentsPage()}
       </ul>
     </nav>
   );
