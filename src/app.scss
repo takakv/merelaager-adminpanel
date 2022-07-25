@@ -1318,3 +1318,28 @@ select {
     }
   }
 }
+
+.c-team {
+  .M,
+  .F {
+    display: flex;
+    align-items: center;
+
+    &::before {
+      display: block;
+      content: "";
+      width: 8px;
+      height: 8px;
+      background-color: greenyellow;
+      margin-right: 0.5em;
+    }
+  }
+
+  .M::before {
+    background-color: blue;
+  }
+
+  .F::before {
+    background-color: deeppink;
+  }
+}
