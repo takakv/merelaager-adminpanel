@@ -1322,25 +1322,16 @@ select {
 .c-team {
   .M,
   .F {
-    position: relative;
-
-    &::before {
-      position: absolute;
-      bottom: 0;
-      display: block;
-      content: "";
-      width: 0.5rem;
-      height: 1px;
-      background-color: #000;
-      margin-right: 0.5em;
+    &::first-letter {
+      text-decoration: underline;
     }
   }
 
-  .M::before {
-    background-color: blue;
+  .M::first-letter {
+    text-decoration-color: blue;
   }
 
-  .F::before {
-    background-color: deeppink;
+  .F::first-letter {
+    text-decoration-color: deeppink;
   }
 }
