@@ -107,6 +107,7 @@ ChildEntry.propTypes = {
 const ChildList = (props) => {
   let { campers } = props;
   campers = Object.values(campers).sort(sort);
+
   return (
     <div>
       {campers.map((camper) => (
@@ -128,11 +129,11 @@ const TimerList = (props) => {
     dispatch(setTitle(title));
   }, [title, dispatch]);
 
-  const shiftNr = useSelector(selectCurrentShift);
   const camperInfo = useSelector(selectAllCampersInfo);
   const infoStatus = useSelector((state) => state.camperInfo.status);
   const error = useSelector((state) => state.camperInfo.error);
 
+  const shiftNr = useSelector(selectCurrentShift);
   useEffect(() => {
     if (infoStatus === "idle") dispatch(fetchCamperInfo(shiftNr));
   }, [infoStatus, dispatch]);

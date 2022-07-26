@@ -15,7 +15,6 @@ import {
 const tentNumbers = Array.from({ length: 10 }, (_, i) => i + 1);
 
 const TentsPage = (props) => {
-  const shiftNr = useSelector(selectCurrentShift);
   const dispatch = useDispatch();
 
   const { title } = props;
@@ -27,6 +26,7 @@ const TentsPage = (props) => {
   const infoStatus = useSelector((state) => state.camperInfo.status);
   const error = useSelector((state) => state.camperInfo.error);
 
+  const shiftNr = useSelector(selectCurrentShift);
   useEffect(() => {
     if (infoStatus === "idle") dispatch(fetchCamperInfo(shiftNr));
   }, [infoStatus, dispatch]);
