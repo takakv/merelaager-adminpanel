@@ -217,7 +217,7 @@ const TeamlessList = () => {
 };
 
 const Member = (props) => {
-  const { member } = props;
+  const { member, captainId } = props;
 
   const dispatch = useDispatch();
 
@@ -230,9 +230,12 @@ const Member = (props) => {
     dispatch(updateCamperInfo(reqObj));
   };
 
+  let className = member.gender;
+  if (member.childId === captainId) className += " is-captain";
+
   return (
     <li className="u-flex u-space-between u-align-center">
-      <span className={member.gender}>{member.name}</span>
+      <span className={className}>{member.name}</span>
       {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events */}
       <div
         role="button"
@@ -248,6 +251,7 @@ const Member = (props) => {
 
 Member.propTypes = {
   member: PropTypes.objectOf(PropTypes.any).isRequired,
+  captainId: PropTypes.number.isRequired,
 };
 
 const TeamBox = (props) => {
@@ -267,6 +271,13 @@ const TeamBox = (props) => {
     if (a.gender > b.gender) return 1;
     return 0;
   });
+
+  const captainIndex = teamMembers.findIndex(
+    (member) => member.childId === team.captainId
+  );
+
+  const captain = teamMembers.splice(captainIndex, 1)[0];
+  teamMembers.unshift(captain);
 
   const removeTeam = () => {
     dispatch(deleteTeam(team.id));
@@ -288,7 +299,11 @@ const TeamBox = (props) => {
       </div>
       <ul className="u-list-blank">
         {teamMembers.map((member) => (
-          <Member key={member.childId} member={member} />
+          <Member
+            key={member.childId}
+            member={member}
+            captainId={team.captainId}
+          />
         ))}
       </ul>
     </div>
