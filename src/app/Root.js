@@ -19,6 +19,7 @@ import Shirts from "../features/thisrts/Tshirts";
 import TimerList from "../components/TimerList";
 import RegistrationsPage from "../features/registrations/RegistrationsPage";
 import Loader from "../components/Loader";
+import FilesPage from "../features/files/filesPage";
 
 const Root = () => {
   const dispatch = useDispatch();
@@ -49,7 +50,7 @@ const Root = () => {
               element={<TeamsPage title="Meeskonnad" />}
             />
             <Route path="/taimer/" element={<TimerList title="Taimer" />} />
-            <Route path="/mapp/" element={<TimerList title="Mapp" />} />
+            <Route path="/mapp/" element={<FilesPage title="Mapp" />} />
             <Route
               path="/nimekiri/"
               element={<RegistrationsPage title="Nimekiri" />}

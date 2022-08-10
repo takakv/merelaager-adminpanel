@@ -3,10 +3,10 @@ import PropTypes from "prop-types";
 
 import { useDispatch } from "react-redux";
 import { setTitle } from "../features/pageTitle/pageTitleSlice";
-import { makePostRequest } from "./Common/requestAPI";
+import { makeGetRequest } from "./Common/requestAPI";
 
 const fetchPDF = async (action, email) => {
-  const response = await makePostRequest(`/bills/${action}/${email}/`);
+  const response = await makeGetRequest(`/bills/${action}/${email}`);
   if (!response.ok) {
     return;
   }
