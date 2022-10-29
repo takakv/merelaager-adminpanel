@@ -1,15 +1,12 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 
 import { useDispatch } from "react-redux";
 import { setTitle } from "../features/pageTitle/pageTitleSlice";
-import { makePostRequest } from "./Common/requestAPI";
+import { makeGetRequest } from "./Common/requestAPI";
 
-const fetchPDF = async ({ target }) => {
-  const action = target.id;
-  const email = document.getElementById("mail").value;
-
-  const response = await makePostRequest(`/bills/${action}/${email}/`);
+const fetchPDF = async (action, email) => {
+  const response = await makeGetRequest(`/bills/${action}/${email}`);
   if (!response.ok) {
     return;
   }
@@ -31,26 +28,49 @@ const fetchPDF = async ({ target }) => {
 };
 
 const BillGen = (props) => {
-  const { title } = props;
-
   const dispatch = useDispatch();
-  dispatch(setTitle(title));
+  const [email, setEmail] = useState();
+
+  const { title } = props;
+  useEffect(() => {
+    dispatch(setTitle(title));
+  }, [title, dispatch]);
+
+  const updateEmail = ({ target }) => {
+    setEmail(target.value);
+  };
+
+  const getPDF = async ({ target }) => {
+    const action = target.id;
+    if (email) await fetchPDF(action, email);
+  };
 
   return (
     <div>
       <div className="c-card c-mailsend">
-        <div className="c-mailsend-input">
-          {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-          <label htmlFor="mail">Lapsevanema meil</label>
-          <input type="email" name="meil" id="mail" />
-        </div>
-        <div className="c-mailsend-actions">
-          <button type="button" id="fetch" onClick={fetchPDF}>
-            Leia
-          </button>
-          <button type="button" id="create" onClick={fetchPDF}>
-            Genereeri
-          </button>
+        <div className="o-infield">
+          <div className="o-infield-input">
+            <label htmlFor="email">Lapsevanema meil</label>
+            <input type="email" name="meil" id="email" onBlur={updateEmail} />
+          </div>
+          <div className="o-infield-actions">
+            <button
+              type="button"
+              className="o-button"
+              id="fetch"
+              onClick={getPDF}
+            >
+              Leia
+            </button>
+            <button
+              type="button"
+              className="o-button"
+              id="create"
+              onClick={getPDF}
+            >
+              Genereeri
+            </button>
+          </div>
         </div>
       </div>
       <div className="o-banner o-banner--warning">

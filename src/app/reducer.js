@@ -1,5 +1,4 @@
 import pageTitleReducer from "../features/pageTitle/pageTitleSlice";
-import campersReducer from "../features/tents/campersSlice";
 import userDataReducer from "../features/userData/userDataSlice";
 import shirtsReducer from "../features/thisrts/tshirtsSlice";
 import camperInfoReducer from "../features/camperInfo/camperInfoSlice";
@@ -13,7 +12,6 @@ import registrationsReducer from "../features/registrations/registrationsSlice";
 
 const rootReducer = () => ({
   pageTitle: pageTitleReducer,
-  campers: campersReducer,
   userData: userDataReducer,
   shirts: shirtsReducer,
   camperInfo: camperInfoReducer,

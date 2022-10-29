@@ -155,6 +155,16 @@ body {
   background-color: var(--default-bg);
 }
 
+input[type="checkbox"] {
+  border: 2px solid #8f8f9d;
+  border-radius: 1px;
+
+  &:hover {
+    cursor: pointer;
+    border-color: #484851;
+  }
+}
+
 a {
   text-decoration: none;
   color: inherit;
@@ -518,6 +528,8 @@ button,
 
   .c-content {
     overflow: auto;
+    // overflow-x: scroll;
+    // overflow-y: hidden;
     margin-top: 24px;
     padding: 0 1em 1em;
     grid-area: content;
@@ -637,26 +649,26 @@ button,
 
     &::before,
     &::after {
-      display: block;
       position: absolute;
+      right: 0;
+      display: block;
       width: 30px;
       height: 10px;
       content: "";
-      right: 0;
       transform: translateY(-50%);
       border: 1px solid #000;
     }
 
     &::before {
-      background-color: #0066cc;
       top: calc(50% - 5px);
       border-bottom: none;
+      background-color: #0066cc;
     }
 
     &::after {
-      background-color: #ffcc00;
       top: calc(50% + 5px);
       border-top: none;
+      background-color: #ffcc00;
     }
   }
 
@@ -793,7 +805,7 @@ button,
     width: 30px;
     height: 30px;
     margin: 0.75em;
-    border: 3px solid #e6e8eb;
+    border: 3px solid #8f8f9d;
     border-radius: 30px;
 
     @media screen and (min-width: 1000px) {
@@ -807,7 +819,7 @@ button,
     div {
       width: 70%;
       height: 3px;
-      background-color: #e6e8eb;
+      background-color: #8f8f9d;
 
       @media screen and (min-width: 1000px) {
         height: 1px;
@@ -816,10 +828,10 @@ button,
 
     &:hover {
       cursor: pointer;
-      border-color: var(--primary-text);
+      border-color: #484851;
 
       div {
-        background-color: var(--primary-text);
+        background-color: #484851;
       }
     }
   }
@@ -829,6 +841,29 @@ button,
   input {
     width: 1rem;
   }
+}
+
+.c-tentless-container {
+  display: flex;
+  // justify-content: space-between;
+  flex-direction: column;
+  gap: 30px;
+
+  @media only screen and (min-width: $tablet-break) {
+    flex-direction: row;
+  }
+}
+
+.c-tentless-box,
+.c-leaderboard-box {
+  &__content {
+    display: flex;
+    flex-wrap: wrap;
+  }
+}
+
+.c-leaderboard-box {
+  margin: 1em 0;
 }
 
 .c-tentless,
@@ -1048,32 +1083,6 @@ button,
   }
 }
 
-.c-mailsend {
-  &-input {
-    display: inline-block;
-    margin-right: 1em;
-
-    label {
-      margin-right: 0.5em;
-    }
-  }
-
-  &-actions {
-    display: inline-block;
-
-    button {
-      margin-right: 1em;
-
-      &:last-child {
-        margin-right: 0;
-      }
-    }
-  }
-
-  &-ia {
-  }
-}
-
 .c-timer-countdown {
   margin-right: 0.5em;
 
@@ -1168,8 +1177,8 @@ button,
 // From this point onwards, the CSS is attempting to be clean.
 
 .o-overflow-wrapper {
-  overflow: hidden;
-  height: 100%;
+  // overflow: hidden;
+  // height: 100%;
 }
 
 .o-overflow-enabler {
@@ -1212,4 +1221,133 @@ input[type="password"] {
 #app {
   width: 100%;
   height: 100vh;
+}
+
+// Only not terrible code after this line (hopefully)
+
+select {
+  // appearance: none;
+  line-height: 1.5;
+  padding: 2px 2px 2px 0;
+  border: 2px solid var(--line-dark);
+  border-radius: var(--radius);
+  background-color: #fff;
+
+  &:hover,
+  &:focus {
+    // border-color: #484851;
+    background-color: var(--dimmed);
+  }
+}
+
+.o-overflow-wrapper {
+  height: 100%;
+}
+
+.o-overflow-enabler {
+  height: calc(100% - 35px - 1em);
+}
+
+.c-registrations-navigation {
+  display: flex;
+  align-items: center;
+  min-height: 35px;
+  margin-bottom: 1em;
+
+  button {
+    margin-right: 1em;
+  }
+}
+
+.c-registrations-navbuttons {
+  display: flex;
+  flex-wrap: wrap;
+  margin-right: 1em;
+
+  // @media screen and (min-width: 1000px) {
+  border-right: 1px solid var(--line-dark);
+  row-gap: 1em;
+  // }
+}
+
+.c-registrations-table {
+  display: table;
+  border-collapse: collapse;
+
+  thead {
+  }
+
+  tbody {
+    border-bottom: 1px solid #000;
+
+    tr:nth-of-type(2n + 1) {
+      background-color: var(--dimmed);
+    }
+  }
+
+  th,
+  td {
+    padding: 0.75em 1em;
+    text-align: left;
+    white-space: nowrap;
+  }
+}
+
+.o-infield {
+  &-input {
+    display: inline-block;
+    margin-right: 1em;
+
+    label {
+      margin-right: 0.5em;
+    }
+  }
+
+  &-actions {
+    display: inline-block;
+
+    button {
+      line-height: 1.5;
+      margin-right: 1em;
+      padding: 8px;
+      border-color: var(--line-dark);
+
+      &:last-child {
+        margin-right: 0;
+      }
+    }
+  }
+}
+
+.c-team {
+  .M,
+  .F {
+    &::first-letter {
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+  }
+
+  .M::first-letter {
+    text-decoration-color: blue;
+  }
+
+  .F::first-letter {
+    text-decoration-color: deeppink;
+  }
+}
+
+.is-captain {
+  font-weight: bold;
+}
+
+.c-dragdrop {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 300px;
+  height: 200px;
+  padding: 3em;
+  border: 2px var(--line-light) dashed;
+  border-radius: var(--radius);
 }

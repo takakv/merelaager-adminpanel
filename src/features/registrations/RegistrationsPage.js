@@ -37,8 +37,8 @@ const ShiftSwitchButtons = ({ switcher, shiftNr }) => {
   };
 
   return (
-    <div className="c-regList-shiftBar">
-      <div className="c-regList-shiftButtons">
+    <div className="c-registrations-navigation">
+      <div className="c-registrations-navbuttons">
         {shifts.map((shift) => (
           <button
             type="button"

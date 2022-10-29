@@ -3,30 +3,30 @@ import PropTypes from "prop-types";
 
 import { useDispatch, useSelector } from "react-redux";
 import { setTitle } from "../features/pageTitle/pageTitleSlice";
-import { getShift } from "../features/userData/userDataSlice";
 import {
   fetchCamperInfo,
   selectAllCampersInfo,
 } from "../features/camperInfo/camperInfoSlice";
 import { set } from "../features/timer/timerSlice";
-
-const sort = (child1, child2) => child1.name.localeCompare(child2.name);
+import { selectCurrentShift } from "../features/userAuth/userAuthSlice";
 
 const displayTime = (t) => {
-  const minutes = Math.floor(t / 60);
+  const minutes = Math.floor(t / 1000 / 60);
   const seconds = t % 60;
 
   const zeroPad = (num, places) => String(num).padStart(places, "0");
   return `${minutes}:${zeroPad(seconds, 2)}`;
 };
 
-const ChildEntry = (props) => {
+const ChildEntry = ({ name }) => {
   const length = useSelector((state) => state.timer.value);
+
+  const startTime = new Date().getTime();
+  const [endTime] = useState(startTime + length);
 
   const [trigger, setTrigger] = useState(false);
   const [, setStopped] = useState(true);
   const [time, setTime] = useState(length);
-  const { name } = props;
 
   useEffect(() => {
     setTime(length);
@@ -40,7 +40,10 @@ const ChildEntry = (props) => {
       return;
     }
 
-    const timerID = setInterval(() => setTime(time - 1), 1000);
+    console.log(startTime);
+    // console.log(endTime - startTime);
+
+    const timerID = setInterval(() => setTime(endTime - startTime), 1000);
 
     // eslint-disable-next-line consistent-return
     return () => {
@@ -81,7 +84,7 @@ const ChildEntry = (props) => {
             onClick={triggerCd}
             role="button"
             tabIndex={0}
-            onKeyPress={(e) => handleKeyPress(e, "toggle")}
+            onKeyDown={(e) => handleKeyPress(e, "toggle")}
           >
             {trigger ? "pause" : "play_arrow"}
           </span>
@@ -90,7 +93,7 @@ const ChildEntry = (props) => {
             onClick={stop}
             role="button"
             tabIndex={0}
-            onKeyPress={(e) => handleKeyPress(e, "stop")}
+            onKeyDown={(e) => handleKeyPress(e, "stop")}
           >
             stop
           </span>
@@ -102,39 +105,55 @@ const ChildEntry = (props) => {
 
 ChildEntry.propTypes = {
   name: PropTypes.string.isRequired,
+  // stateChanger: PropTypes.func.isRequired,
 };
 
-const ChildList = (props) => {
-  let { campers } = props;
-  campers = Object.values(campers).sort(sort);
-  return (
-    <div>
-      {campers.map((camper) => (
-        <ChildEntry name={camper.name} key={camper.id} />
-      ))}
-    </div>
-  );
-};
-
-ChildList.propTypes = {
-  campers: PropTypes.objectOf(PropTypes.objectOf(PropTypes.any)).isRequired,
-};
-
-const TimerList = (props) => {
-  const { title } = props;
-  const shiftNr = useSelector(getShift);
+const ChildList = () => {
   const dispatch = useDispatch();
-  dispatch(setTitle(title));
 
   const camperInfo = useSelector(selectAllCampersInfo);
   const infoStatus = useSelector((state) => state.camperInfo.status);
   const error = useSelector((state) => state.camperInfo.error);
 
-  const time = useSelector((state) => state.timer.value);
-
+  const shiftNr = useSelector(selectCurrentShift);
   useEffect(() => {
     if (infoStatus === "idle") dispatch(fetchCamperInfo(shiftNr));
+    console.log("Refreshing");
   }, [infoStatus, dispatch]);
+
+  const campers = [];
+  camperInfo.forEach((camper) => {
+    campers.push(camper.name);
+  });
+
+  if (infoStatus === "ok") {
+    return (
+      <div>
+        {campers.map((camper) => (
+          <ChildEntry
+            name={camper.name}
+            key={camper.name}
+            // stateChanger={stateChanger}
+          />
+        ))}
+      </div>
+    );
+  }
+  if (infoStatus === "nok") {
+    return <p>{error}</p>;
+  }
+  return <p>Laen...</p>;
+};
+
+const TimerList = (props) => {
+  const dispatch = useDispatch();
+
+  const { title } = props;
+  useEffect(() => {
+    dispatch(setTitle(title));
+  }, [title, dispatch]);
+
+  const time = useSelector((state) => state.timer.value);
 
   const updateTime = ({ target }) => {
     const rawForm = target.value;
@@ -145,29 +164,30 @@ const TimerList = (props) => {
     const seconds = parseInt(rawForm.match(/:\d{2}/)[0].slice(1), 10);
     if (minutes >= 60 || seconds >= 60) return;
 
-    dispatch(set(minutes * 60 + seconds));
+    dispatch(set((minutes * 60 + seconds) * 1000));
   };
 
-  switch (infoStatus) {
-    case "ok":
-      return (
-        <div>
-          {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-          <label htmlFor="timer">Aeg: </label>
+  return (
+    <div>
+      <div className="o-infield">
+        <div className="o-infield-input">
+          <label htmlFor="timer">Aeg:</label>
           <input
-            type=""
+            type="text"
             id="timer"
             defaultValue={displayTime(time)}
             onBlur={updateTime}
           />
-          <ChildList campers={camperInfo} />
         </div>
-      );
-    case "nok":
-      return <p>{error}</p>;
-    default:
-      return <p>Laen...</p>;
-  }
+        <div className="o-infield-actions">
+          <button type="button" className="o-button">
+            Uuenda
+          </button>
+        </div>
+      </div>
+      <ChildList />
+    </div>
+  );
 };
 
 TimerList.propTypes = {

@@ -18,7 +18,7 @@ const Login = () => {
   const handleReset = async () => {
     const email = window.prompt("Meiliaadress parooli lähtestamiseks");
     if (!email) return;
-    const res = await makePostRequest("su/pwd/reset", { email }, false);
+    const res = await makePostRequest("/su/pwd/reset", { email }, false);
     if (!res.ok) {
       window.alert("Lähtestamine läks nihu");
       return;

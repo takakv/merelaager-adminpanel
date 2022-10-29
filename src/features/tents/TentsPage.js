@@ -3,45 +3,84 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import PropTypes from "prop-types";
 
-import { makePostRequest } from "./Common/requestAPI";
-import { setTitle } from "../features/pageTitle/pageTitleSlice";
+import { setTitle } from "../pageTitle/pageTitleSlice";
+import { selectCurrentShift } from "../userAuth/userAuthSlice";
 import {
-  fetchCampers,
-  getCampers,
-  updateCamper,
-  updatePresence,
-} from "../features/tents/campersSlice";
-import { selectCurrentShift } from "../features/userAuth/userAuthSlice";
-
-// THIS FILE CONTAINS TERRIBLE CODE THAT NEEDS REFACTORING!
+  fetchCamperInfo,
+  selectAllCampersInfo,
+  updateCamperInfo,
+} from "../camperInfo/camperInfoSlice";
 
 // Populate the options dropdown for campers with a tent.
 const tentNumbers = Array.from({ length: 10 }, (_, i) => i + 1);
 
-const TentList = (props) => {
-  const { title } = props;
-  const shiftNr = useSelector(selectCurrentShift);
+const TentsPage = (props) => {
   const dispatch = useDispatch();
-  dispatch(setTitle(title));
 
-  const tentData = useSelector(getCampers);
-  const shiftStatus = useSelector((state) => state.campers.status);
-  const error = useSelector((state) => state.campers.error);
-
+  const { title } = props;
   useEffect(() => {
-    if (shiftStatus === "idle") dispatch(fetchCampers(shiftNr));
-  }, [shiftStatus, dispatch]);
+    dispatch(setTitle(title));
+  }, [title, dispatch]);
 
-  if (shiftStatus === "succeeded") {
+  const camperInfo = useSelector(selectAllCampersInfo);
+  const infoStatus = useSelector((state) => state.camperInfo.status);
+  const error = useSelector((state) => state.camperInfo.error);
+
+  const shiftNr = useSelector(selectCurrentShift);
+  useEffect(() => {
+    if (infoStatus === "idle") dispatch(fetchCamperInfo(shiftNr));
+  }, [infoStatus, dispatch]);
+
+  const tents = {};
+  const noTent = { M: [], F: [] };
+
+  const sortByName = (camper1, camper2) => {
+    if (camper1.name === camper2.name) return 0;
+    if (camper1.name > camper2.name) return 1;
+    return -1;
+  };
+
+  tentNumbers.forEach((nr) => {
+    tents[nr] = [];
+  });
+
+  if (infoStatus === "ok") {
+    camperInfo.forEach((camper) => {
+      if (camper.tentNr) tents[camper.tentNr].push(camper);
+      else noTent[camper.gender].push(camper);
+    });
+
+    noTent.M.sort(sortByName);
+    noTent.F.sort(sortByName);
+
+    const entryGenerator = (camper) => (
+      <NoTentCamper
+        key={camper.childId}
+        id={camper.childId}
+        name={camper.name}
+      />
+    );
+
+    const boxGenerator = (gender) => (
+      <div className="o-box c-tentless-box">
+        <div className="o-box-header">
+          <p>{gender === "M" ? "Poisid" : "Tüdrukud"}</p>
+        </div>
+        <div className="c-tentless-box__content">
+          {noTent[gender].map(entryGenerator)}
+        </div>
+      </div>
+    );
+
     return (
       <div>
-        <div className="c-tentless-container u-flex u-flex-wrap">
-          {tentData.noTent.map((camper) => (
-            <NoTentCamper key={camper.id} id={camper.id} name={camper.name} />
-          ))}
+        <div className="c-tentless-container">
+          {noTent.M.length ? boxGenerator("M") : ""}
+          {noTent.F.length ? boxGenerator("F") : ""}
         </div>
+        <p>Märkeruut näitab, kas laps on laagris kohal.</p>
         <div className="u-flex u-flex-wrap">
-          {tentData.tents.map((tent, index) => (
+          {Object.values(tents).map((tent, index) => (
             <TentBlock
               key={index.toString()}
               tentMembers={tent}
@@ -52,25 +91,31 @@ const TentList = (props) => {
       </div>
     );
   }
-  if (shiftStatus === "failed") {
+  if (infoStatus === "nok") {
     return <p>{error}</p>;
   }
   return <p>Laen...</p>;
 };
 
-TentList.propTypes = {
+TentsPage.propTypes = {
   title: PropTypes.string.isRequired,
 };
 
-export default TentList;
+export default TentsPage;
 
 const NoTentCamper = (props) => {
   const { name, id } = props;
   const dispatch = useDispatch();
 
   const addCamperToTent = async ({ target }) => {
-    await makePostRequest(`tents/update/${id}/${target.value}/`);
-    dispatch(updateCamper({ id, tentNr: parseInt(target.value, 10) }));
+    const field = "tentNr";
+    const reqObj = { id, field, data: {} };
+
+    const tentNr = parseInt(target.value, 10);
+    if (isNaN(tentNr) || tentNr < 1 || tentNr > 10) return;
+
+    reqObj.data[field] = tentNr;
+    dispatch(updateCamperInfo(reqObj));
   };
 
   return (
@@ -107,7 +152,7 @@ const TentBlock = (props) => {
         {tentMembers.map((camper) => (
           <TentBlockCamper
             camper={camper}
-            key={camper.id}
+            key={camper.childId}
             tentNumber={tentNumber}
           />
         ))}
@@ -122,32 +167,25 @@ TentBlock.propTypes = {
 };
 
 const TentBlockCamper = (props) => {
-  const { camper, tentNumber } = props;
+  const { camper } = props;
   const dispatch = useDispatch();
 
+  const id = camper.childId;
+
   const removeCamperFromTent = async () => {
-    await makePostRequest(`tents/update/${camper.id}/0/`);
-    dispatch(
-      updateCamper({
-        id: camper.id,
-        tentNr: 0,
-        currentNr: tentNumber,
-      })
-    );
+    const field = "tentNr";
+    const reqObj = { id, field, data: {} };
+
+    reqObj.data[field] = null;
+    dispatch(updateCamperInfo(reqObj));
   };
 
   const togglePresence = async ({ target }) => {
-    const result = await makePostRequest(`tents/update/presence/`, {
-      id: camper.id,
-    });
-    if (!result.ok) return;
-    dispatch(
-      updatePresence({
-        id: camper.id,
-        isPresent: target.checked,
-        currentNr: tentNumber,
-      })
-    );
+    const field = "isPresent";
+    const reqObj = { id, field, data: {} };
+
+    reqObj.data[field] = target.checked;
+    dispatch(updateCamperInfo(reqObj));
   };
 
   return (
@@ -178,5 +216,4 @@ const TentBlockCamper = (props) => {
 TentBlockCamper.propTypes = {
   // eslint-disable-next-line react/forbid-prop-types
   camper: PropTypes.objectOf(PropTypes.any).isRequired,
-  tentNumber: PropTypes.number.isRequired,
 };

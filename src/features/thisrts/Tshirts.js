@@ -68,7 +68,10 @@ ShirtCells.propTypes = {
 const Shirts = (props) => {
   const dispatch = useDispatch();
 
-  dispatch(setTitle(props.title));
+  const { title } = props;
+  useEffect(() => {
+    dispatch(setTitle(title));
+  }, [title, dispatch]);
 
   const shirtData = useSelector(getShirts);
   const fetchStatus = useSelector((state) => state.shirts.status);

@@ -4,7 +4,7 @@ import RegistrationsTableHeader from "./RegistrationsTableHeader";
 import RegistrationsTableBody from "./RegistrationsTableBody";
 
 const RegistrationsTable = ({ shiftNr }) => (
-  <table className="c-regList-table">
+  <table className="c-registrations-table">
     <RegistrationsTableHeader />
     <RegistrationsTableBody shiftNr={shiftNr} registered gender="M" />
     <RegistrationsTableBody shiftNr={shiftNr} registered gender="F" />

@@ -26,6 +26,7 @@ const CurrentDate = () => {
 const MainPage = (props) => {
   const { title } = props;
   const [email, setEmail] = useState();
+  const [inviteRole, setInviteRole] = useState("full");
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -36,11 +37,13 @@ const MainPage = (props) => {
   const role = useSelector(selectUserInfo);
 
   const sendMail = async () => {
+    if (!email || !inviteRole) return;
     const packet = {
       shiftNr,
       email,
+      role: inviteRole,
     };
-    const response = await makePostRequest("/su/ct/", packet);
+    const response = await makePostRequest("/su/allocate/", packet);
     if (response && response.ok) alert("Meil edukalt saadetud");
   };
 
@@ -56,24 +59,30 @@ const MainPage = (props) => {
         <StaffList shiftNr={shiftNr} />
       </div>
       <div className="c-card-wrapper c-mailsendbox">
-        <div className="c-card c-mailsend">
+        <div className="c-card">
           <p>Saada kasvatajale ligipääs:</p>
-          <div className="c-mailsend-ia">
-            <div className="c-mailsend-input">
-              {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-              <label htmlFor="usr-mail">Meil</label>
+          <div className="o-infield">
+            <div className="o-infield-input">
+              <label htmlFor="usr-mail">Meil:</label>
               <input
                 id="usr-mail"
                 onChange={(e) => setEmail(e.target.value)}
                 type="email"
               />
             </div>
-            <div className="c-mailsend-actions">
-              <button
-                type="button"
-                className="o-button c-card__button"
-                onClick={sendMail}
+            <div className="o-infield-input">
+              <label htmlFor="usr-role">Roll:</label>
+              <select
+                id="usr-role"
+                name="invite-role"
+                onChange={(e) => setInviteRole(e.target.value)}
               >
+                <option value="full">Kasvataja</option>
+                <option value="part">Abikasvataja</option>
+              </select>
+            </div>
+            <div className="o-infield-actions">
+              <button type="button" className="o-button" onClick={sendMail}>
                 Saada link
               </button>
             </div>

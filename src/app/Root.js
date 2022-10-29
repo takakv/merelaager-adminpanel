@@ -12,13 +12,14 @@ import UserBox from "../components/UserBox";
 import MainPage from "../components/MainPage";
 import ShiftInfo from "../features/camperInfo/CamperInfo";
 import TeamsPage from "../components/TeamList";
-import TentList from "../components/TentList";
+import TentsPage from "../features/tents/TentsPage";
 import Mailer from "../components/Mailer";
 import BillGen from "../components/BillGen";
 import Shirts from "../features/thisrts/Tshirts";
 import TimerList from "../components/TimerList";
 import RegistrationsPage from "../features/registrations/RegistrationsPage";
 import Loader from "../components/Loader";
+import FilesPage from "../features/files/filesPage";
 
 const Root = () => {
   const dispatch = useDispatch();
@@ -43,12 +44,13 @@ const Root = () => {
         <main role="main" className="c-content">
           <Routes>
             <Route exact path="/" element={<MainPage title="Kambüüs" />} />
-            <Route path="/telgid/" element={<TentList title="Telgid" />} />
+            <Route path="/telgid/" element={<TentsPage title="Telgid" />} />
             <Route
               path="/meeskonnad/"
               element={<TeamsPage title="Meeskonnad" />}
             />
             <Route path="/taimer/" element={<TimerList title="Taimer" />} />
+            <Route path="/mapp/" element={<FilesPage title="Mapp" />} />
             <Route
               path="/nimekiri/"
               element={<RegistrationsPage title="Nimekiri" />}
