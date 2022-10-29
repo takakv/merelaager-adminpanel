@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import PropTypes, { arrayOf } from "prop-types";
+import PropTypes from "prop-types";
 
 import { useDispatch, useSelector } from "react-redux";
 import { setTitle } from "../features/pageTitle/pageTitleSlice";
@@ -10,8 +10,6 @@ import {
 import { set } from "../features/timer/timerSlice";
 import { selectCurrentShift } from "../features/userAuth/userAuthSlice";
 
-const sort = (child1, child2) => child1.name.localeCompare(child2.name);
-
 const displayTime = (t) => {
   const minutes = Math.floor(t / 1000 / 60);
   const seconds = t % 60;
@@ -20,11 +18,11 @@ const displayTime = (t) => {
   return `${minutes}:${zeroPad(seconds, 2)}`;
 };
 
-const ChildEntry = ({ name, stateChanger }) => {
+const ChildEntry = ({ name }) => {
   const length = useSelector((state) => state.timer.value);
 
   const startTime = new Date().getTime();
-  const [endTime, setEndTime] = useState(startTime + length);
+  const [endTime] = useState(startTime + length);
 
   const [trigger, setTrigger] = useState(false);
   const [, setStopped] = useState(true);
@@ -124,7 +122,7 @@ const ChildList = () => {
   }, [infoStatus, dispatch]);
 
   const campers = [];
-  camperInfo.forEach(camper => {
+  camperInfo.forEach((camper) => {
     campers.push(camper.name);
   });
 

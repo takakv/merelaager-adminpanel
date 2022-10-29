@@ -39,22 +39,18 @@ const DragDropArea = () => {
   );
 };
 
-const MyFiles = () => {
-  return (
-    <div>
-      <p>Minu failid</p>
-    </div>
-  );
-};
+const MyFiles = () => (
+  <div>
+    <p>Minu failid</p>
+  </div>
+);
 
-const SubmissionBox = () => {
-  return (
-    <div>
-      <p>Submission box</p>
-      <DragDropArea />
-    </div>
-  );
-};
+const SubmissionBox = () => (
+  <div>
+    <p>Submission box</p>
+    <DragDropArea />
+  </div>
+);
 
 const FilesPage = ({ title }) => {
   const dispatch = useDispatch();
