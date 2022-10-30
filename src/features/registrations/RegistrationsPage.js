@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import PropTypes from "prop-types";
 import { setTitle } from "../pageTitle/pageTitleSlice";
-import { makeGetRequest } from "../../components/Common/requestAPI";
+import {fetchUpdates, makeGetRequest} from "../../components/Common/requestAPI";
 import RegistrationsModule from "./RegistrationsModule";
 import { getRole } from "../userData/userDataSlice";
 import { selectCurrentShift } from "../userAuth/userAuthSlice";
@@ -86,6 +86,11 @@ const RegistrationsPage = (props) => {
   useEffect(() => {
     dispatch(setTitle(title));
   }, [title, dispatch]);
+
+  useEffect(() => {
+    console.log("Fetching updates");
+    fetchUpdates("/registrations/events");
+  }, []);
 
   // Start with the current shift but don't change the
   // display when the current shift is changed.

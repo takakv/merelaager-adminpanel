@@ -96,12 +96,7 @@ Deleter.propTypes = {
 
 // Text type cells.
 
-export const NameCell = ({ registration }) => {
-  // UA 2022
-  const isUa = registration.addendum.includes("Ukraina");
-  if (!isUa) return <td>{registration.name}</td>;
-  return <td className="c-regList-ua">{registration.name}</td>;
-};
+export const NameCell = ({ registration }) => <td>{registration.name}</td>;
 
 NameCell.propTypes = {
   registration: PropTypes.objectOf(PropTypes.any).isRequired,

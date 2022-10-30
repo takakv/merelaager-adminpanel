@@ -1,3 +1,5 @@
+import { fetchEventSource } from "@microsoft/fetch-event-source";
+
 const apiURL =
   process.env.NODE_ENV === "development"
     ? "http://localhost:3000"
@@ -148,4 +150,32 @@ export const makeGetRequest = async (apiLinkSuffix) => {
     return null;
   }
   return response;
+};
+
+export const fetchUpdates = async (apiLinkSuffix) => {
+  return fetchEventSource(`${apiURL}/api${apiLinkSuffix}`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${currentAuthToken}`,
+      "Content-Type": "application/json",
+      Accept: "text/event-stream",
+    },
+    onopen(res) {
+      if (res.ok && res.status === 200) {
+        console.log("Connection made ", res);
+      } else {
+        console.log("Client side error ", res);
+      }
+    },
+    onmessage(event) {
+      console.log(event.data);
+      JSON.parse(event.data);
+    },
+    onclose() {
+      console.log("Connection closed by the server");
+    },
+    onerror(err) {
+      console.log("Server error", err);
+    },
+  });
 };
