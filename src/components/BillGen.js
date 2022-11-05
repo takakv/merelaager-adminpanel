@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 
-import { useDispatch } from "react-redux";
-import { setTitle } from "../features/pageTitle/pageTitleSlice";
 import { makeGetRequest } from "./Common/requestAPI";
+import useDocumentTitle from "./useDocumentTitle";
 
 const fetchPDF = async (action, email) => {
   const response = await makeGetRequest(`/bills/${action}/${email}`);
@@ -27,14 +26,10 @@ const fetchPDF = async (action, email) => {
   // window.location.assign(objUrl);
 };
 
-const BillGen = (props) => {
-  const dispatch = useDispatch();
+const BillGen = ({ title }) => {
   const [email, setEmail] = useState();
 
-  const { title } = props;
-  useEffect(() => {
-    dispatch(setTitle(title));
-  }, [title, dispatch]);
+  useDocumentTitle(title);
 
   const updateEmail = ({ target }) => {
     setEmail(target.value);

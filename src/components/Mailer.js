@@ -2,20 +2,17 @@ import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 
 import { useDispatch, useSelector } from "react-redux";
-import { setTitle } from "../features/pageTitle/pageTitleSlice";
 import { selectCurrentShift } from "../features/userAuth/userAuthSlice";
 import {
   fetchRegistrations,
   selectShiftRegistrations,
 } from "../features/registrations/registrationsSlice";
+import useDocumentTitle from "./useDocumentTitle";
 
-const Mailer = (props) => {
+const Mailer = ({ title }) => {
   const dispatch = useDispatch();
 
-  const { title } = props;
-  useEffect(() => {
-    dispatch(setTitle(title));
-  }, [title, dispatch]);
+  useDocumentTitle(title);
 
   const shiftNr = useSelector(selectCurrentShift);
   const registrations = useSelector((state) =>

@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import PropTypes from "prop-types";
 
-import { setTitle } from "../features/pageTitle/pageTitleSlice";
 import {
   createTeam,
   deleteTeam,
@@ -17,6 +16,7 @@ import {
   selectAllCampersInfo,
   updateCamperInfo,
 } from "../features/camperInfo/camperInfoSlice";
+import useDocumentTitle from "./useDocumentTitle";
 
 const TeamPlace = (props) => {
   const { team, teamCount } = props;
@@ -72,14 +72,11 @@ const Leaderboard = () => {
   );
 };
 
-const TeamsPage = (props) => {
+const TeamsPage = ({ title }) => {
   const shiftNr = useSelector(selectCurrentShift);
   const dispatch = useDispatch();
 
-  const { title } = props;
-  useEffect(() => {
-    dispatch(setTitle(title));
-  }, [title, dispatch]);
+  useDocumentTitle(title);
 
   const camperStatus = useSelector((state) => state.camperInfo.status);
   const teamStatus = useSelector((state) => state.teams.status);

@@ -2,8 +2,8 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import PropTypes from "prop-types";
 
-import { setTitle } from "../pageTitle/pageTitleSlice";
 import { fetchShirts, getShirts } from "./tshirtsSlice";
+import useDocumentTitle from "../../components/useDocumentTitle";
 
 const ShirtCell = (props) => {
   const { shift, shirtData } = props;
@@ -65,13 +65,10 @@ ShirtCells.propTypes = {
   shifts: PropTypes.arrayOf(PropTypes.number).isRequired,
 };
 
-const Shirts = (props) => {
+const Shirts = ({ title }) => {
   const dispatch = useDispatch();
 
-  const { title } = props;
-  useEffect(() => {
-    dispatch(setTitle(title));
-  }, [title, dispatch]);
+  useDocumentTitle(title);
 
   const shirtData = useSelector(getShirts);
   const fetchStatus = useSelector((state) => state.shirts.status);

@@ -2,13 +2,13 @@ import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 
 import { useDispatch, useSelector } from "react-redux";
-import { setTitle } from "../features/pageTitle/pageTitleSlice";
 import {
   fetchCamperInfo,
   selectAllCampersInfo,
 } from "../features/camperInfo/camperInfoSlice";
 import { set } from "../features/timer/timerSlice";
 import { selectCurrentShift } from "../features/userAuth/userAuthSlice";
+import useDocumentTitle from "./useDocumentTitle";
 
 const displayTime = (t) => {
   const minutes = Math.floor(t / 1000 / 60);
@@ -145,13 +145,10 @@ const ChildList = () => {
   return <p>Laen...</p>;
 };
 
-const TimerList = (props) => {
+const TimerList = ({ title }) => {
   const dispatch = useDispatch();
 
-  const { title } = props;
-  useEffect(() => {
-    dispatch(setTitle(title));
-  }, [title, dispatch]);
+  useDocumentTitle(title);
 
   const time = useSelector((state) => state.timer.value);
 

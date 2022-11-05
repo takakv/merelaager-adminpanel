@@ -1,7 +1,6 @@
-import { useDispatch } from "react-redux";
 import React, { useEffect, useRef } from "react";
 import PropTypes from "prop-types";
-import { setTitle } from "../pageTitle/pageTitleSlice";
+import useDocumentTitle from "../../components/useDocumentTitle";
 
 const handleDragOver = (e) => {
   e.preventDefault();
@@ -53,11 +52,7 @@ const SubmissionBox = () => (
 );
 
 const FilesPage = ({ title }) => {
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(setTitle(title));
-  }, [title, dispatch]);
+  useDocumentTitle(title);
 
   return (
     <div>

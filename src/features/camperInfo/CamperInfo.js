@@ -2,13 +2,13 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import PropTypes from "prop-types";
 
-import { setTitle } from "../pageTitle/pageTitleSlice";
 import { fetchCamperInfo, selectAllCampersInfo } from "./camperInfoSlice";
 import {
   makeGetRequest,
   makePostRequest,
 } from "../../components/Common/requestAPI";
 import { selectCurrentShift } from "../userAuth/userAuthSlice";
+import useDocumentTitle from "../../components/useDocumentTitle";
 
 const CamperEntry = (props) => {
   const { data, shiftNr } = props;
@@ -69,14 +69,11 @@ CamperEntry.propTypes = {
   data: PropTypes.objectOf(PropTypes.any).isRequired,
 };
 
-const CamperInfo = (props) => {
+const CamperInfo = ({ title }) => {
   const shiftNr = useSelector(selectCurrentShift);
   const dispatch = useDispatch();
 
-  const { title } = props;
-  useEffect(() => {
-    dispatch(setTitle(title));
-  }, [title, dispatch]);
+  useDocumentTitle(title);
 
   const camperInfo = useSelector(selectAllCampersInfo);
   const infoStatus = useSelector((state) => state.camperInfo.status);

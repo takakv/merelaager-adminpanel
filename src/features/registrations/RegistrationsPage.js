@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import PropTypes from "prop-types";
 import { fetchEventSource } from "@microsoft/fetch-event-source";
-import { setTitle } from "../pageTitle/pageTitleSlice";
 import {
   apiURL,
   getToken,
@@ -16,6 +15,7 @@ import {
   selectDetailView,
   setDetailView,
 } from "./registrationsSlice";
+import useDocumentTitle from "../../components/useDocumentTitle";
 
 const shifts = [1, 2, 3, 4, 5];
 
@@ -88,13 +88,10 @@ ShiftSwitchButtons.propTypes = {
   shiftNr: PropTypes.number.isRequired,
 };
 
-const RegistrationsPage = (props) => {
+const RegistrationsPage = ({ title }) => {
   const dispatch = useDispatch();
 
-  const { title } = props;
-  useEffect(() => {
-    dispatch(setTitle(title));
-  }, [title, dispatch]);
+  useDocumentTitle(title);
 
   useEffect(() => {
     const fetchUpdates = async (apiLinkSuffix) =>

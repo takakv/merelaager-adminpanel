@@ -1,14 +1,14 @@
-import React, { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useState } from "react";
+import { useSelector } from "react-redux";
 import PropTypes from "prop-types";
 
-import { setTitle } from "../features/pageTitle/pageTitleSlice";
 import { makePostRequest } from "./Common/requestAPI";
 import StaffList from "../features/staffList/staffList";
 import {
   selectCurrentShift,
   selectUserInfo,
 } from "../features/userAuth/userAuthSlice";
+import useDocumentTitle from "./useDocumentTitle";
 
 const CurrentDate = () => {
   const [date] = useState(
@@ -23,15 +23,11 @@ const CurrentDate = () => {
   );
 };
 
-const MainPage = (props) => {
-  const { title } = props;
+const MainPage = ({ title }) => {
   const [email, setEmail] = useState();
   const [inviteRole, setInviteRole] = useState("full");
-  const dispatch = useDispatch();
 
-  useEffect(() => {
-    dispatch(setTitle(title));
-  }, [title, dispatch]);
+  useDocumentTitle(title);
 
   const shiftNr = useSelector(selectCurrentShift);
   const role = useSelector(selectUserInfo);

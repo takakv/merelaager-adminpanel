@@ -3,24 +3,21 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import PropTypes from "prop-types";
 
-import { setTitle } from "../pageTitle/pageTitleSlice";
 import { selectCurrentShift } from "../userAuth/userAuthSlice";
 import {
   fetchCamperInfo,
   selectAllCampersInfo,
   updateCamperInfo,
 } from "../camperInfo/camperInfoSlice";
+import useDocumentTitle from "../../components/useDocumentTitle";
 
 // Populate the options dropdown for campers with a tent.
 const tentNumbers = Array.from({ length: 10 }, (_, i) => i + 1);
 
-const TentsPage = (props) => {
+const TentsPage = ({ title }) => {
   const dispatch = useDispatch();
 
-  const { title } = props;
-  useEffect(() => {
-    dispatch(setTitle(title));
-  }, [title, dispatch]);
+  useDocumentTitle(title);
 
   const camperInfo = useSelector(selectAllCampersInfo);
   const infoStatus = useSelector((state) => state.camperInfo.status);
