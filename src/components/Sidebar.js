@@ -1,126 +1,73 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { setTitle } from "../features/pageTitle/pageTitleSlice";
+import { useSelector } from "react-redux";
 import ShiftSwitcher from "./ShiftSwitcher";
 import { getRole } from "../features/userData/userDataSlice";
 
-const getHomePage = () => {
-  const dispatch = useDispatch();
-  return (
-    <li className="last">
-      <Link
-        className="_link"
-        to="/"
-        onClick={() => dispatch(setTitle("Kambüüs"))}
-      >
-        Kambüüs
-      </Link>
-    </li>
-  );
-};
+const getHomePage = () => (
+  <li className="last">
+    <Link className="_link" to="/">
+      Kambüüs
+    </Link>
+  </li>
+);
 
-const getDocumentsPage = () => {
-  const dispatch = useDispatch();
-  return (
-    <li>
-      <Link
-        className="_link"
-        to="/mapp/"
-        onClick={() => dispatch(setTitle("Mapp"))}
-      >
-        Mapp
-      </Link>
-    </li>
-  );
-};
+const getDocumentsPage = () => (
+  <li>
+    <Link className="_link" to="/mapp/">
+      Mapp
+    </Link>
+  </li>
+);
 
 const getChildInfoPage = (role) => {
-  const dispatch = useDispatch();
   if (role !== "root" && role !== "master") return "";
   return (
     <li>
-      <Link
-        className="_link"
-        to="/lapsed/"
-        onClick={() => dispatch(setTitle("Lapsed"))}
-      >
+      <Link className="_link" to="/lapsed/">
         Lapsed
       </Link>
     </li>
   );
 };
 
-const getTentPage = () => {
-  const dispatch = useDispatch();
-  return (
-    <li>
-      <Link
-        className="_link"
-        to="/telgid/"
-        onClick={() => dispatch(setTitle("Telgid"))}
-      >
-        Telgid
-      </Link>
-    </li>
-  );
-};
+const getTentPage = () => (
+  <li>
+    <Link className="_link" to="/telgid/">
+      Telgid
+    </Link>
+  </li>
+);
 
-const getTeamsPage = () => {
-  const dispatch = useDispatch();
-  return (
-    <li>
-      <Link
-        className="_link"
-        to="/meeskonnad/"
-        onClick={() => dispatch(setTitle("Meeskonnad"))}
-      >
-        Meeskonnad
-      </Link>
-    </li>
-  );
-};
+const getTeamsPage = () => (
+  <li>
+    <Link className="_link" to="/meeskonnad/">
+      Meeskonnad
+    </Link>
+  </li>
+);
 
-const getTimerPage = () => {
-  const dispatch = useDispatch();
-  return (
-    <li className="last">
-      <Link
-        className="_link"
-        to="/taimer/"
-        onClick={() => dispatch(setTitle("Taimer"))}
-      >
-        Taimer
-      </Link>
-    </li>
-  );
-};
+const getTimerPage = () => (
+  <li className="last">
+    <Link className="_link" to="/taimer/">
+      Taimer
+    </Link>
+  </li>
+);
 
-const getRegistrationPage = () => {
-  const dispatch = useDispatch();
-  return (
-    <li>
-      <Link
-        className="_link"
-        to="/nimekiri/"
-        onClick={() => dispatch(setTitle("Nimekiri"))}
-      >
-        Nimekiri
-      </Link>
-    </li>
-  );
-};
+const getRegistrationPage = () => (
+  <li>
+    <Link className="_link" to="/nimekiri/">
+      Nimekiri
+    </Link>
+  </li>
+);
 
 const getMailSendPage = (role) => {
-  const dispatch = useDispatch();
   if (role !== "root" && role !== "master") return "";
   return (
     <li>
-      <Link
-        className="_link"
-        to="/meil/"
-        onClick={() => dispatch(setTitle("Meil"))}
-      >
+      <Link className="_link" to="/meil/">
         Meil
       </Link>
     </li>
@@ -128,15 +75,10 @@ const getMailSendPage = (role) => {
 };
 
 const getBillGenPage = (role) => {
-  const dispatch = useDispatch();
   if (role !== "root" && role !== "master") return "";
   return (
     <li>
-      <Link
-        className="_link"
-        to="/arvegeneraator/"
-        onClick={() => dispatch(setTitle("Arvegeneraator"))}
-      >
+      <Link className="_link" to="/arvegeneraator/">
         Arvegeneraator
       </Link>
     </li>
@@ -144,15 +86,10 @@ const getBillGenPage = (role) => {
 };
 
 const getTShirtPage = (role) => {
-  const dispatch = useDispatch();
   if (role !== "root") return "";
   return (
     <li>
-      <Link
-        className="_link"
-        to="/sargid/"
-        onClick={() => dispatch(setTitle("Särgid"))}
-      >
+      <Link className="_link" to="/sargid/">
         Särgid
       </Link>
     </li>
@@ -182,26 +119,19 @@ const Navigation = () => {
   );
 };
 
-const Sidebar = () => {
-  const dispatch = useDispatch();
-  return (
-    <div className="c-sidebar">
-      <Link
-        to="/"
-        className="c-sidebar-title"
-        onClick={() => dispatch(setTitle("Kambüüs"))}
-      >
-        <img
-          className="_link"
-          alt="Logo"
-          src="https://merelaager.ee/media/img/merelaager_ship.svg"
-          width="50px"
-        />
-      </Link>
-      <Navigation />
-      <ShiftSwitcher />
-    </div>
-  );
-};
+const Sidebar = () => (
+  <div className="c-sidebar">
+    <Link to="/" className="c-sidebar-title">
+      <img
+        className="_link"
+        alt="Logo"
+        src="https://merelaager.ee/media/img/merelaager_ship.svg"
+        width="50px"
+      />
+    </Link>
+    <Navigation />
+    <ShiftSwitcher />
+  </div>
+);
 
 export default Sidebar;
