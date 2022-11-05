@@ -21,6 +21,15 @@ export const fetchRegistrations = createAsyncThunk(
   }
 );
 
+export const fetchRegistration = createAsyncThunk(
+  "registrations/fetchRegistration",
+  async (regId) => {
+    const response = await makeGetRequest(`/registrations/${regId}`);
+    if (!response.ok) return {};
+    return response.json();
+  }
+);
+
 export const updateRegistration = createAsyncThunk(
   "registrations/updateRegistration",
   async (req) => {
@@ -72,6 +81,12 @@ const registrationsSlice = createSlice({
     [fetchRegistrations.rejected]: (state, action) => {
       state.status = "failed";
       state.error = action.error.message;
+    },
+    [fetchRegistration.fulfilled]: (state, action) => {
+      state.registrations.push(action.payload.payload);
+    },
+    [fetchRegistrations.rejected]: () => {
+      alert("Viga uuenduste pärimisel");
     },
     [updateRegistration.fulfilled]: (state, action) => {
       const { id, field, data } = action.payload;

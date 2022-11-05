@@ -1,12 +1,21 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import PropTypes from "prop-types";
+import { fetchEventSource } from "@microsoft/fetch-event-source";
 import { setTitle } from "../pageTitle/pageTitleSlice";
-import {fetchUpdates, makeGetRequest} from "../../components/Common/requestAPI";
+import {
+  apiURL,
+  getToken,
+  makeGetRequest,
+} from "../../components/Common/requestAPI";
 import RegistrationsModule from "./RegistrationsModule";
 import { getRole } from "../userData/userDataSlice";
 import { selectCurrentShift } from "../userAuth/userAuthSlice";
-import { selectDetailView, setDetailView } from "./registrationsSlice";
+import {
+  fetchRegistration,
+  selectDetailView,
+  setDetailView,
+} from "./registrationsSlice";
 
 const shifts = [1, 2, 3, 4, 5];
 
@@ -88,8 +97,36 @@ const RegistrationsPage = (props) => {
   }, [title, dispatch]);
 
   useEffect(() => {
-    console.log("Fetching updates");
-    fetchUpdates("/registrations/events");
+    const fetchUpdates = async (apiLinkSuffix) =>
+      fetchEventSource(`${apiURL}/api${apiLinkSuffix}`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${getToken()}`,
+          "Content-Type": "application/json",
+          Accept: "text/event-stream",
+        },
+        onopen(res) {
+          if (!res.ok || res.status !== 200) {
+            alert("Viga sündmustevooga ühenduse loomisel");
+            console.log("Error connecting to client ", res);
+          }
+        },
+        onmessage(msg) {
+          if (!msg.data) return;
+          // Parse twice to avoid getting a string
+          const data = JSON.parse(JSON.parse(msg.data));
+          console.log(data);
+          dispatch(fetchRegistration(data.id));
+        },
+        onclose() {
+          console.log("Connection closed by the server");
+        },
+        onerror(err) {
+          console.log("Server error", err);
+        },
+      });
+
+    fetchUpdates("/registrations/events").catch(console.error);
   }, []);
 
   // Start with the current shift but don't change the

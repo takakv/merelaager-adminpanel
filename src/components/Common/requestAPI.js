@@ -1,6 +1,7 @@
 import { fetchEventSource } from "@microsoft/fetch-event-source";
+import { useDispatch } from "react-redux";
 
-const apiURL =
+export const apiURL =
   process.env.NODE_ENV === "development"
     ? "http://localhost:3000"
     : "https://merelaager.ee";
@@ -15,6 +16,8 @@ export const setToken = (token) => {
 export const clearToken = () => {
   currentAuthToken = null;
 };
+
+export const getToken = () => currentAuthToken;
 
 export const requestTokenRefresh = async () => {
   const responseRaw = await fetch(`${apiURL}/api/auth/token/`, {
@@ -152,14 +155,17 @@ export const makeGetRequest = async (apiLinkSuffix) => {
   return response;
 };
 
-export const fetchUpdates = async (apiLinkSuffix) => {
-  return fetchEventSource(`${apiURL}/api${apiLinkSuffix}`, {
+export const fetchUpdates = async (apiLinkSuffix, controller, dispFunc) => {
+  const dispatch = useDispatch();
+
+  fetchEventSource(`${apiURL}/api${apiLinkSuffix}`, {
     method: "POST",
     headers: {
       Authorization: `Bearer ${currentAuthToken}`,
       "Content-Type": "application/json",
       Accept: "text/event-stream",
     },
+    signal: controller.signal,
     onopen(res) {
       if (res.ok && res.status === 200) {
         console.log("Connection made ", res);
@@ -167,9 +173,10 @@ export const fetchUpdates = async (apiLinkSuffix) => {
         console.log("Client side error ", res);
       }
     },
-    onmessage(event) {
-      console.log(event.data);
-      JSON.parse(event.data);
+    onmessage(msg) {
+      console.log(msg.data);
+      dispatch(dispFunc(1));
+      // JSON.parse(msg.data);
     },
     onclose() {
       console.log("Connection closed by the server");
