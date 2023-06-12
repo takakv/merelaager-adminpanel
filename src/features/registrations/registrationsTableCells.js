@@ -4,7 +4,12 @@ import PropTypes from "prop-types";
 import React from "react";
 import { getRole } from "../userData/userDataSlice";
 import { deleteRegistration, updateRegistration } from "./registrationsSlice";
-import { selectRootStatus, selectRootUsage } from "../userAuth/userAuthSlice";
+import {
+  selectRole,
+  selectRootStatus,
+  selectRootUsage,
+} from "../userAuth/userAuthSlice";
+import constants from "../../utils/constants";
 
 // Helper functions.
 
@@ -167,11 +172,16 @@ BillNrCell.propTypes = {
 
 // Toggle type cells.
 
-export const RegisteredCell = ({ registration, isMyShift }) => {
-  const role = useSelector(getRole);
+export const RegisteredCell = ({ registration }) => {
+  const displayedShiftRole = useSelector((state) =>
+    selectRole(state, registration.shiftNr)
+  );
   const { registered } = registration;
 
-  if (!isMyShift || role === "full")
+  if (
+    displayedShiftRole !== constants.SHIFT_ROLE_BOSS &&
+    displayedShiftRole !== constants.SHIFT_ROLE_ROOT
+  )
     return setCellValue(registered ? "jah" : "ei");
 
   const cellValue = (
@@ -182,14 +192,19 @@ export const RegisteredCell = ({ registration, isMyShift }) => {
 
 RegisteredCell.propTypes = {
   registration: PropTypes.objectOf(PropTypes.any).isRequired,
-  isMyShift: PropTypes.bool.isRequired,
 };
 
-export const ReturningCell = ({ registration, isMyShift, isDetailedView }) => {
-  const role = useSelector(getRole);
+export const ReturningCell = ({ registration, isDetailedView }) => {
+  const displayedShiftRole = useSelector((state) =>
+    selectRole(state, registration.shiftNr)
+  );
   const { old } = registration;
 
-  if (!isDetailedView || !isMyShift || role === "full")
+  if (
+    !isDetailedView ||
+    (displayedShiftRole !== constants.SHIFT_ROLE_BOSS &&
+      displayedShiftRole !== constants.SHIFT_ROLE_ROOT)
+  )
     return setCellValue(old ? "jah" : "ei");
 
   const cellValue = (
@@ -200,7 +215,6 @@ export const ReturningCell = ({ registration, isMyShift, isDetailedView }) => {
 
 ReturningCell.propTypes = {
   registration: PropTypes.objectOf(PropTypes.any).isRequired,
-  isMyShift: PropTypes.bool.isRequired,
   isDetailedView: PropTypes.bool.isRequired,
 };
 

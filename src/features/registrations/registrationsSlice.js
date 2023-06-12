@@ -1,9 +1,5 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import {
-  makeDeleteRequest,
-  makeGetRequest,
-  makePatchRequest,
-} from "../../components/Common/requestAPI";
+import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
+import {makeDeleteRequest, makeGetRequest, makePatchRequest,} from "../../components/Common/requestAPI";
 
 const initialState = {
   registrations: [],
@@ -59,24 +55,24 @@ const registrationsSlice = createSlice({
       state.detailView = action.payload;
     },
     paymentUpdated: (state, action) => {
-      const { id, type, value } = action.payload;
+      const {id, type, value} = action.payload;
       const entry = state.registrations[id];
       entry[type] = value;
     },
     registrationToggled: (state, action) => {
-      const { id } = action.payload;
+      const {id} = action.payload;
       const entry = state.registrations[id];
       entry.registered = !entry.registered;
     },
     entryRemoved: (state, action) => {
-      const { id } = action.payload;
+      const {id} = action.payload;
       delete state.registrations[id];
     },
   },
   extraReducers: {
     [fetchRegistrations.fulfilled]: (state, action) => {
       state.status = "succeeded";
-      state.registrations = action.payload.value;
+      state.registrations = action.payload;
     },
     [fetchRegistrations.rejected]: (state, action) => {
       state.status = "failed";
@@ -89,7 +85,7 @@ const registrationsSlice = createSlice({
       alert("Viga uuenduste pärimisel");
     },
     [updateRegistration.fulfilled]: (state, action) => {
-      const { id, field, data } = action.payload;
+      const {id, field, data} = action.payload;
       const registration = state.registrations.find((entry) => entry.id === id);
       registration[field] = data[field];
     },
@@ -103,7 +99,7 @@ const registrationsSlice = createSlice({
   },
 });
 
-export const { setDetailView } = registrationsSlice.actions;
+export const {setDetailView} = registrationsSlice.actions;
 
 export const selectAllRegistrations = (state) =>
   state.registrations.registrations;

@@ -2,6 +2,7 @@ import { useSelector } from "react-redux";
 import React from "react";
 import { getRole } from "../userData/userDataSlice";
 import { selectDetailView } from "./registrationsSlice";
+import constants from "../../utils/constants";
 
 const addCell = (list, text) => {
   list.push(<th key={text}>{text}</th>);
@@ -9,7 +10,7 @@ const addCell = (list, text) => {
 
 const RegistrationsTableHeader = () => {
   // const currentRole = useSelector(selectCurrentRole);
-  const role = useSelector(getRole);
+  const shiftRole = useSelector(getRole);
   const isDetailedView = useSelector(selectDetailView);
 
   const cells = [];
@@ -19,7 +20,10 @@ const RegistrationsTableHeader = () => {
 
   addCell(cells, "Nimi");
 
-  if (role !== "master" && role !== "root") {
+  if (
+    shiftRole !== constants.SHIFT_ROLE_BOSS &&
+    shiftRole !== constants.SHIFT_ROLE_ROOT
+  ) {
     cellValues = [];
     if (isDetailedView) cellValues.push("Reg?");
     cellValues.push("Reg?", "Vana?", "Vanus", "Ts");

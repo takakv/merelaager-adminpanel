@@ -20,12 +20,12 @@ import { selectRole } from "../userAuth/userAuthSlice";
 
 const RegistrationsTableEntry = ({ registration }) => {
   const role = useSelector(getRole);
-  const shiftRole = useSelector((state) =>
+  const displayedShiftRole = useSelector((state) =>
     selectRole(state, registration.shiftNr)
   );
   const isDetailedView = useSelector(selectDetailView);
 
-  const isMyShift = role === "root" ? true : shiftRole === "boss";
+  const isMyShift = role === "root" ? true : displayedShiftRole === "boss";
 
   const cells = [];
 
@@ -40,30 +40,29 @@ const RegistrationsTableEntry = ({ registration }) => {
 
   cells.push(<NameCell key="name" registration={registration} />);
 
-  if ((role === "master" || role === "root") && isDetailedView) {
-    cells.push(<PricePaidCell key="pricePaid" registration={registration} />);
-    cells.push(<PriceToPayCell key="priceToPay" registration={registration} />);
-  }
+  if (isDetailedView) {
+    if (Object.hasOwn(registration, "pricePaid"))
+      cells.push(<PricePaidCell key="pricePaid" registration={registration} />);
+    if (Object.hasOwn(registration, "priceToPay"))
+      cells.push(
+        <PriceToPayCell key="priceToPay" registration={registration} />
+      );
 
-  if (isDetailedView)
     cells.push(
-      <RegisteredCell
-        key="isRegistered"
-        registration={registration}
-        isMyShift={isMyShift}
-      />
+      <RegisteredCell key="isRegistered" registration={registration} />
     );
-
-  if (role === "master" || role === "root") {
-    cells.push(<ContactCell key="contact" registration={registration} />);
-    cells.push(<EmailCell key="email" registration={registration} />);
   }
+
+  if (Object.hasOwn(registration, "contactName"))
+    cells.push(<ContactCell key="contact" registration={registration} />);
+
+  if (Object.hasOwn(registration, "contactEmail"))
+    cells.push(<EmailCell key="email" registration={registration} />);
 
   cells.push(
     <ReturningCell
       key="isOld"
       registration={registration}
-      isMyShift={isMyShift}
       isDetailedView={isDetailedView}
     />
   );
@@ -73,7 +72,7 @@ const RegistrationsTableEntry = ({ registration }) => {
   if (isDetailedView)
     cells.push(<ShirtCell key="shirt" registration={registration} />);
 
-  if ((role === "master" || role === "root") && isDetailedView)
+  if (isDetailedView && Object.hasOwn(registration, "billNr"))
     cells.push(<BillNrCell key="billNr" registration={registration} />);
 
   return <tr>{cells.map((cell) => cell)}</tr>;

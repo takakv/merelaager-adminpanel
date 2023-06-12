@@ -1,5 +1,8 @@
-import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
-import {makeGetRequest, makePostRequest,} from "../../components/Common/requestAPI";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import {
+  makeGetRequest,
+  makePostRequest,
+} from "../../components/Common/requestAPI";
 
 export const fetchInfo = createAsyncThunk("userAuth/fetchInfo", async () => {
   const response = await makeGetRequest("/me");
@@ -9,9 +12,7 @@ export const fetchInfo = createAsyncThunk("userAuth/fetchInfo", async () => {
 export const updateCurrentShift = createAsyncThunk(
   "userAuth/updateCurrentShift",
   async (newShiftNr) => {
-    const response = await makePostRequest(
-      `/me/currentShift/${newShiftNr}`
-    );
+    const response = await makePostRequest(`/me/currentShift/${newShiftNr}`);
     if (!response.ok) return 0;
     return newShiftNr;
   }
@@ -20,7 +21,7 @@ export const updateCurrentShift = createAsyncThunk(
 const userAuthSlice = createSlice({
   name: "userInfo",
   initialState: {
-    userInfo: {useRoot: false},
+    userInfo: { useRoot: false },
     status: "idle",
     error: null,
   },
@@ -31,6 +32,7 @@ const userAuthSlice = createSlice({
   },
   extraReducers: {
     [fetchInfo.fulfilled]: (state, action) => {
+      console.log(action.payload);
       state.status = "succeeded";
       state.userInfo = action.payload;
       state.userInfo.useRoot = false;
@@ -52,20 +54,19 @@ export const selectCurrentShift = (state) =>
 export const selectUserShifts = (state) => state.userInfo.userInfo.shiftRoles;
 
 export const selectCurrentRole = (state) => {
-  const {currentShift} = state.userInfo.userInfo;
-  const {shifts} = state.userInfo.userInfo;
+  const { currentShift } = state.userInfo.userInfo;
+  const { shifts } = state.userInfo.userInfo;
   const data = shifts.find((el) => el.id === currentShift);
   return data ? data.role : "full";
 };
 
 export const selectRole = (state, shiftNr) => {
-  const {shifts} = state.userInfo.userInfo;
-  const data = shifts.find((el) => el.id === shiftNr);
-  return data ? data.role : "full";
+  const { shiftRoles } = state.userInfo.userInfo;
+  return shiftRoles[shiftNr];
 };
 
 export const selectRootStatus = (state) => state.userInfo.userInfo.isRoot;
 
-export const {setRootUsage} = userAuthSlice.actions;
+export const { setRootUsage } = userAuthSlice.actions;
 
 export default userAuthSlice.reducer;
