@@ -1,8 +1,5 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import {
-  makeGetRequest,
-  makePostRequest,
-} from "../../components/Common/requestAPI";
+import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
+import {makeGetRequest, makePostRequest,} from "../../components/Common/requestAPI";
 
 export const fetchInfo = createAsyncThunk("userAuth/fetchInfo", async () => {
   const response = await makeGetRequest("/me");
@@ -13,9 +10,7 @@ export const updateCurrentShift = createAsyncThunk(
   "userAuth/updateCurrentShift",
   async (newShiftNr) => {
     const response = await makePostRequest(
-      "/me/currentShift",
-      { newShift: newShiftNr },
-      true
+      `/me/currentShift/${newShiftNr}`
     );
     if (!response.ok) return 0;
     return newShiftNr;
@@ -25,7 +20,7 @@ export const updateCurrentShift = createAsyncThunk(
 const userAuthSlice = createSlice({
   name: "userInfo",
   initialState: {
-    userInfo: { useRoot: false },
+    userInfo: {useRoot: false},
     status: "idle",
     error: null,
   },
@@ -54,23 +49,23 @@ export const selectUserInfo = (state) => state.userInfo.userInfo;
 export const selectRootUsage = (state) => state.userInfo.userInfo.useRoot;
 export const selectCurrentShift = (state) =>
   state.userInfo.userInfo.currentShift;
-export const selectUserShifts = (state) => state.userInfo.userInfo.shifts;
+export const selectUserShifts = (state) => state.userInfo.userInfo.shiftRoles;
 
 export const selectCurrentRole = (state) => {
-  const { currentShift } = state.userInfo.userInfo;
-  const { shifts } = state.userInfo.userInfo;
+  const {currentShift} = state.userInfo.userInfo;
+  const {shifts} = state.userInfo.userInfo;
   const data = shifts.find((el) => el.id === currentShift);
   return data ? data.role : "full";
 };
 
 export const selectRole = (state, shiftNr) => {
-  const { shifts } = state.userInfo.userInfo;
+  const {shifts} = state.userInfo.userInfo;
   const data = shifts.find((el) => el.id === shiftNr);
   return data ? data.role : "full";
 };
 
 export const selectRootStatus = (state) => state.userInfo.userInfo.isRoot;
 
-export const { setRootUsage } = userAuthSlice.actions;
+export const {setRootUsage} = userAuthSlice.actions;
 
 export default userAuthSlice.reducer;

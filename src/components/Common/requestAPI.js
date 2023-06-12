@@ -1,5 +1,5 @@
-import { fetchEventSource } from "@microsoft/fetch-event-source";
-import { useDispatch } from "react-redux";
+import {fetchEventSource} from "@microsoft/fetch-event-source";
+import {useDispatch} from "react-redux";
 
 export const apiURL =
   process.env.NODE_ENV === "development"
@@ -32,10 +32,10 @@ export const requestTokenRefresh = async () => {
 export const promptRequestError = (response) => {
   window.alert(
     "Midagi läks nihu." +
-      "\n\n" +
-      `Veakood: ${response.status}` +
-      "\n" +
-      `Kirjeldus: ${response.statusText}`
+    "\n\n" +
+    `Veakood: ${response.status}` +
+    "\n" +
+    `Kirjeldus: ${response.statusText}`
   );
   console.log(response);
 };
@@ -64,16 +64,21 @@ export const makePostRequest = async (
 
   let response;
 
+  const reqContent = {
+    method: "POST",
+    headers,
+  }
+
+  if (content !== null) {
+    content.body = JSON.stringify(content)
+  }
+
   try {
-    response = await fetch(`${apiURL}/api${apiLinkSuffix}`, {
-      method: "POST",
-      headers,
-      body: JSON.stringify(content),
-    });
+    response = await fetch(`${apiURL}/api${apiLinkSuffix}`, reqContent);
   } catch (e) {
     window.alert(
       "Serveriga ei õnnestunud ühendust saada.\n" +
-        "Muudatused pole salvestatud."
+      "Muudatused pole salvestatud."
     );
     return null;
   }
@@ -104,7 +109,7 @@ export const makePatchRequest = async (apiLinkSuffix, content) => {
   } catch (e) {
     window.alert(
       "Serveriga ei õnnestunud ühendust saada.\n" +
-        "Muudatused pole salvestatud."
+      "Muudatused pole salvestatud."
     );
     return null;
   }
@@ -129,7 +134,7 @@ export const makeDeleteRequest = async (apiLinkSuffix) => {
   } catch (e) {
     window.alert(
       "Serveriga ei õnnestunud ühendust saada.\n" +
-        "Muudatused pole salvestatud."
+      "Muudatused pole salvestatud."
     );
     return null;
   }
