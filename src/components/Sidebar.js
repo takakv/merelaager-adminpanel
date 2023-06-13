@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import ShiftSwitcher from "./ShiftSwitcher";
 import { getRole } from "../features/userData/userDataSlice";
+import constants from "../utils/constants";
 
 const getHomePage = () => (
   <li className="last">
@@ -75,7 +76,8 @@ const getMailSendPage = (role) => {
 };
 
 const getBillGenPage = (role) => {
-  if (role !== "root" && role !== "master") return "";
+  if (role !== constants.SHIFT_ROLE_BOSS && role !== constants.SHIFT_ROLE_ROOT)
+    return "";
   return (
     <li>
       <Link className="_link" to="/arvegeneraator/">
