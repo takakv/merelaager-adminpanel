@@ -17,6 +17,7 @@ import {
 } from "./registrationsTableCells";
 import { selectDetailView } from "./registrationsSlice";
 import { selectRole } from "../userAuth/userAuthSlice";
+import constants from "../../utils/constants";
 
 const RegistrationsTableEntry = ({ registration }) => {
   const role = useSelector(getRole);
@@ -48,9 +49,14 @@ const RegistrationsTableEntry = ({ registration }) => {
         <PriceToPayCell key="priceToPay" registration={registration} />
       );
 
-    cells.push(
-      <RegisteredCell key="isRegistered" registration={registration} />
-    );
+    // Display the registration trigger only if the user can actually use the trigger.
+    if (
+      displayedShiftRole === constants.SHIFT_ROLE_BOSS ||
+      displayedShiftRole === constants.SHIFT_ROLE_ROOT
+    )
+      cells.push(
+        <RegisteredCell key="isRegistered" registration={registration} />
+      );
   }
 
   if (Object.hasOwn(registration, "contactName"))

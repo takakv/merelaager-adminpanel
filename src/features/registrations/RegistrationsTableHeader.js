@@ -25,8 +25,11 @@ const RegistrationsTableHeader = () => {
     shiftRole !== constants.SHIFT_ROLE_ROOT
   ) {
     cellValues = [];
-    if (isDetailedView) cellValues.push("Reg?");
-    cellValues.push("Reg?", "Vana?", "Vanus", "Ts");
+    // No need to display registered status if one does not have permissions
+    // to edit the registered status. The registered status can be inferred
+    // from the table row group.
+    cellValues.push("Vana?", "Vanus");
+    if (isDetailedView) cellValues.push("Ts");
   } else {
     cellValues = [];
     if (isDetailedView) cellValues.push("Makstud", "Kokku", "Reg?");
