@@ -258,6 +258,10 @@ const TeamBox = (props) => {
   const campers = useSelector(selectAllCampersInfo);
   const teamMembers = campers.filter((camper) => camper.teamId === team.id);
 
+  if (!teamMembers.length) {
+    return null;
+  }
+
   teamMembers.sort((a, b) => {
     if (a.gender === b.gender) {
       if (a.name < b.name) return -1;
