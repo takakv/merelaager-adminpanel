@@ -13,6 +13,7 @@ import MainPage from "../components/MainPage";
 import ShiftInfo from "../features/camperInfo/CamperInfo";
 import TeamsPage from "../components/TeamList";
 import TentsPage from "../features/tents/TentsPage";
+import TentInfoPage from "../components/TentInfoPage";
 import Mailer from "../components/Mailer";
 import BillGen from "../components/BillGen";
 import Shirts from "../features/thisrts/Tshirts";
@@ -45,6 +46,10 @@ const Root = () => {
           <Routes>
             <Route exact path="/" element={<MainPage title="Kambüüs" />} />
             <Route path="/telgid/" element={<TentsPage title="Telgid" />} />
+            <Route
+              path="/telgid/:id"
+              element={<TentInfoPage title="Telk" />}
+            />
             <Route
               path="/meeskonnad/"
               element={<TeamsPage title="Meeskonnad" />}
