@@ -14,7 +14,7 @@ export const fetchTentInfo = createAsyncThunk(
 const tentInfoSlice = createSlice({
   name: "tentInfo",
   initialState: {
-    tentInfo: [],
+    tentInfo: {},
     status: "idle",
     error: null,
   },

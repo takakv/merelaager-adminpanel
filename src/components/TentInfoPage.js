@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import PropTypes from "prop-types";
 import useDocumentTitle from "./useDocumentTitle";
 import {
   fetchTentInfo,
@@ -10,18 +9,10 @@ import {
 import { selectCurrentShift } from "../features/userAuth/userAuthSlice";
 import { makePostRequest } from "./Common/requestAPI";
 
-const TentMemberList = ({ tentNr }) => {
-  const dispatch = useDispatch();
-
-  const camperInfo = useSelector(selectTentInfo);
+const TentMemberList = () => {
+  const tentInfo = useSelector(selectTentInfo);
   const infoStatus = useSelector((state) => state.tentInfo.status);
   const error = useSelector((state) => state.tentInfo.error);
-
-  useEffect(() => {
-    if (infoStatus === "idle") {
-      dispatch(fetchTentInfo(tentNr));
-    }
-  }, [infoStatus, dispatch]);
 
   if (infoStatus === "nok") {
     return <p>{error}</p>;
@@ -33,48 +24,102 @@ const TentMemberList = ({ tentNr }) => {
 
   return (
     <ul>
-      {camperInfo.map((camper) => (
-        <li key={camper}>{camper}</li>
+      {tentInfo.names.map((name) => (
+        <li key={name}>{name}</li>
       ))}
     </ul>
   );
 };
 
-TentMemberList.propTypes = {
-  tentNr: PropTypes.number.isRequired,
+const GradesList = () => {
+  const tentInfo = useSelector(selectTentInfo);
+  const infoStatus = useSelector((state) => state.tentInfo.status);
+  const error = useSelector((state) => state.tentInfo.error);
+
+  if (infoStatus === "nok") {
+    return <p>{error}</p>;
+  }
+
+  if (infoStatus === "idle") {
+    return <p>Laen...</p>;
+  }
+
+  return (
+    <ul>
+      {tentInfo.grades.map((grade) => {
+        const date = new Date(grade.date);
+        const dateOptions = {
+          month: "2-digit",
+          day: "2-digit",
+        };
+        const strDate = date.toLocaleDateString("et", dateOptions);
+
+        return (
+          <li key={grade.date}>
+            {grade.score} ({strDate})
+          </li>
+        );
+      })}
+    </ul>
+  );
 };
 
 const TentInfoPage = () => {
   const { id } = useParams();
   const tentId = parseInt(id, 10);
   const shiftNr = useSelector(selectCurrentShift);
+  const dispatch = useDispatch();
 
   useDocumentTitle(`Telk ${tentId}`);
 
-  const [score, setScore] = useState(null);
+  const infoStatus = useSelector((state) => state.tentInfo.status);
+  useEffect(() => {
+    if (infoStatus === "idle") {
+      dispatch(fetchTentInfo(tentId));
+    }
+  }, [infoStatus, dispatch]);
+
+  const [score, setScore] = useState("");
+  const ref = useRef(null);
 
   const updateScore = ({ target }) => {
-    setScore(parseInt(target.value, 10));
+    const newScore = parseInt(target.value, 10);
+    if (isNaN(newScore) || newScore < 1 || newScore > 5) {
+      setScore("");
+      return;
+    }
+    setScore(newScore.toString());
   };
 
   const submitScore = async () => {
     await makePostRequest(`/tents/${tentId}`, { shiftNr, score }, true);
+    alert(`Hinnatud: hinne ${score}`);
+    setScore("");
   };
 
   return (
     <>
-      <TentMemberList tentNr={tentId} />
+      <b>Liikmed:</b>
+      <TentMemberList />
+      <br />
+      <b>Hinded:</b>
+      <GradesList />
+      <br />
+      <b>Hinda:</b>
+      <br />
       <div className="c-card">
         <div className="o-infield">
           <div className="o-infield-input">
             <label htmlFor="score">Hinne (1–5)</label>
             <input
+              ref={ref}
+              value={score}
               type="number"
               name="score"
               id="score"
               min={1}
               max={5}
-              onBlur={updateScore}
+              onInput={updateScore}
             />
           </div>
           <div className="o-infield-actions">
