@@ -23,7 +23,6 @@ const tentInfoSlice = createSlice({
     [fetchTentInfo.fulfilled]: (state, action) => {
       state.status = "ok";
       state.tentInfo = action.payload;
-      console.log(action.payload);
     },
     [fetchTentInfo.rejected]: (state, action) => {
       state.status = "nok";
