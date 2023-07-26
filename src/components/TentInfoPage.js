@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import useDocumentTitle from "./useDocumentTitle";
 import {
@@ -134,6 +134,26 @@ const TentInfoPage = () => {
           </div>
         </div>
       </div>
+      <br />
+      <br />
+      {tentId > 1 && (
+        <Link
+          to={`../telgid/${tentId - 1}`}
+          type="button"
+          className="o-button c-tent-button"
+        >
+          {tentId - 1} telk
+        </Link>
+      )}
+      {tentId < 10 && (
+        <Link
+          to={`../telgid/${tentId + 1}`}
+          type="button c-tent-button"
+          className="o-button c-page-actions__button"
+        >
+          {tentId + 1} telk
+        </Link>
+      )}
     </>
   );
 };

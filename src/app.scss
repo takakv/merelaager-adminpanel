@@ -1351,3 +1351,8 @@ select {
   border: 2px var(--line-light) dashed;
   border-radius: var(--radius);
 }
+
+.c-tent-button {
+  border-color: var(--line-dark);
+  margin-right: 1em;
+}

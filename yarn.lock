@@ -4336,6 +4336,7 @@ __metadata:
     react-dom: ^18.1.0
     react-redux: ^8.0.1
     react-router-dom: ^6.4.3
+    react-timer-hook: ^3.0.7
     sass: ^1.45.1
     sass-loader: ^13.1.0
     serve: ^14.2.0
@@ -5333,6 +5334,15 @@ __metadata:
   peerDependencies:
     react: ">=16.8"
   checksum: e47f875dca70033a3b42704cb5ec076b60f9629a5cdc3be613707f3d5a5706123fb80301037455c285c6d5a1011b443e1784e0103969ebfac7071648d360c413
+  languageName: node
+  linkType: hard
+
+"react-timer-hook@npm:^3.0.7":
+  version: 3.0.7
+  resolution: "react-timer-hook@npm:3.0.7"
+  peerDependencies:
+    react: ">=16.8.0"
+  checksum: 800c45a7fbf181897971b15f0d7b226f35348a12c48f933afbc1112693101bf3966bd7d276e4cb9fdc922c1ea66d8cbeddb0268e1631d1e39aa4b062cba2a7d1
   languageName: node
   linkType: hard
 
