@@ -84,7 +84,7 @@ const TentInfoPage = () => {
 
   const updateScore = ({ target }) => {
     const newScore = parseInt(target.value, 10);
-    if (isNaN(newScore) || newScore < 1 || newScore > 5) {
+    if (isNaN(newScore) || newScore < 1 || newScore > 10) {
       setScore("");
       return;
     }
@@ -110,7 +110,7 @@ const TentInfoPage = () => {
       <div className="c-card">
         <div className="o-infield">
           <div className="o-infield-input">
-            <label htmlFor="score">Hinne (1–5)</label>
+            <label htmlFor="score">Hinne (1–10)</label>
             <input
               ref={ref}
               value={score}
@@ -118,7 +118,7 @@ const TentInfoPage = () => {
               name="score"
               id="score"
               min={1}
-              max={5}
+              max={10}
               onInput={updateScore}
             />
           </div>
