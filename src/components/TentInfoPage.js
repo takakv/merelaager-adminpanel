@@ -35,7 +35,10 @@ const GradesList = () => {
     return <p>Laen...</p>;
   }
 
-  const totalGrade = tentInfo.grades.reduce((a, b) => a.score + b.score, 0);
+  let totalGrade = 0;
+  tentInfo.grades.forEach((grade) => {
+    totalGrade = grade.score;
+  });
 
   return (
     <>
