@@ -35,6 +35,8 @@ const GradesList = () => {
     return <p>Laen...</p>;
   }
 
+  const totalGrade = tentInfo.grades.reduce((a, b) => a.score + b.score, 0);
+
   return (
     <>
       <ul>
@@ -53,7 +55,7 @@ const GradesList = () => {
           );
         })}
       </ul>
-      <p>Kokku: {tentInfo.grades.reduce((a, b) => a + b, 0)}</p>
+      <p>Kokku: {totalGrade}</p>
     </>
   );
 };
