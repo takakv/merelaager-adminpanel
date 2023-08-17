@@ -37,7 +37,7 @@ const GradesList = () => {
 
   let totalGrade = 0;
   tentInfo.grades.forEach((grade) => {
-    totalGrade = grade.score;
+    totalGrade += grade.score;
   });
 
   return (
