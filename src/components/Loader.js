@@ -5,7 +5,7 @@ const Loader = () => (
     <img
       className="_link"
       alt="Logo"
-      src="https://merelaager.ee/media/img/merelaager_ship.svg"
+      src="https://merelaager.ee/img/merelaager_ship.svg"
     />
     <p>Laen...</p>
   </div>
