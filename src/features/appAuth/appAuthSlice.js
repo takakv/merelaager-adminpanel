@@ -7,7 +7,7 @@ import {
 const apiURL =
   process.env.NODE_ENV === "development"
     ? "http://localhost:3000"
-    : "https://merelaager.ee";
+    : "https://api.merelaager.ee";
 
 export const refreshToken = createAsyncThunk(
   "appAuth/refreshToken",

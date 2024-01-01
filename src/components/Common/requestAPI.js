@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 export const apiURL =
   process.env.NODE_ENV === "development"
     ? "http://localhost:3000"
-    : "https://merelaager.ee";
+    : "https://api.merelaager.ee";
 
 // https://daveceddia.com/access-redux-store-outside-react/#option-3-use-middleware-and-intercept-an-action
 let currentAuthToken = null;
