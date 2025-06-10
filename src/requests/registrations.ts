@@ -1,7 +1,7 @@
 import { queryOptions } from '@tanstack/react-query'
 import { StatusCodes } from 'http-status-codes'
 
-const endpoint = 'http://localhost:4000/api'
+import { apiFetch } from '@/api/apiFetch.ts'
 
 export enum Sex {
   M = 'M',
@@ -49,7 +49,7 @@ export class NotAuthenticatedError extends Error {}
 export const fetchRegistrations = async (
   shiftNr: number,
 ): Promise<RegistrationEntry[]> => {
-  const response = await fetch(`${endpoint}/registrations?shiftNr=${shiftNr}`, {
+  const response = await apiFetch(`/registrations?shiftNr=${shiftNr}`, {
     method: 'GET',
     mode: 'cors',
     credentials: 'include',

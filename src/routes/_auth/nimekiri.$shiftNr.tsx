@@ -46,7 +46,7 @@ function RouteComponent() {
         regCategories.reg.M.push(registration)
       else regCategories.reg.F.push(registration)
     } else {
-      if (registration.child.sex === Sex.F)
+      if (registration.child.sex === Sex.M)
         regCategories.res.M.push(registration)
       else regCategories.res.F.push(registration)
     }
@@ -66,6 +66,11 @@ function RouteComponent() {
     if (!isDetailView) setDetailView(isEditable)
     setPriceEditable(isEditable)
   }
+
+  const defaultHeadings = ['Nimi', 'Vana?', 'Vanus']
+  const tableHeadings = new Set(
+    Object.keys(registrations.length > 0 ? registrations[0] : defaultHeadings),
+  )
 
   return (
     <React.Fragment>
@@ -96,6 +101,7 @@ function RouteComponent() {
         resFCount={regCategories.res.F.length}
       />
       <RegistrationTable
+        tableHeadings={tableHeadings}
         isDetailView={isDetailView}
         isPriceEditable={isPriceEditable}
         regM={regCategories.reg.M}

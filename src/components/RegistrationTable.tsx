@@ -1,10 +1,12 @@
+import type { ReactNode } from 'react'
 import * as React from 'react'
-import { Fragment, type ReactNode } from 'react'
+import { useMutation } from '@tanstack/react-query'
 
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input.tsx'
 
 import type { RegistrationEntry } from '@/requests/registrations.ts'
+import { apiFetch } from '@/api/apiFetch.ts'
 
 const TableHeadCell = ({ children }: { children: ReactNode }) => {
   return (
@@ -38,36 +40,66 @@ const TableCell = ({
   )
 }
 
-const RegistrationForm = ({
-  id,
-  isRegistered,
-}: {
-  id: number
-  isRegistered: boolean
-}) => {
-  return (
-    <Button variant="outline" className="w-12">
-      {isRegistered ? 'Jah' : 'Ei'}
-    </Button>
-  )
+type PatchObject = {
+  pricePaid?: number
+  priceToPay?: number
+  isRegistered?: boolean
+}
+
+type PatchKeys = keyof PatchObject
+
+type RegistrationMutation = {
+  regId: number
+  patch: PatchObject
 }
 
 const TableDataRow = ({
   registration,
-  isReserve,
   isDetailView,
   isPriceEditable,
 }: {
   registration: RegistrationEntry
-  isReserve: boolean
   isDetailView: boolean
   isPriceEditable: boolean
 }) => {
-  const [isSelected, _] = React.useState(false)
+  const mutation = useMutation({
+    mutationFn: (newState: RegistrationMutation) => {
+      return apiFetch(`/registrations/${newState.regId}`, {
+        method: 'PATCH',
+        mode: 'cors',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newState.patch),
+      })
+    },
+    onMutate: (variables) => {
+      console.log('BEGAN MUTATION')
+      console.log(variables)
+    },
+  })
 
-  const classList = isSelected
-    ? 'bg-secondary-100'
-    : 'even:bg-white odd:bg-gray-100 hover:bg-secondary-50'
+  const toggleRegistration = () => {
+    mutation.mutate({
+      regId: registration.id,
+      patch: { isRegistered: !registration.isRegistered },
+    })
+  }
+
+  const updatePrice = (
+    e: React.FocusEvent<HTMLInputElement>,
+    type: PatchKeys,
+  ) => {
+    const priceText = e.target.value
+    const price = parseInt(priceText, 10)
+    if (!price) {
+      e.target.value = `${registration.pricePaid}`
+      return
+    }
+    mutation.mutate({
+      regId: registration.id,
+      patch: { [type]: price },
+    })
+  }
 
   let pricePaidField = (
     <span className="font-mono">{registration.pricePaid}</span>
@@ -78,37 +110,51 @@ const TableDataRow = ({
 
   if (isPriceEditable) {
     pricePaidField = (
-      <Input className="w-16 font-mono" defaultValue={registration.pricePaid} />
+      <Input
+        className="w-16 font-mono"
+        defaultValue={registration.pricePaid}
+        onBlur={(e) => updatePrice(e, 'pricePaid')}
+      />
     )
     priceToPayField = (
       <Input
         className="w-16 font-mono"
         defaultValue={registration.priceToPay}
+        onBlur={(e) => updatePrice(e, 'priceToPay')}
       />
     )
   }
+
+  const [isSelected, _] = React.useState(false)
+
+  const classList = isSelected
+    ? 'bg-secondary-100'
+    : 'even:bg-white odd:bg-gray-100 hover:bg-secondary-50'
 
   return (
     <tr className={classList}>
       <TableCell isFirst={true}>{registration.child.name}</TableCell>
       {isDetailView && (
-        <Fragment>
+        <React.Fragment>
           <TableCell textCenter={true}>
-            <RegistrationForm
-              id={registration.id}
-              isRegistered={registration.isRegistered}
-            />
+            <Button
+              variant="outline"
+              className="w-12"
+              onClick={toggleRegistration}
+            >
+              {registration.isRegistered ? 'Jah' : 'Ei'}
+            </Button>
           </TableCell>
           {registration.pricePaid !== undefined && (
-            <Fragment>
+            <React.Fragment>
               <TableCell>{pricePaidField}</TableCell>
               <TableCell>{priceToPayField}</TableCell>
-            </Fragment>
+            </React.Fragment>
           )}
-        </Fragment>
+        </React.Fragment>
       )}
       {registration.contactName && (
-        <Fragment>
+        <React.Fragment>
           <TableCell>{registration.contactName}</TableCell>
           <TableCell>
             <a
@@ -118,7 +164,7 @@ const TableDataRow = ({
               {registration.contactEmail}
             </a>
           </TableCell>
-        </Fragment>
+        </React.Fragment>
       )}
       <TableCell>{registration.isOld ? 'Jah' : 'Ei'}</TableCell>
       <TableCell>{registration.child.currentAge}a</TableCell>
@@ -146,21 +192,21 @@ const TableHead = ({
       <tr className="bg-white">
         <TableHeadCell>Nimi</TableHeadCell>
         {isDetailView && (
-          <Fragment>
+          <>
             <TableHeadCell>Reg?</TableHeadCell>
             {keys.has('pricePaid') && (
-              <Fragment>
+              <>
                 <TableHeadCell>Makstud</TableHeadCell>
                 <TableHeadCell>Maksta</TableHeadCell>
-              </Fragment>
+              </>
             )}
-          </Fragment>
+          </>
         )}
         {keys.has('contactName') && (
-          <Fragment>
+          <>
             <TableHeadCell>Kontakt</TableHeadCell>
             <TableHeadCell>Meil</TableHeadCell>
-          </Fragment>
+          </>
         )}
         <TableHeadCell>Vana?</TableHeadCell>
         <TableHeadCell>Vanus</TableHeadCell>
@@ -177,13 +223,11 @@ const TableHead = ({
 const TableBody = ({
   header,
   registrations,
-  isReserve = false,
   isDetailView,
   isPriceEditable,
 }: {
   header: string
   registrations: RegistrationEntry[]
-  isReserve?: boolean
   isDetailView: boolean
   isPriceEditable: boolean
 }) => {
@@ -197,7 +241,6 @@ const TableBody = ({
         <TableDataRow
           key={registration.id}
           registration={registration}
-          isReserve={isReserve}
           isDetailView={isDetailView}
           isPriceEditable={isPriceEditable}
         />
@@ -207,6 +250,7 @@ const TableBody = ({
 }
 
 type RegistrationTableProps = {
+  tableHeadings: Set<string>
   isDetailView: boolean
   isPriceEditable: boolean
   regM: RegistrationEntry[]
@@ -216,6 +260,7 @@ type RegistrationTableProps = {
 }
 
 export const RegistrationTable = ({
+  tableHeadings,
   isDetailView,
   isPriceEditable,
   regM,
@@ -227,7 +272,7 @@ export const RegistrationTable = ({
     <div className="mx-6 overflow-y-scroll h-[calc(100%-50px)] border-t border-gray-200">
       <table className="w-full text-left border-separate border-spacing-0">
         <TableHead
-          keys={new Set(Object.keys(regM[0]))}
+          keys={tableHeadings}
           isDetailView={isDetailView}
         />
         <TableBody
@@ -245,14 +290,12 @@ export const RegistrationTable = ({
         <TableBody
           header="Reserv Poisid"
           registrations={resM}
-          isReserve={true}
           isDetailView={isDetailView}
           isPriceEditable={isPriceEditable}
         />
         <TableBody
           header="Reserv Tüdrukud"
           registrations={resF}
-          isReserve={true}
           isDetailView={isDetailView}
           isPriceEditable={isPriceEditable}
         />

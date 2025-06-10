@@ -1,15 +1,17 @@
 import { StrictMode, useEffect } from 'react'
 import ReactDOM from 'react-dom/client'
-import { createRouter, RouterProvider } from '@tanstack/react-router' // Import the generated route tree
-import { routeTree } from './routeTree.gen'
 
-import './styles.css'
-import reportWebVitals from './reportWebVitals.ts'
-import { AuthProvider } from '@/auth.tsx'
+import { createRouter, RouterProvider } from '@tanstack/react-router'
 import { QueryClient } from '@tanstack/query-core'
 import { QueryClientProvider } from '@tanstack/react-query'
+
+import { routeTree } from './routeTree.gen'
+import reportWebVitals from './reportWebVitals.ts'
+
+import { AuthProvider } from '@/auth.tsx'
 import { useAuthStore } from '@/stores/authStore.ts'
-import { Provider } from 'jotai/react/Provider'
+
+import './styles.css'
 
 const queryClient = new QueryClient()
 
@@ -66,11 +68,9 @@ function InnerApp() {
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <Provider>
-        <AuthProvider>
-          <InnerApp />
-        </AuthProvider>
-      </Provider>
+      <AuthProvider>
+        <InnerApp />
+      </AuthProvider>
     </QueryClientProvider>
   )
 }
