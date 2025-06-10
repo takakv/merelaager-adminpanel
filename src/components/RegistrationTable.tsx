@@ -2,8 +2,10 @@ import type { ReactNode } from 'react'
 import * as React from 'react'
 import { useMutation } from '@tanstack/react-query'
 
+import { BadgeEuroIcon, MailCheckIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input.tsx'
+import { Badge } from '@/components/ui/badge.tsx'
 
 import type { RegistrationEntry } from '@/requests/registrations.ts'
 import { apiFetch } from '@/api/apiFetch.ts'
@@ -131,9 +133,22 @@ const TableDataRow = ({
     ? 'bg-secondary-100'
     : 'even:bg-white odd:bg-gray-100 hover:bg-secondary-50'
 
+  const isFinanceAvailable = registration.pricePaid !== undefined
+  const displayFinanceBadge = !isDetailView && isFinanceAvailable
+  const isPaid = registration.pricePaid === registration.priceToPay
+
   return (
     <tr className={classList}>
-      <TableCell isFirst={true}>{registration.child.name}</TableCell>
+      <TableCell isFirst={true}>
+        <div className="flex justify-between">
+          {registration.child.name}
+          {displayFinanceBadge && isPaid && (
+            <Badge variant="outline">
+              <BadgeEuroIcon />
+            </Badge>
+          )}
+        </div>
+      </TableCell>
       {isDetailView && (
         <React.Fragment>
           <TableCell textCenter={true}>
@@ -145,10 +160,13 @@ const TableDataRow = ({
               {registration.isRegistered ? 'Jah' : 'Ei'}
             </Button>
           </TableCell>
-          {registration.pricePaid !== undefined && (
+          {isFinanceAvailable && (
             <React.Fragment>
               <TableCell>{pricePaidField}</TableCell>
               <TableCell>{priceToPayField}</TableCell>
+              <TableCell>
+                <span className="font-mono">{registration.billId}</span>
+              </TableCell>
             </React.Fragment>
           )}
         </React.Fragment>
@@ -157,12 +175,19 @@ const TableDataRow = ({
         <React.Fragment>
           <TableCell>{registration.contactName}</TableCell>
           <TableCell>
-            <a
-              href={`mailto:${registration.contactEmail}`}
-              className="hover:underline"
-            >
-              {registration.contactEmail}
-            </a>
+            <div className="flex justify-between">
+              <a
+                href={`mailto:${registration.contactEmail}`}
+                className="hover:underline"
+              >
+                {registration.contactEmail}
+              </a>
+              {registration.notifSent && (
+                <Badge variant="outline">
+                  <MailCheckIcon />
+                </Badge>
+              )}
+            </div>
           </TableCell>
         </React.Fragment>
       )}
@@ -198,6 +223,7 @@ const TableHead = ({
               <>
                 <TableHeadCell>Makstud</TableHeadCell>
                 <TableHeadCell>Maksta</TableHeadCell>
+                <TableHeadCell>Arve Nr.</TableHeadCell>
               </>
             )}
           </>
@@ -271,10 +297,7 @@ export const RegistrationTable = ({
   return (
     <div className="mx-6 overflow-y-scroll h-[calc(100%-50px)] border-t border-gray-200">
       <table className="w-full text-left border-separate border-spacing-0">
-        <TableHead
-          keys={tableHeadings}
-          isDetailView={isDetailView}
-        />
+        <TableHead keys={tableHeadings} isDetailView={isDetailView} />
         <TableBody
           header="Poisid"
           registrations={regM}
