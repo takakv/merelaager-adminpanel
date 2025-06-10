@@ -4,24 +4,37 @@ import {
   useRouter,
   useRouterState,
 } from '@tanstack/react-router'
-import { useAuth } from '@/auth.tsx'
 import * as React from 'react'
+import { useAuthStore } from '@/stores/authStore.ts'
 
 const fallback = '/' as const
 
+// export const Route = createFileRoute('/login')({
+//   component: LoginComponent,
+//   beforeLoad: async ({ context }) => {
+//     const auth = await context.auth
+//     console.log('login.tsx:', auth)
+//     if (auth.isAuthenticated) {
+//       console.log('login.tsx:', 'Redirecting to /')
+//       throw redirect({ to: fallback })
+//     }
+//   },
+// })
+
 export const Route = createFileRoute('/login')({
   component: LoginComponent,
-  beforeLoad: async ({ context }) => {
-    const auth = await context.auth
-    if (auth.isAuthenticated) {
-      console.log('Redirecting from login')
+  beforeLoad: () => {
+    const user = useAuthStore.getState().user
+    if (user) {
+      console.log('USER IS LOGGED IN!')
+      console.log('login.tsx:', 'Redirecting to /')
       throw redirect({ to: fallback })
     }
   },
 })
 
 function LoginComponent() {
-  const auth = useAuth()
+  const { login } = useAuthStore()
   const router = useRouter()
   const isLoading = useRouterState({ select: (s) => s.isLoading })
   const navigate = Route.useNavigate()
@@ -38,12 +51,12 @@ function LoginComponent() {
       if (!usernameValue || !passwordValue) return
       const username = usernameValue.toString()
       const password = passwordValue.toString()
-      const res = await auth.login(username, password)
-
-      if (res !== null) {
-        setLoginError(res)
-        return
+      try {
+        await login(username, password)
+      } catch (err) {
+        console.error(err)
       }
+
       await router.invalidate()
       console.log('navigating')
       navigate({ to: '/', replace: true })

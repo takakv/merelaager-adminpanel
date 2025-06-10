@@ -4,6 +4,20 @@
 
 @custom-variant dark (&:is(.dark *));
 
+.app-grid {
+  grid-template-areas: "gh" "content";
+  grid-template-columns: auto;
+  grid-template-rows: 50px 1fr;
+}
+
+@media (min-width: theme("screens.sm")) {
+  .app-grid {
+    grid-template-columns: 220px auto;
+    grid-template-rows: 60px 1fr;
+    grid-template-areas: "sb gh" "sb content";
+  }
+}
+
 body {
   @apply m-0;
   font-family:

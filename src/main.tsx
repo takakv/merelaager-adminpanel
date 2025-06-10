@@ -1,19 +1,24 @@
 import { StrictMode, useEffect } from 'react'
 import ReactDOM from 'react-dom/client'
-import { createRouter, RouterProvider } from '@tanstack/react-router'
-
-// Import the generated route tree
+import { createRouter, RouterProvider } from '@tanstack/react-router' // Import the generated route tree
 import { routeTree } from './routeTree.gen'
 
 import './styles.css'
 import reportWebVitals from './reportWebVitals.ts'
-import { type AuthContext, AuthProvider, useAuth } from '@/auth.tsx'
+import { AuthProvider } from '@/auth.tsx'
+import { QueryClient } from '@tanstack/query-core'
+import { QueryClientProvider } from '@tanstack/react-query'
+import { useAuthStore } from '@/stores/authStore.ts'
+import { Provider } from 'jotai/react/Provider'
+
+const queryClient = new QueryClient()
 
 // Create a new router instance
 const router = createRouter({
   routeTree,
   context: {
     auth: undefined!,
+    queryClient,
   },
   defaultPreload: 'intent',
   scrollRestoration: true,
@@ -29,27 +34,44 @@ declare module '@tanstack/react-router' {
 }
 
 // https://github.com/TanStack/router/discussions/1668#discussioncomment-10634735
-const authClient = Promise.withResolvers<AuthContext>()
+// const authClient = Promise.withResolvers<AuthContext>()
 
 function InnerApp() {
-  const auth = useAuth()
+  // const auth = useAuth()
+  //
+  // useEffect(() => {
+  //   if (auth.isLoading) return
+  //
+  //   authClient.resolve(auth)
+  // }, [auth.isAuthenticated, auth.isLoading])
+  const { fetchUser, isLoading } = useAuthStore()
 
   useEffect(() => {
-    if (auth.isLoading) return
+    fetchUser()
+  }, [fetchUser])
 
-    authClient.resolve(auth)
-  }, [auth, auth.isLoading])
+  if (isLoading) {
+    return <p>Laen...</p>
+  }
 
   return (
-    <RouterProvider router={router} context={{ auth: authClient.promise }} />
+    <RouterProvider
+      router={router}
+      context={{ queryClient }}
+      // context={{ queryClient, auth: authClient.promise }}
+    />
   )
 }
 
 function App() {
   return (
-    <AuthProvider>
-      <InnerApp />
-    </AuthProvider>
+    <QueryClientProvider client={queryClient}>
+      <Provider>
+        <AuthProvider>
+          <InnerApp />
+        </AuthProvider>
+      </Provider>
+    </QueryClientProvider>
   )
 }
 

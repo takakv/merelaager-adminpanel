@@ -1,18 +1,17 @@
 import { createRootRouteWithContext, Outlet } from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
-
-import Header from '../components/Header'
 import type { AuthContext } from '@/auth.tsx'
+import type { QueryClient } from '@tanstack/react-query'
 
 interface RouterContext {
   auth: Promise<AuthContext>
+  // auth: AuthContext
+  queryClient: QueryClient
 }
 
 export const Route = createRootRouteWithContext<RouterContext>()({
   component: () => (
     <>
-      <Header />
-
       <Outlet />
       <TanStackRouterDevtools />
     </>
