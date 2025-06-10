@@ -1,7 +1,10 @@
 import { createFileRoute, Outlet, redirect } from '@tanstack/react-router'
 import * as React from 'react'
+
 import Sidebar from '@/components/sidebar.tsx'
 import { useAuthStore } from '@/stores/authStore.ts'
+
+import { Toaster } from '@/components/ui/sonner.tsx'
 
 export const Route = createFileRoute('/_auth')({
   component: AppLayoutComponent,
@@ -25,6 +28,7 @@ function AppLayoutComponent() {
   const [isSidebarOpen, _] = React.useState(true)
   return (
     <div className="h-full grid app-grid">
+      <Toaster position="top-center" />
       <Sidebar isVisible={isSidebarOpen} />
       <main className="[grid-area:content] sm:mt-6 max-h-screen overflow-hidden">
         <Outlet />

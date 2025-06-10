@@ -7,8 +7,13 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input.tsx'
 import { Badge } from '@/components/ui/badge.tsx'
 
-import type { RegistrationEntry } from '@/requests/registrations.ts'
-import { apiFetch } from '@/api/apiFetch.ts'
+import {
+  type PatchKeys,
+  type PatchObject,
+  patchRegistrations,
+  type RegistrationEntry,
+} from '@/requests/registrations.ts'
+import { toast } from 'sonner'
 
 const TableHeadCell = ({ children }: { children: ReactNode }) => {
   return (
@@ -42,14 +47,6 @@ const TableCell = ({
   )
 }
 
-type PatchObject = {
-  pricePaid?: number
-  priceToPay?: number
-  isRegistered?: boolean
-}
-
-type PatchKeys = keyof PatchObject
-
 type RegistrationMutation = {
   regId: number
   patch: PatchObject
@@ -66,17 +63,34 @@ const TableDataRow = ({
 }) => {
   const queryClient = useQueryClient()
 
+  const [priceEditField, setPriceEditField] =
+    React.useState<HTMLInputElement | null>(null)
+
   const mutation = useMutation({
-    mutationFn: (newState: RegistrationMutation) => {
-      return apiFetch(`/registrations/${newState.regId}`, {
-        method: 'PATCH',
-        mode: 'cors',
-        credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newState.patch),
-      })
-    },
-    onMutate: (newState) => {
+    mutationFn: (newState: RegistrationMutation) =>
+      patchRegistrations(newState.regId, newState.patch),
+    // onMutate: (newState) => {
+    //   const staleData = queryClient.getQueryData<RegistrationEntry[]>([
+    //     'registrations',
+    //     registration.shiftNr,
+    //   ])
+    //   if (!staleData) return
+    //
+    //   const updatedData = [...staleData]
+    //   const index = updatedData.findIndex((r) => r.id === newState.regId)
+    //   if (index === -1) return
+    //
+    //   updatedData[index] = {
+    //     ...updatedData[index],
+    //     ...newState.patch,
+    //   }
+    //
+    //   queryClient.setQueryData(
+    //     ['registrations', registration.shiftNr],
+    //     updatedData,
+    //   )
+    // },
+    onSuccess: (_, newState, __) => {
       const staleData = queryClient.getQueryData<RegistrationEntry[]>([
         'registrations',
         registration.shiftNr,
@@ -87,18 +101,29 @@ const TableDataRow = ({
       const index = updatedData.findIndex((r) => r.id === newState.regId)
       if (index === -1) return
 
-      const updatedRegistration = {
+      updatedData[index] = {
         ...updatedData[index],
         ...newState.patch,
       }
-
-      updatedData.splice(index, 1)
-      updatedData.push(updatedRegistration)
 
       queryClient.setQueryData(
         ['registrations', registration.shiftNr],
         updatedData,
       )
+    },
+    onError: (error, newState, __) => {
+      const message = error.message
+      toast.error('Viga andmete uuendamisel!', {
+        description: message,
+      })
+      // Reset the price to avoid confusion.
+      if (!priceEditField) return
+      if (newState.patch.pricePaid !== undefined) {
+        priceEditField.value = `${registration.pricePaid}`
+      }
+      if (newState.patch.priceToPay !== undefined) {
+        priceEditField.value = `${registration.priceToPay}`
+      }
     },
     mutationKey: ['patchRegistration', registration.id],
   })
@@ -114,10 +139,11 @@ const TableDataRow = ({
     e: React.FocusEvent<HTMLInputElement>,
     type: PatchKeys,
   ) => {
+    setPriceEditField(e.target)
     const priceText = e.target.value
     const price = parseInt(priceText, 10)
     if (!price) {
-      e.target.value = `${registration.pricePaid}`
+      e.target.value = `${registration[type]}`
       return
     }
     mutation.mutate({
@@ -163,7 +189,7 @@ const TableDataRow = ({
   return (
     <tr className={classList}>
       <TableCell isFirst={true}>
-        <div className="flex justify-between">
+        <div className="flex justify-between gap-4">
           {registration.child.name}
           {displayFinanceBadge && isPaid && (
             <Badge variant="outline">
@@ -198,7 +224,7 @@ const TableDataRow = ({
         <React.Fragment>
           <TableCell>{registration.contactName}</TableCell>
           <TableCell>
-            <div className="flex justify-between">
+            <div className="flex justify-between gap-4">
               <a
                 href={`mailto:${registration.contactEmail}`}
                 className="hover:underline"
