@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { createFileRoute } from '@tanstack/react-router'
+import { useSuspenseQuery } from '@tanstack/react-query'
 
 import { Button } from '@/components/ui/button.tsx'
 import { Switch } from '@/components/ui/switch.tsx'
@@ -14,7 +15,6 @@ import {
   registrationsQueryOptions,
   Sex,
 } from '@/requests/registrations.ts'
-import { useSuspenseQuery } from '@tanstack/react-query'
 
 export const Route = createFileRoute('/_auth/nimekiri/$shiftNr')({
   component: RouteComponent,
@@ -28,10 +28,15 @@ export const Route = createFileRoute('/_auth/nimekiri/$shiftNr')({
 
 function RouteComponent() {
   const shiftNr = parseInt(Route.useParams().shiftNr, 10)
+
   // https://github.com/TanStack/router/discussions/1563#discussion-6616426
   const { data: registrations } = useSuspenseQuery(
     registrationsQueryOptions(shiftNr),
   )
+
+  // const setRegistrationShift = useSetAtom(registrationShiftAtom)
+  // setRegistrationShift(shiftNr)
+  // const { data: registrations } = useAtomValue(registrationsAtom)
 
   const regCategories: {
     [key: string]: { [key in Sex]: RegistrationEntry[] }

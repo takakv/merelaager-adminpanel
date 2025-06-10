@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 import * as React from 'react'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 import { BadgeEuroIcon, MailCheckIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -64,6 +64,8 @@ const TableDataRow = ({
   isDetailView: boolean
   isPriceEditable: boolean
 }) => {
+  const queryClient = useQueryClient()
+
   const mutation = useMutation({
     mutationFn: (newState: RegistrationMutation) => {
       return apiFetch(`/registrations/${newState.regId}`, {
@@ -74,10 +76,31 @@ const TableDataRow = ({
         body: JSON.stringify(newState.patch),
       })
     },
-    onMutate: (variables) => {
-      console.log('BEGAN MUTATION')
-      console.log(variables)
+    onMutate: (newState) => {
+      const staleData = queryClient.getQueryData<RegistrationEntry[]>([
+        'registrations',
+        registration.shiftNr,
+      ])
+      if (!staleData) return
+
+      const updatedData = [...staleData]
+      const index = updatedData.findIndex((r) => r.id === newState.regId)
+      if (index === -1) return
+
+      const updatedRegistration = {
+        ...updatedData[index],
+        ...newState.patch,
+      }
+
+      updatedData.splice(index, 1)
+      updatedData.push(updatedRegistration)
+
+      queryClient.setQueryData(
+        ['registrations', registration.shiftNr],
+        updatedData,
+      )
     },
+    mutationKey: ['patchRegistration', registration.id],
   })
 
   const toggleRegistration = () => {

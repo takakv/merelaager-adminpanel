@@ -1,17 +1,19 @@
 import { atom } from 'jotai'
 
-import type { RegistrationEntry } from '@/requests/registrations.ts'
+import {
+  fetchRegistrations,
+  type RegistrationEntry,
+} from '@/requests/registrations.ts'
+import { atomWithSuspenseQuery } from 'jotai-tanstack-query'
 
-const endpoint = 'http://localhost:4000/api'
+export const registrationShiftAtom = atom(0)
 
-export const registrationsAtom = atom<RegistrationEntry[]>([])
-
-export const fetchRegistrationsAtom = atom(
-  async (get) => {
-    const response = await fetch(`${endpoint}/registrations?shiftNr=${shiftNr}`, {
-      method: 'GET',
-      mode: 'cors',
-      credentials: 'include',
-    })
-  }
+export const registrationsAtom = atomWithSuspenseQuery<RegistrationEntry[]>(
+  (get) => ({
+    queryKey: ['registrations', get(registrationShiftAtom)],
+    queryFn: async () => {
+      const shiftNr = get(registrationShiftAtom)
+      return fetchRegistrations(shiftNr)
+    },
+  }),
 )
