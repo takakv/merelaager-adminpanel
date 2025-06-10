@@ -99,6 +99,31 @@ export const patchRegistrations = async (regId: number, patch: PatchObject) => {
   }
 }
 
+export const fetchShiftPdf = async (shiftNr: number) => {
+  const response = await apiFetch(`/shifts/${shiftNr}/pdf`, {
+    method: 'GET',
+    mode: 'cors',
+    credentials: 'include',
+  })
+
+  if (!response.ok) {
+    const jsRes = await response.json()
+    switch (response.status) {
+      case StatusCodes.NOT_FOUND:
+        throw new Error(jsRes.data.shift)
+      case StatusCodes.FORBIDDEN:
+        throw new Error(jsRes.data.permissions)
+      case StatusCodes.INTERNAL_SERVER_ERROR:
+        throw new Error(jsRes.message)
+      default:
+        console.error(jsRes)
+        throw new Error('Ootamatu viga: rohkem infot konsoolis.')
+    }
+  }
+
+  return response.blob()
+}
+
 export const registrationsQueryOptions = (shiftNr: number) =>
   queryOptions({
     queryKey: ['registrations', shiftNr],

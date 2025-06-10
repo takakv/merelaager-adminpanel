@@ -11,6 +11,7 @@ import { RegistrationTable } from '@/components/RegistrationTable'
 import { ShiftNav } from '@/components/ShiftMenu.tsx'
 
 import {
+  fetchShiftPdf,
   type RegistrationEntry,
   registrationsQueryOptions,
   Sex,
@@ -77,11 +78,26 @@ function RouteComponent() {
     Object.keys(registrations.length > 0 ? registrations[0] : defaultHeadings),
   )
 
+  const print = async () => {
+    const pdfBlob = await fetchShiftPdf(shiftNr)
+
+    const obj = {
+      filename: `${shiftNr}v_nimekiri.pdf`,
+      blob: pdfBlob,
+    }
+
+    const newBlob = new Blob([obj.blob], { type: 'application/pdf' })
+    const objUrl = window.URL.createObjectURL(newBlob)
+    window.open(objUrl, '_blank')
+  }
+
   return (
     <React.Fragment>
       <div className="mx-6 flex gap-4">
         <ShiftNav />
-        <Button variant="outline">Prindi</Button>
+        <Button variant="outline" onClick={print}>
+          Prindi
+        </Button>
         <div className="flex items-center space-x-2">
           <Switch
             id="detail-view"
