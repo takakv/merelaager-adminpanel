@@ -1,10 +1,12 @@
 import { create } from 'zustand'
+import { apiFetch } from '@/api/apiFetch.ts'
 
 export type User = {
   name: string
-  nickname: string
-  email: string
+  nickname: string | null
+  email: string | null
   currentShift: number
+  isRoot: boolean
 }
 
 type AuthState = {
@@ -20,9 +22,10 @@ type UserAuthData = {
   data: {
     userId: number
     name: string
-    nickname: string
-    email: string
+    nickname: string | null
+    email: string | null
     currentShift: number
+    isRoot: boolean
   }
 }
 
@@ -30,7 +33,7 @@ export const useAuthStore = create<AuthState>((set) => ({
   isLoading: true,
   user: null,
   fetchUser: async () => {
-    const response = await fetch('http://localhost:4000/api/auth/me', {
+    const response = await apiFetch('/auth/me', {
       mode: 'cors',
       credentials: 'include',
     })
@@ -43,11 +46,14 @@ export const useAuthStore = create<AuthState>((set) => ({
     console.log('I fetched the user!')
 
     const jsRes: UserAuthData = await response.json()
-    const { name, nickname, email, currentShift } = jsRes.data
-    set({ isLoading: false, user: { name, nickname, email, currentShift } })
+    const { name, nickname, email, currentShift, isRoot } = jsRes.data
+    set({
+      isLoading: false,
+      user: { name, nickname, email, currentShift, isRoot },
+    })
   },
   login: async (username: string, password: string) => {
-    const response = await fetch('http://localhost:4000/api/auth/login', {
+    const response = await apiFetch('/auth/login', {
       method: 'POST',
       mode: 'cors',
       credentials: 'include',
@@ -69,8 +75,8 @@ export const useAuthStore = create<AuthState>((set) => ({
     }
 
     const jsRes: UserAuthData = await response.json()
-    const { name, nickname, email, currentShift } = jsRes.data
-    set({ user: { name, nickname, email, currentShift } })
+    const { name, nickname, email, currentShift, isRoot } = jsRes.data
+    set({ user: { name, nickname, email, currentShift, isRoot } })
   },
   logout: async () => {
     await fetch('http://localhost:4000/api/auth/logout', {

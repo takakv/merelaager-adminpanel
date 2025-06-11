@@ -2,6 +2,8 @@ import * as React from 'react'
 import { createFileRoute } from '@tanstack/react-router'
 import { useSuspenseQuery } from '@tanstack/react-query'
 
+import { useAuthStore, type User } from '@/stores/authStore.ts'
+
 import { Button } from '@/components/ui/button.tsx'
 import { Switch } from '@/components/ui/switch.tsx'
 import { Label } from '@/components/ui/label'
@@ -91,13 +93,21 @@ function RouteComponent() {
     window.open(objUrl, '_blank')
   }
 
+  const displayPrintButton =
+    registrations.length > 0 &&
+    registrations[0].birthday !== undefined &&
+    registrations[0].contactEmail !== undefined
+  const displayPriceEditSwitch = (useAuthStore.getState().user as User).isRoot
+
   return (
-    <React.Fragment>
+    <>
       <div className="mx-6 flex gap-4">
         <ShiftNav />
-        <Button variant="outline" onClick={print}>
-          Prindi
-        </Button>
+        {displayPrintButton && (
+          <Button variant="outline" onClick={print}>
+            Prindi
+          </Button>
+        )}
         <div className="flex items-center space-x-2">
           <Switch
             id="detail-view"
@@ -106,14 +116,16 @@ function RouteComponent() {
           />
           <Label htmlFor="detail-view">Detailvaade</Label>
         </div>
-        <div className="flex items-center space-x-2">
-          <Switch
-            id="price-editable"
-            checked={isPriceEditable}
-            onCheckedChange={() => setPriceEditingView(!isPriceEditable)}
-          />
-          <Label htmlFor="price-editable">Majanda</Label>
-        </div>
+        {displayPriceEditSwitch && (
+          <div className="flex items-center space-x-2">
+            <Switch
+              id="price-editable"
+              checked={isPriceEditable}
+              onCheckedChange={() => setPriceEditingView(!isPriceEditable)}
+            />
+            <Label htmlFor="price-editable">Majanda</Label>
+          </div>
+        )}
       </div>
       <ChildCounter
         regMCount={regCategories.reg.M.length}
@@ -130,6 +142,6 @@ function RouteComponent() {
         resM={regCategories.res.M}
         resF={regCategories.res.F}
       />
-    </React.Fragment>
+    </>
   )
 }
