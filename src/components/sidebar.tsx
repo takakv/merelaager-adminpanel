@@ -2,6 +2,7 @@ import { Link } from '@tanstack/react-router'
 import { Fragment } from 'react'
 
 import { Route as registrationsRoute } from '../routes/_auth/nimekiri.tsx'
+import { Route as permissionsRoute } from '../routes/_auth/oigused.tsx'
 
 type NavLinks = {
   href: string
@@ -40,8 +41,8 @@ const navLinks: NavLinks[][] = [
       title: 'Nimekiri',
     },
     {
-      href: '/arved/',
-      title: 'Arvegeneraator',
+      href: permissionsRoute.to,
+      title: 'Õigused',
     },
   ],
 ]

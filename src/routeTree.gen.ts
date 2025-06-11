@@ -14,6 +14,7 @@ import { Route as rootRoute } from './routes/__root'
 import { Route as LoginImport } from './routes/login'
 import { Route as AuthRouteImport } from './routes/_auth/route'
 import { Route as AuthIndexImport } from './routes/_auth/index'
+import { Route as AuthOigusedImport } from './routes/_auth/oigused'
 import { Route as AuthNimekiriImport } from './routes/_auth/nimekiri'
 import { Route as AuthNimekiriShiftNrImport } from './routes/_auth/nimekiri.$shiftNr'
 
@@ -33,6 +34,12 @@ const AuthRouteRoute = AuthRouteImport.update({
 const AuthIndexRoute = AuthIndexImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => AuthRouteRoute,
+} as any)
+
+const AuthOigusedRoute = AuthOigusedImport.update({
+  id: '/oigused',
+  path: '/oigused',
   getParentRoute: () => AuthRouteRoute,
 } as any)
 
@@ -73,6 +80,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthNimekiriImport
       parentRoute: typeof AuthRouteImport
     }
+    '/_auth/oigused': {
+      id: '/_auth/oigused'
+      path: '/oigused'
+      fullPath: '/oigused'
+      preLoaderRoute: typeof AuthOigusedImport
+      parentRoute: typeof AuthRouteImport
+    }
     '/_auth/': {
       id: '/_auth/'
       path: '/'
@@ -106,11 +120,13 @@ const AuthNimekiriRouteWithChildren = AuthNimekiriRoute._addFileChildren(
 
 interface AuthRouteRouteChildren {
   AuthNimekiriRoute: typeof AuthNimekiriRouteWithChildren
+  AuthOigusedRoute: typeof AuthOigusedRoute
   AuthIndexRoute: typeof AuthIndexRoute
 }
 
 const AuthRouteRouteChildren: AuthRouteRouteChildren = {
   AuthNimekiriRoute: AuthNimekiriRouteWithChildren,
+  AuthOigusedRoute: AuthOigusedRoute,
   AuthIndexRoute: AuthIndexRoute,
 }
 
@@ -122,6 +138,7 @@ export interface FileRoutesByFullPath {
   '': typeof AuthRouteRouteWithChildren
   '/login': typeof LoginRoute
   '/nimekiri': typeof AuthNimekiriRouteWithChildren
+  '/oigused': typeof AuthOigusedRoute
   '/': typeof AuthIndexRoute
   '/nimekiri/$shiftNr': typeof AuthNimekiriShiftNrRoute
 }
@@ -129,6 +146,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/nimekiri': typeof AuthNimekiriRouteWithChildren
+  '/oigused': typeof AuthOigusedRoute
   '/': typeof AuthIndexRoute
   '/nimekiri/$shiftNr': typeof AuthNimekiriShiftNrRoute
 }
@@ -138,20 +156,28 @@ export interface FileRoutesById {
   '/_auth': typeof AuthRouteRouteWithChildren
   '/login': typeof LoginRoute
   '/_auth/nimekiri': typeof AuthNimekiriRouteWithChildren
+  '/_auth/oigused': typeof AuthOigusedRoute
   '/_auth/': typeof AuthIndexRoute
   '/_auth/nimekiri/$shiftNr': typeof AuthNimekiriShiftNrRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '' | '/login' | '/nimekiri' | '/' | '/nimekiri/$shiftNr'
+  fullPaths:
+    | ''
+    | '/login'
+    | '/nimekiri'
+    | '/oigused'
+    | '/'
+    | '/nimekiri/$shiftNr'
   fileRoutesByTo: FileRoutesByTo
-  to: '/login' | '/nimekiri' | '/' | '/nimekiri/$shiftNr'
+  to: '/login' | '/nimekiri' | '/oigused' | '/' | '/nimekiri/$shiftNr'
   id:
     | '__root__'
     | '/_auth'
     | '/login'
     | '/_auth/nimekiri'
+    | '/_auth/oigused'
     | '/_auth/'
     | '/_auth/nimekiri/$shiftNr'
   fileRoutesById: FileRoutesById
@@ -185,6 +211,7 @@ export const routeTree = rootRoute
       "filePath": "_auth/route.tsx",
       "children": [
         "/_auth/nimekiri",
+        "/_auth/oigused",
         "/_auth/"
       ]
     },
@@ -197,6 +224,10 @@ export const routeTree = rootRoute
       "children": [
         "/_auth/nimekiri/$shiftNr"
       ]
+    },
+    "/_auth/oigused": {
+      "filePath": "_auth/oigused.tsx",
+      "parent": "/_auth"
     },
     "/_auth/": {
       "filePath": "_auth/index.tsx",
