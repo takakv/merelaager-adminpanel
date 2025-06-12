@@ -4,7 +4,7 @@
 
 @custom-variant dark (&:is(.dark *));
 
-.app-grid {
+/*.app-grid {
   grid-template-areas: "gh" "content";
   grid-template-columns: auto;
   grid-template-rows: 50px 1fr;
@@ -16,7 +16,7 @@
     grid-template-rows: 60px 1fr;
     grid-template-areas: "sb gh" "sb content";
   }
-}
+}*/
 
 body {
   @apply m-0;

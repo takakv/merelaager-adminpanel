@@ -1,10 +1,11 @@
 import { createFileRoute, Outlet, redirect } from '@tanstack/react-router'
-import * as React from 'react'
 
-import Sidebar from '@/components/sidebar.tsx'
-import { useAuthStore } from '@/stores/authStore.ts'
+import { useAuthStore, type User } from '@/stores/authStore.ts'
 
 import { Toaster } from '@/components/ui/sonner.tsx'
+import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar.tsx'
+
+import { AppSidebar } from '@/components/app-sidebar.tsx'
 
 export const Route = createFileRoute('/_auth')({
   component: AppLayoutComponent,
@@ -25,14 +26,25 @@ export const Route = createFileRoute('/_auth')({
 })
 
 function AppLayoutComponent() {
-  const [isSidebarOpen, _] = React.useState(true)
+  const user = useAuthStore.getState().user as User
+  // const [isSidebarOpen, _] = React.useState(true)
+
   return (
-    <div className="h-full grid app-grid">
+    <div className="h-full">
       <Toaster position="top-center" />
-      <Sidebar isVisible={isSidebarOpen} />
-      <main className="[grid-area:content] sm:mt-6 max-h-screen overflow-hidden">
-        <Outlet />
-      </main>
+      {/*<Sidebar isVisible={isSidebarOpen} />*/}
+      <SidebarProvider>
+        <AppSidebar />
+        <main className="w-full max-h-screen overflow-hidden">
+          <header className="sticky flex h-16 items-center justify-between px-6">
+            {/*<Button asChild className="h-10 w-10" variant="ghost">*/}
+            <SidebarTrigger />
+            {/*</Button>*/}
+            <div>{user.nickname || user.nickname}</div>
+          </header>
+          <Outlet />
+        </main>
+      </SidebarProvider>
     </div>
   )
 }
