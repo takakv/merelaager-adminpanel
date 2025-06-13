@@ -15,7 +15,19 @@ const CamperRecordSchema = Type.Object({
   isPresent: Type.Boolean(),
 })
 
+const PatchRecordSchema = Type.Partial(
+  Type.Object({
+    teamId: Type.Union([Type.Integer(), Type.Null()]),
+    tentNr: Type.Union([Type.Integer(), Type.Null()]),
+    isPresent: Type.Boolean(),
+  }),
+)
+
 export type CamperRecord = Static<typeof CamperRecordSchema>
+
+export type RecordPatchObject = Static<typeof PatchRecordSchema>
+
+export type RecordPathKeys = keyof RecordPatchObject
 
 type ShiftRecordsAPISuccessResponse = {
   status: 'success'
@@ -46,6 +58,42 @@ export const fetchShiftRecords = async (shiftNr: number) => {
   }
 
   return (jsRes as ShiftRecordsAPISuccessResponse).data.records
+}
+
+export const patchShiftRecord = async (
+  recordId: number,
+  patch: RecordPatchObject,
+) => {
+  const response = await apiFetch(`/records/${recordId}`, {
+    method: 'PATCH',
+    mode: 'cors',
+    credentials: 'include',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(patch),
+  })
+
+  if (!response.ok) {
+    const jsRes = await response.json()
+    switch (response.status) {
+      case StatusCodes.NOT_FOUND:
+        throw new Error(jsRes.data.recordId)
+      case StatusCodes.FORBIDDEN:
+        throw new Error(jsRes.data.permissions)
+      case StatusCodes.UNPROCESSABLE_ENTITY:
+        // The frontend does not allow patching multiple values at once.
+        if (jsRes.data.tentNr !== undefined) {
+          throw new Error(jsRes.data.tentNr)
+        }
+        if (jsRes.data.teamId !== undefined) {
+          throw new Error(jsRes.data.teamId)
+        }
+        console.error(jsRes)
+        throw new Error('Ootamatu viga: rohkem infot konsoolis.')
+      default:
+        console.error(jsRes)
+        throw new Error('Ootamatu viga: rohkem infot konsoolis.')
+    }
+  }
 }
 
 export const shiftRecordsFetchQueryOptions = (shiftNr: number) =>

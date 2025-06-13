@@ -36,7 +36,7 @@ function AppLayoutComponent() {
       <SidebarProvider>
         <AppSidebar />
         <main className="w-full max-h-screen overflow-hidden">
-          <header className="sticky flex h-16 items-center justify-between px-6">
+          <header className="sticky top-0 bg-white flex h-16 items-center justify-between px-6">
             {/*<Button asChild className="h-10 w-10" variant="ghost">*/}
             <SidebarTrigger />
             {/*</Button>*/}
