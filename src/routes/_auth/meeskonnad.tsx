@@ -42,6 +42,14 @@ import {
   FormMessage,
 } from '@/components/ui/form.tsx'
 import { toast } from 'sonner'
+import { usePatchShiftRecord } from '@/routes/_auth/telgid.tsx'
+import { useEffect } from 'react'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/ui/tooltip.tsx'
+import { CircleMinus } from 'lucide-react'
 
 export const Route = createFileRoute('/_auth/meeskonnad')({
   component: RouteComponent,
@@ -58,13 +66,15 @@ type TeamBoxProps = {
 }
 
 const TeamBox = ({ members, team }: TeamBoxProps) => {
+  members.sort((a, b) => a.childName.localeCompare(b.childName))
+
   return (
-    <div className="p-6 border rounded-md w-full md:w-56">
-      <div className="text-center">{team.name}</div>
+    <div className="p-6 border rounded-md w-full md:w-56 relative">
+      <p className="text-center">{team.name}</p>
       <Separator className="my-4" />
       <div className="flex flex-col gap-2">
         {members.map((record) => (
-          <div key={record.id}>{record.childName}</div>
+          <TeamCamperEntry key={record.id} record={record} />
         ))}
       </div>
     </div>
@@ -77,10 +87,17 @@ type TeamlessChildProps = {
 }
 
 const TeamlessChild = ({ record, teams }: TeamlessChildProps) => {
+  const mutation = usePatchShiftRecord(record)
+
+  const onValueChange = (value: string) => {
+    const teamId = parseInt(value, 10)
+    mutation.mutate({ teamId: teamId })
+  }
+
   return (
     <div>
       <div>{record.childName}</div>
-      <Select>
+      <Select onValueChange={onValueChange}>
         <SelectTrigger className="w-auto">
           <SelectValue placeholder="Meeskond" />
         </SelectTrigger>
@@ -88,13 +105,41 @@ const TeamlessChild = ({ record, teams }: TeamlessChildProps) => {
           <SelectGroup>
             <SelectLabel>Meeskond</SelectLabel>
             {teams.map((team) => (
-              <SelectItem value={team.name} key={team.id}>
+              <SelectItem value={`${team.id}`} key={team.id}>
                 {team.name}
               </SelectItem>
             ))}
           </SelectGroup>
         </SelectContent>
       </Select>
+    </div>
+  )
+}
+
+type TeamCamperEntryProps = {
+  record: CamperRecord
+}
+
+const TeamCamperEntry = ({ record }: TeamCamperEntryProps) => {
+  const mutation = usePatchShiftRecord(record)
+
+  const onClick = () => {
+    mutation.mutate({ teamId: null })
+  }
+
+  return (
+    <div className="flex justify-between items-center gap-4">
+      <p>{record.childName}</p>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <div className="w-5 text-[var(--input)]">
+            <CircleMinus onClick={onClick} className="w-5" />
+          </div>
+        </TooltipTrigger>
+        <TooltipContent>
+          <p>Eemalda laps telgist</p>
+        </TooltipContent>
+      </Tooltip>
     </div>
   )
 }
@@ -175,12 +220,38 @@ function RouteComponent() {
   const { data: teams } = useSuspenseQuery(shiftTeamsFetchQueryOptions(shiftNr))
 
   const teamlessCampers: CamperRecord[] = []
+  const assignedCampers = new Map<number, CamperRecord[]>()
+
+  teams.forEach((team) => {
+    assignedCampers.set(team.id, [])
+  })
+
+  const warningQueue: string[] = []
+
   records.forEach((record) => {
-    teamlessCampers.push(record)
+    if (record.teamId === null) teamlessCampers.push(record)
+    else {
+      const teamMembers = assignedCampers.get(record.teamId) as CamperRecord[]
+      if (!teamMembers) {
+        warningQueue.push(
+          `${record.childName} on vale vahetuse meeskonnas. (recordRef: ${record.id})`,
+        )
+        return
+      }
+      teamMembers.push(record)
+    }
   })
 
   teamlessCampers.sort((a, b) => a.childName.localeCompare(b.childName))
   teams.sort((a, b) => a.name.localeCompare(b.name))
+
+  useEffect(() => {
+    warningQueue.forEach((message) => {
+      toast.warning('Ebakõla andmetes!', {
+        description: message,
+      })
+    })
+  }, [])
 
   return (
     <div className="px-6 pb-6 flex flex-col gap-6 overflow-y-scroll h-[calc((100%-var(--spacing)*16))]">
@@ -198,7 +269,11 @@ function RouteComponent() {
       <CreateTeamCard shiftNr={shiftNr} />
       <div className="flex flex-wrap gap-6">
         {teams.map((team) => (
-          <TeamBox key={team.id} team={team} members={records} />
+          <TeamBox
+            key={team.id}
+            team={team}
+            members={assignedCampers.get(team.id) as CamperRecord[]}
+          />
         ))}
       </div>
     </div>

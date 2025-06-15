@@ -217,7 +217,7 @@ function RouteComponent() {
   )
 }
 
-const usePatchShiftRecord = (record: CamperRecord) => {
+export const usePatchShiftRecord = (record: CamperRecord) => {
   const queryClient = useQueryClient()
 
   return useMutation({
