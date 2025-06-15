@@ -6,6 +6,7 @@ export const Route = createFileRoute('/_auth/')({
 })
 
 function App() {
+  return <div>Kambüüs on veel töös</div>
   return (
     <div className="text-center">
       <header className="min-h-screen flex flex-col items-center justify-center bg-[#282c34] text-white text-[calc(10px+2vmin)]">

@@ -17,6 +17,9 @@ import { Route as AuthIndexImport } from './routes/_auth/index'
 import { Route as AuthTelgidImport } from './routes/_auth/telgid'
 import { Route as AuthOigusedImport } from './routes/_auth/oigused'
 import { Route as AuthNimekiriImport } from './routes/_auth/nimekiri'
+import { Route as AuthMeeskonnadImport } from './routes/_auth/meeskonnad'
+import { Route as AuthHindedImport } from './routes/_auth/hinded'
+import { Route as AuthArvedImport } from './routes/_auth/arved'
 import { Route as AuthNimekiriShiftNrImport } from './routes/_auth/nimekiri.$shiftNr'
 
 // Create/Update Routes
@@ -56,6 +59,24 @@ const AuthNimekiriRoute = AuthNimekiriImport.update({
   getParentRoute: () => AuthRouteRoute,
 } as any)
 
+const AuthMeeskonnadRoute = AuthMeeskonnadImport.update({
+  id: '/meeskonnad',
+  path: '/meeskonnad',
+  getParentRoute: () => AuthRouteRoute,
+} as any)
+
+const AuthHindedRoute = AuthHindedImport.update({
+  id: '/hinded',
+  path: '/hinded',
+  getParentRoute: () => AuthRouteRoute,
+} as any)
+
+const AuthArvedRoute = AuthArvedImport.update({
+  id: '/arved',
+  path: '/arved',
+  getParentRoute: () => AuthRouteRoute,
+} as any)
+
 const AuthNimekiriShiftNrRoute = AuthNimekiriShiftNrImport.update({
   id: '/$shiftNr',
   path: '/$shiftNr',
@@ -79,6 +100,27 @@ declare module '@tanstack/react-router' {
       fullPath: '/login'
       preLoaderRoute: typeof LoginImport
       parentRoute: typeof rootRoute
+    }
+    '/_auth/arved': {
+      id: '/_auth/arved'
+      path: '/arved'
+      fullPath: '/arved'
+      preLoaderRoute: typeof AuthArvedImport
+      parentRoute: typeof AuthRouteImport
+    }
+    '/_auth/hinded': {
+      id: '/_auth/hinded'
+      path: '/hinded'
+      fullPath: '/hinded'
+      preLoaderRoute: typeof AuthHindedImport
+      parentRoute: typeof AuthRouteImport
+    }
+    '/_auth/meeskonnad': {
+      id: '/_auth/meeskonnad'
+      path: '/meeskonnad'
+      fullPath: '/meeskonnad'
+      preLoaderRoute: typeof AuthMeeskonnadImport
+      parentRoute: typeof AuthRouteImport
     }
     '/_auth/nimekiri': {
       id: '/_auth/nimekiri'
@@ -133,6 +175,9 @@ const AuthNimekiriRouteWithChildren = AuthNimekiriRoute._addFileChildren(
 )
 
 interface AuthRouteRouteChildren {
+  AuthArvedRoute: typeof AuthArvedRoute
+  AuthHindedRoute: typeof AuthHindedRoute
+  AuthMeeskonnadRoute: typeof AuthMeeskonnadRoute
   AuthNimekiriRoute: typeof AuthNimekiriRouteWithChildren
   AuthOigusedRoute: typeof AuthOigusedRoute
   AuthTelgidRoute: typeof AuthTelgidRoute
@@ -140,6 +185,9 @@ interface AuthRouteRouteChildren {
 }
 
 const AuthRouteRouteChildren: AuthRouteRouteChildren = {
+  AuthArvedRoute: AuthArvedRoute,
+  AuthHindedRoute: AuthHindedRoute,
+  AuthMeeskonnadRoute: AuthMeeskonnadRoute,
   AuthNimekiriRoute: AuthNimekiriRouteWithChildren,
   AuthOigusedRoute: AuthOigusedRoute,
   AuthTelgidRoute: AuthTelgidRoute,
@@ -153,6 +201,9 @@ const AuthRouteRouteWithChildren = AuthRouteRoute._addFileChildren(
 export interface FileRoutesByFullPath {
   '': typeof AuthRouteRouteWithChildren
   '/login': typeof LoginRoute
+  '/arved': typeof AuthArvedRoute
+  '/hinded': typeof AuthHindedRoute
+  '/meeskonnad': typeof AuthMeeskonnadRoute
   '/nimekiri': typeof AuthNimekiriRouteWithChildren
   '/oigused': typeof AuthOigusedRoute
   '/telgid': typeof AuthTelgidRoute
@@ -162,6 +213,9 @@ export interface FileRoutesByFullPath {
 
 export interface FileRoutesByTo {
   '/login': typeof LoginRoute
+  '/arved': typeof AuthArvedRoute
+  '/hinded': typeof AuthHindedRoute
+  '/meeskonnad': typeof AuthMeeskonnadRoute
   '/nimekiri': typeof AuthNimekiriRouteWithChildren
   '/oigused': typeof AuthOigusedRoute
   '/telgid': typeof AuthTelgidRoute
@@ -173,6 +227,9 @@ export interface FileRoutesById {
   __root__: typeof rootRoute
   '/_auth': typeof AuthRouteRouteWithChildren
   '/login': typeof LoginRoute
+  '/_auth/arved': typeof AuthArvedRoute
+  '/_auth/hinded': typeof AuthHindedRoute
+  '/_auth/meeskonnad': typeof AuthMeeskonnadRoute
   '/_auth/nimekiri': typeof AuthNimekiriRouteWithChildren
   '/_auth/oigused': typeof AuthOigusedRoute
   '/_auth/telgid': typeof AuthTelgidRoute
@@ -185,6 +242,9 @@ export interface FileRouteTypes {
   fullPaths:
     | ''
     | '/login'
+    | '/arved'
+    | '/hinded'
+    | '/meeskonnad'
     | '/nimekiri'
     | '/oigused'
     | '/telgid'
@@ -193,6 +253,9 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/login'
+    | '/arved'
+    | '/hinded'
+    | '/meeskonnad'
     | '/nimekiri'
     | '/oigused'
     | '/telgid'
@@ -202,6 +265,9 @@ export interface FileRouteTypes {
     | '__root__'
     | '/_auth'
     | '/login'
+    | '/_auth/arved'
+    | '/_auth/hinded'
+    | '/_auth/meeskonnad'
     | '/_auth/nimekiri'
     | '/_auth/oigused'
     | '/_auth/telgid'
@@ -237,6 +303,9 @@ export const routeTree = rootRoute
     "/_auth": {
       "filePath": "_auth/route.tsx",
       "children": [
+        "/_auth/arved",
+        "/_auth/hinded",
+        "/_auth/meeskonnad",
         "/_auth/nimekiri",
         "/_auth/oigused",
         "/_auth/telgid",
@@ -245,6 +314,18 @@ export const routeTree = rootRoute
     },
     "/login": {
       "filePath": "login.tsx"
+    },
+    "/_auth/arved": {
+      "filePath": "_auth/arved.tsx",
+      "parent": "/_auth"
+    },
+    "/_auth/hinded": {
+      "filePath": "_auth/hinded.tsx",
+      "parent": "/_auth"
+    },
+    "/_auth/meeskonnad": {
+      "filePath": "_auth/meeskonnad.tsx",
+      "parent": "/_auth"
     },
     "/_auth/nimekiri": {
       "filePath": "_auth/nimekiri.tsx",

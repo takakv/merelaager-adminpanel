@@ -11,8 +11,11 @@ import {
 
 import { Route as homeRoute } from '../routes/_auth/index.tsx'
 import { Route as registrationsRoute } from '../routes/_auth/nimekiri.tsx'
+import { Route as billsRoute } from '../routes/_auth/arved.tsx'
 import { Route as permissionsRoute } from '../routes/_auth/oigused.tsx'
 import { Route as tentsRoute } from '../routes/_auth/telgid.tsx'
+import { Route as teamsRoute } from '../routes/_auth/meeskonnad.tsx'
+import { Route as gradesRoute } from '../routes/_auth/hinded.tsx'
 
 const topItems = [
   {
@@ -28,11 +31,11 @@ const shiftItems = [
   },
   {
     title: 'Meeskonnad',
-    url: registrationsRoute.to,
+    url: teamsRoute.to,
   },
   {
     title: 'Hinded',
-    url: registrationsRoute.to,
+    url: gradesRoute.to,
   },
 ]
 
@@ -43,7 +46,7 @@ const adminItems = [
   },
   {
     title: 'Arved',
-    url: permissionsRoute.to,
+    url: billsRoute.to,
   },
   {
     title: 'Õigused',
