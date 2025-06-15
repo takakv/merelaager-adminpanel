@@ -68,9 +68,13 @@ type TeamBoxProps = {
 const TeamBox = ({ members, team }: TeamBoxProps) => {
   members.sort((a, b) => a.childName.localeCompare(b.childName))
 
+  let extraInfo = `${members.length} liiget`
+  if (team.place) extraInfo += `, ${team.place}. koht`
+
   return (
     <div className="p-6 border rounded-md w-full md:w-56 relative">
       <p className="text-center">{team.name}</p>
+      <p className="text-center text-xs pt-2">{extraInfo}</p>
       <Separator className="my-4" />
       <div className="flex flex-col gap-2">
         {members.map((record) => (
