@@ -1,11 +1,29 @@
-import {
-  createFileRoute,
-  redirect,
-  useRouter,
-  useRouterState,
-} from '@tanstack/react-router'
-import * as React from 'react'
+import { createFileRoute, redirect, useRouter } from '@tanstack/react-router'
+import { z } from 'zod'
+
 import { useAuthStore } from '@/stores/authStore.ts'
+
+import { useForm } from 'react-hook-form'
+import { toast } from 'sonner'
+
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card.tsx'
+import { zodResolver } from '@hookform/resolvers/zod'
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form.tsx'
+import { Input } from '@/components/ui/input.tsx'
+import { Button } from '@/components/ui/button.tsx'
+import { Toaster } from '@/components/ui/sonner.tsx'
 
 const fallback = '/' as const
 
@@ -26,27 +44,37 @@ export const Route = createFileRoute('/login')({
   beforeLoad: () => {
     const user = useAuthStore.getState().user
     if (user) {
-      console.log('USER IS LOGGED IN!')
-      console.log('login.tsx:', 'Redirecting to /')
       throw redirect({ to: fallback })
     }
   },
 })
 
+const formSchema = z.object({
+  username: z.string().min(2, {
+    message: 'Kasutajanimi peab olema vähemalt 2 tähemärki pikk.',
+  }),
+  password: z.string().min(6, {
+    message: 'Salasõna peab olema vähemalt 6 tähemärki pikk.',
+  }),
+})
+
 function LoginComponent() {
   const { login } = useAuthStore()
   const router = useRouter()
-  const isLoading = useRouterState({ select: (s) => s.isLoading })
   const navigate = Route.useNavigate()
-  const [isSubmitting, setIsSubmitting] = React.useState(false)
 
-  const onFormSubmit = async (evt: React.FormEvent<HTMLFormElement>) => {
-    setIsSubmitting(true)
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      username: '',
+      password: '',
+    },
+  })
+
+  const onFormSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      evt.preventDefault()
-      const data = new FormData(evt.currentTarget)
-      const usernameValue = data.get('username')
-      const passwordValue = data.get('password')
+      const usernameValue = values.username
+      const passwordValue = values.password
 
       if (!usernameValue || !passwordValue) return
       const username = usernameValue.toString()
@@ -55,6 +83,10 @@ function LoginComponent() {
         await login(username, password)
       } catch (err) {
         console.error(err)
+        toast.error('Viga sisselogimisel!', {
+          description: (err as Error).message,
+        })
+        return
       }
 
       await router.invalidate()
@@ -62,48 +94,64 @@ function LoginComponent() {
       navigate({ to: '/', replace: true })
     } catch (error) {
       console.error('Error logging in: ', error)
-    } finally {
-      setIsSubmitting(false)
+      toast.error('Viga sisselogimisel!', {
+        description: 'Ootamatu viga: rohkem infot konsoolis.',
+      })
     }
   }
 
-  const isLoggingIn = isLoading || isSubmitting
-
   return (
-    <div className="p-2 grid gap-2 place-items-center">
-      <h3 className="text-xl">Login page</h3>
-      <form className="mt-4 max-w-lg" onSubmit={onFormSubmit}>
-        <fieldset disabled={isLoggingIn} className="w-full grid gap-2">
-          <div className="grid gap-2 items-center min-w-[300px]">
-            <label htmlFor="username-input" className="text-sm font-medium">
-              Username
-            </label>
-            <input
-              id="username-input"
-              name="username"
-              type="text"
-              className="border rounded-md p-2 w-full"
-              required
-            />
-            <label htmlFor="password-input" className="text-sm font-medium">
-              Password
-            </label>
-            <input
-              id="password-input"
-              name="password"
-              type="password"
-              className="border rounded-md p-2 w-full"
-              required
-            />
-          </div>
-          <button
-            type="submit"
-            className="bg-blue-500 text-white py-2 px-4 rounded-md w-full disabled:bg-gray-300 disabled:text-gray-500"
-          >
-            {isLoggingIn ? 'Loading...' : 'Login'}
-          </button>
-        </fieldset>
-      </form>
+    <div className="w-full max-w-sm mx-auto relative top-1/3">
+      <Toaster position="top-center" />
+      <div className="px-6">
+        <Card>
+          <CardHeader className="text-center">
+            <div className="w-[50px] mx-auto">
+              <img
+                src="https://merelaager.ee/img/merelaager_ship.svg"
+                alt="Merelaagri logo"
+              />
+            </div>
+            <CardTitle>Kambüüs</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Form {...form}>
+              <form
+                className="flex flex-col gap-4"
+                onSubmit={form.handleSubmit(onFormSubmit)}
+              >
+                <FormField
+                  control={form.control}
+                  name="username"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Kasutajanimi</FormLabel>
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="password"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Salasõna</FormLabel>
+                      <FormControl>
+                        <Input {...field} type="password" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <Button type="submit">Logi sisse</Button>
+              </form>
+            </Form>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   )
 }
