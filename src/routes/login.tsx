@@ -101,9 +101,9 @@ function LoginComponent() {
   }
 
   return (
-    <div className="w-full max-w-sm mx-auto relative top-1/3">
+    <div className="w-full flex items-center h-full sm:h-auto sm:items-start sm:top-1/4 relative">
       <Toaster position="top-center" />
-      <div className="px-6">
+      <div className="px-6 w-full max-w-sm mx-auto">
         <Card>
           <CardHeader className="text-center">
             <div className="w-[50px] mx-auto">
