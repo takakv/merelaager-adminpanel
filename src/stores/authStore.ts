@@ -25,6 +25,7 @@ export type User = {
 
 type AuthState = {
   isLoading: boolean
+  isError: boolean
   user: User | null
   login: (username: string, password: string) => Promise<void>
   logout: () => Promise<void>
@@ -42,12 +43,20 @@ type UserAuthData = {
 
 export const useAuthStore = create<AuthState & UpdateAction>((set) => ({
   isLoading: true,
+  isError: false,
   user: null,
   fetchUser: async () => {
-    const response = await apiFetch('/auth/me', {
-      mode: 'cors',
-      credentials: 'include',
-    })
+    let response: Response
+    try {
+      response = await apiFetch('/auth/me', {
+        mode: 'cors',
+        credentials: 'include',
+      })
+    } catch (error) {
+      console.log(error)
+      set({ isLoading: false, isError: true })
+      return
+    }
 
     if (!response.ok) {
       set({ isLoading: false })

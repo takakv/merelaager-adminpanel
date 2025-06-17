@@ -46,14 +46,38 @@ function InnerApp() {
   //
   //   authClient.resolve(auth)
   // }, [auth.isAuthenticated, auth.isLoading])
-  const { fetchUser, isLoading } = useAuthStore()
+  const { fetchUser, isLoading, isError } = useAuthStore()
 
   useEffect(() => {
     fetchUser()
   }, [fetchUser])
 
   if (isLoading) {
-    return <p>Laen...</p>
+    return (
+      <div className="h-full w-full flex flex-col items-center justify-center gap-8">
+        <div className="w-[100px]">
+          <img
+            src="https://merelaager.ee/img/merelaager_ship.svg"
+            alt="Merelaagri logo"
+          />
+        </div>
+        <p>Laen...</p>
+      </div>
+    )
+  }
+
+  if (isError) {
+    return (
+      <div className="h-full w-full flex flex-col items-center justify-center gap-8">
+        <div className="w-[100px]">
+          <img
+            src="https://merelaager.ee/img/merelaager_ship.svg"
+            alt="Merelaagri logo"
+          />
+        </div>
+        <p>Viga rakenduse käivitamisel. Rohkem infot konsoolis.</p>
+      </div>
+    )
   }
 
   return (
