@@ -1,12 +1,26 @@
 import { create } from 'zustand'
+import { type Static, Type } from '@sinclair/typebox'
+
 import { apiFetch } from '@/api/apiFetch.ts'
 
+export const UserInfoSchema = Type.Object({
+  userId: Type.Integer(),
+  name: Type.String(),
+  nickname: Type.Union([Type.String(), Type.Null()]),
+  email: Type.Union([Type.String(), Type.Null()]),
+  currentShift: Type.Integer(),
+  isRoot: Type.Boolean(),
+  managedShifts: Type.Array(Type.Integer()),
+})
+
 export type User = {
+  userId: number
   name: string
   nickname: string | null
   email: string | null
   currentShift: number
   isRoot: boolean
+  managedShifts: number[]
 }
 
 type AuthState = {
@@ -17,19 +31,16 @@ type AuthState = {
   fetchUser: () => Promise<void>
 }
 
-type UserAuthData = {
-  status: 'success'
-  data: {
-    userId: number
-    name: string
-    nickname: string | null
-    email: string | null
-    currentShift: number
-    isRoot: boolean
-  }
+type UpdateAction = {
+  updateCurrentShift: (newShift: User['currentShift']) => void
 }
 
-export const useAuthStore = create<AuthState>((set) => ({
+type UserAuthData = {
+  status: 'success'
+  data: Static<typeof UserInfoSchema>
+}
+
+export const useAuthStore = create<AuthState & UpdateAction>((set) => ({
   isLoading: true,
   user: null,
   fetchUser: async () => {
@@ -46,10 +57,26 @@ export const useAuthStore = create<AuthState>((set) => ({
     console.log('I fetched the user!')
 
     const jsRes: UserAuthData = await response.json()
-    const { name, nickname, email, currentShift, isRoot } = jsRes.data
+    const {
+      userId,
+      name,
+      nickname,
+      email,
+      currentShift,
+      isRoot,
+      managedShifts,
+    } = jsRes.data
     set({
       isLoading: false,
-      user: { name, nickname, email, currentShift, isRoot },
+      user: {
+        userId,
+        name,
+        nickname,
+        email,
+        currentShift,
+        isRoot,
+        managedShifts,
+      },
     })
   },
   login: async (username: string, password: string) => {
@@ -75,15 +102,39 @@ export const useAuthStore = create<AuthState>((set) => ({
     }
 
     const jsRes: UserAuthData = await response.json()
-    const { name, nickname, email, currentShift, isRoot } = jsRes.data
-    set({ user: { name, nickname, email, currentShift, isRoot } })
+    const {
+      userId,
+      name,
+      nickname,
+      email,
+      currentShift,
+      isRoot,
+      managedShifts,
+    } = jsRes.data
+    set({
+      user: {
+        userId,
+        name,
+        nickname,
+        email,
+        currentShift,
+        isRoot,
+        managedShifts,
+      },
+    })
   },
   logout: async () => {
-    await fetch('http://localhost:4000/api/auth/logout', {
+    await apiFetch('/auth/logout', {
       method: 'POST',
       mode: 'cors',
       credentials: 'include',
     })
     set({ user: null })
+  },
+  updateCurrentShift: (newShift) => {
+    set((state) => {
+      if (!state.user) return state
+      return { ...state, user: { ...state.user, currentShift: newShift } }
+    })
   },
 }))
