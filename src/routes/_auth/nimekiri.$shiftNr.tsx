@@ -9,7 +9,6 @@ import { Switch } from '@/components/ui/switch.tsx'
 import { Label } from '@/components/ui/label'
 
 import { ChildCounter } from '@/components/ChildCounter.tsx'
-import { RegistrationTable } from '@/components/RegistrationTable'
 import { ShiftNav } from '@/components/ShiftMenu.tsx'
 
 import {
@@ -18,6 +17,7 @@ import {
   registrationsQueryOptions,
   Sex,
 } from '@/requests/registrations.ts'
+import { RegistrationTable } from '@/components/RegistrationTable.tsx'
 
 export const Route = createFileRoute('/_auth/nimekiri/$shiftNr')({
   component: RouteComponent,
@@ -28,6 +28,28 @@ export const Route = createFileRoute('/_auth/nimekiri/$shiftNr')({
     queryClient.ensureQueryData(registrationsQueryOptions(shiftNr))
   },
 })
+
+// const regTableColumns: ColumnDef<RegistrationEntry>[] = [
+//   {
+//     accessorKey: 'child.name',
+//     header: 'Nimi',
+//   },
+//   {
+//     accessorKey: 'child.currentAge',
+//     header: 'Vanus',
+//   },
+// ]
+//
+// const regTableContactColumns: ColumnDef<RegistrationEntry>[] = [
+//   {
+//     accessorKey: 'contactName',
+//     header: 'Kontakt',
+//   },
+//   {
+//     accessorKey: 'contactEmai',
+//     header: 'Meil',
+//   },
+// ]
 
 function RouteComponent() {
   const shiftNr = parseInt(Route.useParams().shiftNr, 10)
@@ -40,6 +62,14 @@ function RouteComponent() {
   // const setRegistrationShift = useSetAtom(registrationShiftAtom)
   // setRegistrationShift(shiftNr)
   // const { data: registrations } = useAtomValue(registrationsAtom)
+
+  // const registeredCampers: RegistrationEntry[] = []
+  // const reserveCampers: RegistrationEntry[] = []
+  //
+  // registrations.forEach((registration) => {
+  //   if (registration.isRegistered) registeredCampers.push(registration)
+  //   else reserveCampers.push(registration)
+  // })
 
   const regCategories: {
     [key: string]: { [key in Sex]: RegistrationEntry[] }
@@ -100,8 +130,8 @@ function RouteComponent() {
   const displayPriceEditSwitch = (useAuthStore.getState().user as User).isRoot
 
   return (
-    <>
-      <div className="mx-6 flex gap-4">
+    <div className="pb-6 overflow-y-scroll h-[calc((100%-var(--spacing)*16))]">
+      <div className="px-6 flex flex-wrap gap-4 sticky top-0 z-10 bg-white pb-4">
         <ShiftNav />
         {displayPrintButton && (
           <Button variant="outline" onClick={print}>
@@ -142,6 +172,7 @@ function RouteComponent() {
         resM={regCategories.res.M}
         resF={regCategories.res.F}
       />
-    </>
+      {/*<DataTable columns={regTableColumns} data={registeredCampers} />*/}
+    </div>
   )
 }

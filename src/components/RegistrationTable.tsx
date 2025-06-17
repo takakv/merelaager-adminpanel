@@ -344,7 +344,7 @@ export const RegistrationTable = ({
   resF,
 }: RegistrationTableProps) => {
   return (
-    <div className="mx-6 overflow-y-scroll h-[calc(100%-50px)] border-t border-gray-200">
+    <div className="mx-6 border-t border-gray-200">
       <table className="w-full text-left border-separate border-spacing-0">
         <TableHead keys={tableHeadings} isDetailView={isDetailView} />
         <TableBody

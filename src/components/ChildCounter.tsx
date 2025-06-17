@@ -14,7 +14,7 @@ export const ChildCounter = ({
   resFCount,
 }: ChildCounterProps) => {
   return (
-    <div className="px-6 py-4 flex gap-4 flex-wrap">
+    <div className="px-6 pb-4 flex gap-4 flex-wrap">
       <div className="inline-flex gap-4">
         <div>
           poisid: <span className="font-mono">{regMCount}</span>
