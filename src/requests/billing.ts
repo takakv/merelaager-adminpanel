@@ -10,6 +10,7 @@ export const ChildBillSchema = Type.Object({
   priceToPay: Type.Integer(),
   billNr: Type.Integer(),
   shiftNr: Type.Integer(),
+  billSent: Type.Boolean(),
 })
 
 export const ParentBillSchema = Type.Object({
@@ -22,6 +23,40 @@ export const ParentBillSchema = Type.Object({
 export type ChildBillData = Static<typeof ChildBillSchema>
 
 export type ParentBillData = Static<typeof ParentBillSchema>
+
+export const sendBill = async (email: string) => {
+  const response = await apiFetch(`/notifications/bills`, {
+    method: 'POST',
+    mode: 'cors',
+    credentials: 'include',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email }),
+  })
+
+  if (response.ok) return
+
+  const jsRes = await response.json()
+
+  switch (response.status) {
+    case StatusCodes.UNAUTHORIZED:
+      throw new Error('Ligipääsuks pead olema autenditud!')
+    case StatusCodes.FORBIDDEN:
+      throw new Error(jsRes.data.permissions)
+    case StatusCodes.INTERNAL_SERVER_ERROR:
+      throw new Error(jsRes.message)
+    case StatusCodes.NOT_FOUND:
+      if (jsRes.data.email !== undefined) {
+        throw new Error(jsRes.data.email)
+      }
+      if (jsRes.data.registrations !== undefined) {
+        throw new Error(jsRes.data.registrations)
+      }
+    // fallthrough
+    default:
+      console.error(jsRes)
+      throw new Error('Ootamatu viga: rohkem infot konsoolis.')
+  }
+}
 
 export const generateBill = async (email: string) => {
   const response = await apiFetch(`/bills`, {

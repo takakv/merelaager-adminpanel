@@ -1,5 +1,9 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { useMutation, useSuspenseQuery } from '@tanstack/react-query'
+import {
+  useMutation,
+  useQueryClient,
+  useSuspenseQuery,
+} from '@tanstack/react-query'
 import { type ColumnDef } from '@tanstack/table-core'
 import { toast } from 'sonner'
 
@@ -10,6 +14,7 @@ import {
   fetchBillPdf,
   generateBill,
   type ParentBillData,
+  sendBill,
   shiftBillingFetchQueryOptions,
 } from '@/requests/billing.ts'
 
@@ -52,6 +57,14 @@ const childrenTableColumns: ColumnDef<ChildBillData>[] = [
   {
     accessorKey: 'priceToPay',
     header: 'Maksta',
+  },
+  {
+    accessorKey: 'billSent',
+    header: 'Arve saadetud?',
+    cell: ({ row }) => {
+      const billSent = row.original.billSent
+      return billSent ? 'Jah' : 'Ei'
+    },
   },
 ]
 
@@ -107,6 +120,12 @@ const billTableColumns: ColumnDef<ParentBillData>[] = [
       const billNr = row.original.billNr
       const records = row.original.records
       records.sort((a, b) => a.childName.localeCompare(b.childName))
+
+      let billSent = true
+      records.forEach((record) => {
+        if (!record.billSent) billSent = false
+      })
+
       return (
         <div className="flex justify-between items-center gap-2">
           <Drawer>
@@ -121,7 +140,7 @@ const billTableColumns: ColumnDef<ParentBillData>[] = [
                   <DrawerTitle>
                     Arve {billNr || 'pole veel genereeritud'}
                   </DrawerTitle>
-                  <DrawerDescription />
+                  <DrawerDescription>{row.original.email}</DrawerDescription>
                 </DrawerHeader>
                 <DataTable columns={childrenTableColumns} data={records} />
               </div>
@@ -130,6 +149,11 @@ const billTableColumns: ColumnDef<ParentBillData>[] = [
           <div>
             <GenerateBillButton email={row.original.email} />
             <PrintBillButton billNr={billNr} />
+            <SendBillButton
+              name={row.original.name}
+              email={row.original.email}
+              billSent={billSent}
+            />
           </div>
         </div>
       )
@@ -167,6 +191,69 @@ const GenerateBillButton = ({ email }: { email: string }) => {
   )
 }
 
+const SendBillButton = ({
+  name,
+  email,
+  billSent,
+}: {
+  name: string
+  email: string
+  billSent: boolean
+}) => {
+  const queryClient = useQueryClient()
+  const shiftNr = getUserShift()
+
+  const mutation = useMutation({
+    mutationFn: async (email: string) => {
+      await sendBill(email)
+      return email
+    },
+    onError: (error: Error) => {
+      toast.error('Viga arve saatmisel!', {
+        description: error.message,
+      })
+    },
+    onSuccess: (email) => {
+      toast.success('Arve edukalt saadetud.', {
+        description: `Saaja: ${name} (${email})`,
+      })
+
+      const staleData = queryClient.getQueryData<ParentBillData[]>([
+        'billing',
+        shiftNr,
+      ])
+      if (!staleData) return
+
+      const updatedData = [...staleData]
+      const index = updatedData.findIndex((r) => r.email === email)
+      if (index === -1) return
+
+      const staleRecords = staleData[index].records
+      const freshRecords: ChildBillData[] = []
+      staleRecords.forEach((record) => {
+        freshRecords.push({ ...record, billSent: true })
+      })
+
+      updatedData[index] = {
+        ...updatedData[index],
+        records: freshRecords,
+      }
+
+      queryClient.setQueryData(['billing', shiftNr], updatedData)
+    },
+  })
+
+  const onClick = () => {
+    mutation.mutate(email)
+  }
+
+  return (
+    <Button variant="outline" disabled={billSent} onClick={onClick}>
+      Saada arve
+    </Button>
+  )
+}
+
 const PrintBillButton = ({ billNr }: { billNr: number }) => {
   const print = async () => {
     let pdfBlob: Blob
@@ -191,7 +278,12 @@ const PrintBillButton = ({ billNr }: { billNr: number }) => {
   }
 
   return (
-    <Button variant="outline" disabled={billNr === 0} onClick={print}>
+    <Button
+      variant="outline"
+      className="mr-2"
+      disabled={billNr === 0}
+      onClick={print}
+    >
       Kuva PDF
     </Button>
   )
