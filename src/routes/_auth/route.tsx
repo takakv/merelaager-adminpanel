@@ -7,6 +7,8 @@ import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar.tsx'
 
 import { AppSidebar } from '@/components/app-sidebar.tsx'
 
+import { Route as loginRoute } from '../login.tsx'
+
 export const Route = createFileRoute('/_auth')({
   component: AppLayoutComponent,
   beforeLoad: ({ location }) => {
@@ -16,7 +18,7 @@ export const Route = createFileRoute('/_auth')({
     if (!user) {
       console.log('USER IS NOT LOGGED IN!')
       throw redirect({
-        to: '/login',
+        to: loginRoute.to,
         search: {
           redirect: location.href,
         },

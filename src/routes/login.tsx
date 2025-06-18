@@ -1,4 +1,4 @@
-import { createFileRoute, redirect, useRouter } from '@tanstack/react-router'
+import { createFileRoute, redirect } from '@tanstack/react-router'
 import { z } from 'zod'
 
 import { useAuthStore } from '@/stores/authStore.ts'
@@ -25,7 +25,7 @@ import { Input } from '@/components/ui/input.tsx'
 import { Button } from '@/components/ui/button.tsx'
 import { Toaster } from '@/components/ui/sonner.tsx'
 
-const fallback = '/' as const
+import { Route as homeRoute } from './_auth/index.tsx'
 
 // export const Route = createFileRoute('/login')({
 //   component: LoginComponent,
@@ -44,7 +44,7 @@ export const Route = createFileRoute('/login')({
   beforeLoad: () => {
     const user = useAuthStore.getState().user
     if (user) {
-      throw redirect({ to: fallback })
+      throw redirect({ to: homeRoute.to })
     }
   },
 })
@@ -60,7 +60,6 @@ const formSchema = z.object({
 
 function LoginComponent() {
   const { login } = useAuthStore()
-  const router = useRouter()
   const navigate = Route.useNavigate()
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -79,6 +78,7 @@ function LoginComponent() {
       if (!usernameValue || !passwordValue) return
       const username = usernameValue.toString()
       const password = passwordValue.toString()
+
       try {
         await login(username, password)
       } catch (err) {
@@ -89,9 +89,9 @@ function LoginComponent() {
         return
       }
 
-      await router.invalidate()
+      // await router.invalidate()
       console.log('navigating')
-      navigate({ to: '/', replace: true })
+      navigate({ to: homeRoute.to, replace: true })
     } catch (error) {
       console.error('Error logging in: ', error)
       toast.error('Viga sisselogimisel!', {
