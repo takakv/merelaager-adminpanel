@@ -27,6 +27,7 @@ export type RegistrationEntry = {
   road?: string
   county?: string
   country?: string
+  addendum?: string | null
   pricePaid?: number
   priceToPay?: number
   notifSent?: boolean

@@ -1,11 +1,17 @@
 import type { ReactNode } from 'react'
 import * as React from 'react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { toast } from 'sonner'
 
-import { BadgeEuroIcon, MailCheckIcon } from 'lucide-react'
+import { BadgeEuroIcon, MailCheckIcon, NotebookText } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input.tsx'
 import { Badge } from '@/components/ui/badge.tsx'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/ui/tooltip.tsx'
 
 import {
   type PatchKeys,
@@ -13,7 +19,6 @@ import {
   patchRegistrations,
   type RegistrationEntry,
 } from '@/requests/registrations.ts'
-import { toast } from 'sonner'
 
 const TableHeadCell = ({ children }: { children: ReactNode }) => {
   return (
@@ -186,16 +191,32 @@ const TableDataRow = ({
   const displayFinanceBadge = !isDetailView && isFinanceAvailable
   const isPaid = registration.pricePaid === registration.priceToPay
 
+  console.log(registration.addendum)
+
   return (
     <tr className={classList}>
       <TableCell isFirst={true}>
         <div className="flex justify-between gap-4">
           {registration.child.name}
-          {displayFinanceBadge && isPaid && (
-            <Badge variant="outline">
-              <BadgeEuroIcon />
-            </Badge>
-          )}
+          <div className="flex gap-2">
+            {registration.addendum ? (
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Badge variant="outline">
+                    <NotebookText />
+                  </Badge>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>{registration.addendum}</p>
+                </TooltipContent>
+              </Tooltip>
+            ) : null}
+            {displayFinanceBadge && isPaid && (
+              <Badge variant="outline">
+                <BadgeEuroIcon />
+              </Badge>
+            )}
+          </div>
         </div>
       </TableCell>
       {isDetailView && (
