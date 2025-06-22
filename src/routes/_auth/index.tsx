@@ -8,6 +8,13 @@ import {
 } from '@/requests/shift-staff.ts'
 import { useSuspenseQuery } from '@tanstack/react-query'
 import { Separator } from '@/components/ui/separator.tsx'
+import { Badge } from '@/components/ui/badge.tsx'
+import { CircleAlertIcon } from 'lucide-react'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/ui/tooltip'
 
 export const Route = createFileRoute('/_auth/')({
   component: App,
@@ -17,27 +24,56 @@ export const Route = createFileRoute('/_auth/')({
   },
 })
 
-type TeamCardProps = {
-  staff: ShiftStaffMember[]
+type TeamCardEntryProps = {
+  member: ShiftStaffMember
 }
 
-const TeamCard = ({ staff }: TeamCardProps) => {
+const TeamCardEntry = ({ member }: TeamCardEntryProps) => {
   const roles: { [key: string]: string } = {
     boss: 'Juhataja',
     full: 'Kasvataja',
     part: 'Abikasvataja',
   }
 
+  let displayCertificateWarning = false
+  if (member.role === 'boss' || member.role === 'full') {
+    if (member.certificates.length === 0) displayCertificateWarning = true
+  }
+
+  return (
+    <div key={member.id}>
+      <div>{member.name}</div>
+      <div className="flex gap-2">
+        <div className="text-sm">{roles[member.role]}</div>
+        {displayCertificateWarning && (
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Badge variant="outline">
+                <CircleAlertIcon />
+              </Badge>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Puudub kehtiv tunnistus!</p>
+            </TooltipContent>
+          </Tooltip>
+        )}
+      </div>
+    </div>
+  )
+}
+
+type TeamCardProps = {
+  staff: ShiftStaffMember[]
+}
+
+const TeamCard = ({ staff }: TeamCardProps) => {
   return (
     <div className="border rounded-md p-6">
       <div>Meeskond</div>
       <Separator className="my-4" />
       <div className="flex flex-col gap-4">
         {staff.map((member) => (
-          <div key={member.id}>
-            <div>{member.name}</div>
-            <div className="text-sm">{roles[member.role]}</div>
-          </div>
+          <TeamCardEntry key={member.id} member={member} />
         ))}
       </div>
     </div>
