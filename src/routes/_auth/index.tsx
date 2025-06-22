@@ -46,15 +46,20 @@ type ActiveCertificatesProps = {
 
 const ActiveCertificates = ({ certificates }: ActiveCertificatesProps) => {
   const urlPrefix = 'https://www.kutseregister.ee/ctrl/et/Tunnistused/vaata/'
+
   return (
     <div>
       {certificates.map((certificate) => (
         <Tooltip key={certificate.certId}>
           <TooltipTrigger asChild>
             <Badge variant="outline">
-              <Link to={urlPrefix + certificate.urlId} target="_blank">
-                {certificate.certId}
-              </Link>
+              {certificate.certId.startsWith('__') ? (
+                'NST'
+              ) : (
+                <Link to={urlPrefix + certificate.urlId} target="_blank">
+                  {certificate.certId}
+                </Link>
+              )}
             </Badge>
           </TooltipTrigger>
           <TooltipContent>
