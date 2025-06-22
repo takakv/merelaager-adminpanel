@@ -1,10 +1,11 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, Link } from '@tanstack/react-router'
 
 import { getUserShift } from '@/utils.ts'
 
 import {
   shiftStaffFetchQueryOptions,
   type ShiftStaffMember,
+  type StaffCertificate,
 } from '@/requests/shift-staff.ts'
 import { useSuspenseQuery } from '@tanstack/react-query'
 import { Separator } from '@/components/ui/separator.tsx'
@@ -24,38 +25,74 @@ export const Route = createFileRoute('/_auth/')({
   },
 })
 
+const MissingCertificateTooltip = () => {
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <Badge variant="outline">
+          <CircleAlertIcon />
+        </Badge>
+      </TooltipTrigger>
+      <TooltipContent>
+        <p>Puudub kehtiv tunnistus!</p>
+      </TooltipContent>
+    </Tooltip>
+  )
+}
+
+type ActiveCertificatesProps = {
+  certificates: StaffCertificate[]
+}
+
+const ActiveCertificates = ({ certificates }: ActiveCertificatesProps) => {
+  const urlPrefix = 'https://www.kutseregister.ee/ctrl/et/Tunnistused/vaata/'
+  return (
+    <div>
+      {certificates.map((certificate) => (
+        <Tooltip key={certificate.certId}>
+          <TooltipTrigger asChild>
+            <Badge variant="outline">
+              <Link to={urlPrefix + certificate.urlId} target="_blank">
+                {certificate.certId}
+              </Link>
+            </Badge>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>{certificate.name}</p>
+          </TooltipContent>
+        </Tooltip>
+      ))}
+    </div>
+  )
+}
+
 type TeamCardEntryProps = {
   member: ShiftStaffMember
 }
 
 const TeamCardEntry = ({ member }: TeamCardEntryProps) => {
+  let displayCertificateWarning = false
+
+  if (member.role === 'boss' || member.role === 'full') {
+    if (member.certificates.length === 0) displayCertificateWarning = true
+  }
+
   const roles: { [key: string]: string } = {
     boss: 'Juhataja',
     full: 'Kasvataja',
     part: 'Abikasvataja',
   }
-
-  let displayCertificateWarning = false
-  if (member.role === 'boss' || member.role === 'full') {
-    if (member.certificates.length === 0) displayCertificateWarning = true
-  }
+  const displayRole = roles[member.role]
 
   return (
     <div key={member.id}>
       <div>{member.name}</div>
-      <div className="flex gap-2">
-        <div className="text-sm">{roles[member.role]}</div>
-        {displayCertificateWarning && (
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Badge variant="outline">
-                <CircleAlertIcon />
-              </Badge>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Puudub kehtiv tunnistus!</p>
-            </TooltipContent>
-          </Tooltip>
+      <div className="flex gap-2 items-center">
+        <div className="text-sm">{displayRole}</div>
+        {displayCertificateWarning ? (
+          <MissingCertificateTooltip />
+        ) : (
+          <ActiveCertificates certificates={member.certificates} />
         )}
       </div>
     </div>
