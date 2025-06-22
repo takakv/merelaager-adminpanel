@@ -13,6 +13,7 @@ const CamperRecordSchema = Type.Object({
   tentNr: Type.Union([Type.Integer(), Type.Null()]),
   teamId: Type.Union([Type.Integer(), Type.Null()]),
   isPresent: Type.Boolean(),
+  ageAtCamp: Type.Integer(),
 })
 
 const PatchRecordSchema = Type.Partial(

@@ -15,6 +15,7 @@ import { Route as LoginImport } from './routes/login'
 import { Route as AuthRouteImport } from './routes/_auth/route'
 import { Route as AuthIndexImport } from './routes/_auth/index'
 import { Route as AuthTelgidImport } from './routes/_auth/telgid'
+import { Route as AuthStatistikaImport } from './routes/_auth/statistika'
 import { Route as AuthOigusedImport } from './routes/_auth/oigused'
 import { Route as AuthNimekiriImport } from './routes/_auth/nimekiri'
 import { Route as AuthMeeskonnadImport } from './routes/_auth/meeskonnad'
@@ -44,6 +45,12 @@ const AuthIndexRoute = AuthIndexImport.update({
 const AuthTelgidRoute = AuthTelgidImport.update({
   id: '/telgid',
   path: '/telgid',
+  getParentRoute: () => AuthRouteRoute,
+} as any)
+
+const AuthStatistikaRoute = AuthStatistikaImport.update({
+  id: '/statistika',
+  path: '/statistika',
   getParentRoute: () => AuthRouteRoute,
 } as any)
 
@@ -136,6 +143,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthOigusedImport
       parentRoute: typeof AuthRouteImport
     }
+    '/_auth/statistika': {
+      id: '/_auth/statistika'
+      path: '/statistika'
+      fullPath: '/statistika'
+      preLoaderRoute: typeof AuthStatistikaImport
+      parentRoute: typeof AuthRouteImport
+    }
     '/_auth/telgid': {
       id: '/_auth/telgid'
       path: '/telgid'
@@ -180,6 +194,7 @@ interface AuthRouteRouteChildren {
   AuthMeeskonnadRoute: typeof AuthMeeskonnadRoute
   AuthNimekiriRoute: typeof AuthNimekiriRouteWithChildren
   AuthOigusedRoute: typeof AuthOigusedRoute
+  AuthStatistikaRoute: typeof AuthStatistikaRoute
   AuthTelgidRoute: typeof AuthTelgidRoute
   AuthIndexRoute: typeof AuthIndexRoute
 }
@@ -190,6 +205,7 @@ const AuthRouteRouteChildren: AuthRouteRouteChildren = {
   AuthMeeskonnadRoute: AuthMeeskonnadRoute,
   AuthNimekiriRoute: AuthNimekiriRouteWithChildren,
   AuthOigusedRoute: AuthOigusedRoute,
+  AuthStatistikaRoute: AuthStatistikaRoute,
   AuthTelgidRoute: AuthTelgidRoute,
   AuthIndexRoute: AuthIndexRoute,
 }
@@ -206,6 +222,7 @@ export interface FileRoutesByFullPath {
   '/meeskonnad': typeof AuthMeeskonnadRoute
   '/nimekiri': typeof AuthNimekiriRouteWithChildren
   '/oigused': typeof AuthOigusedRoute
+  '/statistika': typeof AuthStatistikaRoute
   '/telgid': typeof AuthTelgidRoute
   '/': typeof AuthIndexRoute
   '/nimekiri/$shiftNr': typeof AuthNimekiriShiftNrRoute
@@ -218,6 +235,7 @@ export interface FileRoutesByTo {
   '/meeskonnad': typeof AuthMeeskonnadRoute
   '/nimekiri': typeof AuthNimekiriRouteWithChildren
   '/oigused': typeof AuthOigusedRoute
+  '/statistika': typeof AuthStatistikaRoute
   '/telgid': typeof AuthTelgidRoute
   '/': typeof AuthIndexRoute
   '/nimekiri/$shiftNr': typeof AuthNimekiriShiftNrRoute
@@ -232,6 +250,7 @@ export interface FileRoutesById {
   '/_auth/meeskonnad': typeof AuthMeeskonnadRoute
   '/_auth/nimekiri': typeof AuthNimekiriRouteWithChildren
   '/_auth/oigused': typeof AuthOigusedRoute
+  '/_auth/statistika': typeof AuthStatistikaRoute
   '/_auth/telgid': typeof AuthTelgidRoute
   '/_auth/': typeof AuthIndexRoute
   '/_auth/nimekiri/$shiftNr': typeof AuthNimekiriShiftNrRoute
@@ -247,6 +266,7 @@ export interface FileRouteTypes {
     | '/meeskonnad'
     | '/nimekiri'
     | '/oigused'
+    | '/statistika'
     | '/telgid'
     | '/'
     | '/nimekiri/$shiftNr'
@@ -258,6 +278,7 @@ export interface FileRouteTypes {
     | '/meeskonnad'
     | '/nimekiri'
     | '/oigused'
+    | '/statistika'
     | '/telgid'
     | '/'
     | '/nimekiri/$shiftNr'
@@ -270,6 +291,7 @@ export interface FileRouteTypes {
     | '/_auth/meeskonnad'
     | '/_auth/nimekiri'
     | '/_auth/oigused'
+    | '/_auth/statistika'
     | '/_auth/telgid'
     | '/_auth/'
     | '/_auth/nimekiri/$shiftNr'
@@ -308,6 +330,7 @@ export const routeTree = rootRoute
         "/_auth/meeskonnad",
         "/_auth/nimekiri",
         "/_auth/oigused",
+        "/_auth/statistika",
         "/_auth/telgid",
         "/_auth/"
       ]
@@ -336,6 +359,10 @@ export const routeTree = rootRoute
     },
     "/_auth/oigused": {
       "filePath": "_auth/oigused.tsx",
+      "parent": "/_auth"
+    },
+    "/_auth/statistika": {
+      "filePath": "_auth/statistika.tsx",
       "parent": "/_auth"
     },
     "/_auth/telgid": {

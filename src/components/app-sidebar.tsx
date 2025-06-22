@@ -9,6 +9,7 @@ import { Route as permissionsRoute } from '../routes/_auth/oigused.tsx'
 import { Route as tentsRoute } from '../routes/_auth/telgid.tsx'
 import { Route as teamsRoute } from '../routes/_auth/meeskonnad.tsx'
 import { Route as gradesRoute } from '../routes/_auth/hinded.tsx'
+import { Route as statsRoute } from '../routes/_auth/statistika.tsx'
 
 import { ChevronsUpDown } from 'lucide-react'
 import {
@@ -65,6 +66,10 @@ const adminItems = [
   {
     title: 'Õigused',
     url: permissionsRoute.to,
+  },
+  {
+    title: 'Statistika',
+    url: statsRoute.to,
   },
 ]
 
