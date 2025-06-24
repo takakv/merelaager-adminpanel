@@ -11,6 +11,17 @@ export const PatchUserSchema = Type.Partial(
 
 export type PatchUserBody = Static<typeof PatchUserSchema>
 
+export const SignupSchema = Type.Object({
+  username: Type.String(),
+  email: Type.String(),
+  name: Type.String(),
+  nickname: Type.Optional(Type.String()),
+  password: Type.String(),
+  token: Type.String(),
+})
+
+export type SignupBody = Static<typeof SignupSchema>
+
 export const patchUser = async (userId: number, data: PatchUserBody) => {
   const response = await apiFetch(`/users/${userId}`, {
     method: 'PATCH',
@@ -31,6 +42,30 @@ export const patchUser = async (userId: number, data: PatchUserBody) => {
           throw new Error(jsRes.data.userId)
         }
       // fallthrough
+      default:
+        console.error(jsRes)
+        throw new Error('Ootamatu viga: rohkem infot konsoolis.')
+    }
+  }
+}
+
+export const signupUser = async (data: SignupBody) => {
+  const response = await apiFetch(`/auth/signup`, {
+    method: 'POST',
+    credentials: 'include',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  })
+
+  if (!response.ok) {
+    const jsRes = await response.json()
+    switch (response.status) {
+      case StatusCodes.FORBIDDEN:
+        throw new Error(jsRes.data.token)
+      case StatusCodes.INTERNAL_SERVER_ERROR:
+        throw new Error(jsRes.message)
+      case StatusCodes.CONFLICT:
+        throw new Error(jsRes.data.conflict)
       default:
         console.error(jsRes)
         throw new Error('Ootamatu viga: rohkem infot konsoolis.')

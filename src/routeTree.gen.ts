@@ -11,6 +11,7 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as SignupImport } from './routes/signup'
 import { Route as LoginImport } from './routes/login'
 import { Route as AuthRouteImport } from './routes/_auth/route'
 import { Route as AuthIndexImport } from './routes/_auth/index'
@@ -24,6 +25,12 @@ import { Route as AuthArvedImport } from './routes/_auth/arved'
 import { Route as AuthNimekiriShiftNrImport } from './routes/_auth/nimekiri.$shiftNr'
 
 // Create/Update Routes
+
+const SignupRoute = SignupImport.update({
+  id: '/signup',
+  path: '/signup',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const LoginRoute = LoginImport.update({
   id: '/login',
@@ -106,6 +113,13 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginImport
+      parentRoute: typeof rootRoute
+    }
+    '/signup': {
+      id: '/signup'
+      path: '/signup'
+      fullPath: '/signup'
+      preLoaderRoute: typeof SignupImport
       parentRoute: typeof rootRoute
     }
     '/_auth/arved': {
@@ -217,6 +231,7 @@ const AuthRouteRouteWithChildren = AuthRouteRoute._addFileChildren(
 export interface FileRoutesByFullPath {
   '': typeof AuthRouteRouteWithChildren
   '/login': typeof LoginRoute
+  '/signup': typeof SignupRoute
   '/arved': typeof AuthArvedRoute
   '/hinded': typeof AuthHindedRoute
   '/meeskonnad': typeof AuthMeeskonnadRoute
@@ -230,6 +245,7 @@ export interface FileRoutesByFullPath {
 
 export interface FileRoutesByTo {
   '/login': typeof LoginRoute
+  '/signup': typeof SignupRoute
   '/arved': typeof AuthArvedRoute
   '/hinded': typeof AuthHindedRoute
   '/meeskonnad': typeof AuthMeeskonnadRoute
@@ -245,6 +261,7 @@ export interface FileRoutesById {
   __root__: typeof rootRoute
   '/_auth': typeof AuthRouteRouteWithChildren
   '/login': typeof LoginRoute
+  '/signup': typeof SignupRoute
   '/_auth/arved': typeof AuthArvedRoute
   '/_auth/hinded': typeof AuthHindedRoute
   '/_auth/meeskonnad': typeof AuthMeeskonnadRoute
@@ -261,6 +278,7 @@ export interface FileRouteTypes {
   fullPaths:
     | ''
     | '/login'
+    | '/signup'
     | '/arved'
     | '/hinded'
     | '/meeskonnad'
@@ -273,6 +291,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/login'
+    | '/signup'
     | '/arved'
     | '/hinded'
     | '/meeskonnad'
@@ -286,6 +305,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/_auth'
     | '/login'
+    | '/signup'
     | '/_auth/arved'
     | '/_auth/hinded'
     | '/_auth/meeskonnad'
@@ -301,11 +321,13 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   AuthRouteRoute: typeof AuthRouteRouteWithChildren
   LoginRoute: typeof LoginRoute
+  SignupRoute: typeof SignupRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   AuthRouteRoute: AuthRouteRouteWithChildren,
   LoginRoute: LoginRoute,
+  SignupRoute: SignupRoute,
 }
 
 export const routeTree = rootRoute
@@ -319,7 +341,8 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/_auth",
-        "/login"
+        "/login",
+        "/signup"
       ]
     },
     "/_auth": {
@@ -337,6 +360,9 @@ export const routeTree = rootRoute
     },
     "/login": {
       "filePath": "login.tsx"
+    },
+    "/signup": {
+      "filePath": "signup.tsx"
     },
     "/_auth/arved": {
       "filePath": "_auth/arved.tsx",
