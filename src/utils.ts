@@ -18,3 +18,8 @@ export const getUserShifts = () => {
   const user = useAuthStore.getState().user as User
   return user.managedShifts
 }
+
+export const getCurrentRole = () => {
+  const user = useAuthStore.getState().user as User
+  return user.currentRole
+}

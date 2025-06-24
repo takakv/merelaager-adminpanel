@@ -22,6 +22,15 @@ export const SignupSchema = Type.Object({
 
 export type SignupBody = Static<typeof SignupSchema>
 
+export const CreateInviteSchema = Type.Object({
+  email: Type.String({ format: 'email' }),
+  name: Type.String(),
+  shiftNr: Type.Integer(),
+  role: Type.String(),
+})
+
+export type CreateInviteBody = Static<typeof CreateInviteSchema>
+
 export const patchUser = async (userId: number, data: PatchUserBody) => {
   const response = await apiFetch(`/users/${userId}`, {
     method: 'PATCH',
@@ -66,6 +75,30 @@ export const signupUser = async (data: SignupBody) => {
         throw new Error(jsRes.message)
       case StatusCodes.CONFLICT:
         throw new Error(jsRes.data.conflict)
+      default:
+        console.error(jsRes)
+        throw new Error('Ootamatu viga: rohkem infot konsoolis.')
+    }
+  }
+}
+
+export const sendInvite = async (data: CreateInviteBody) => {
+  const response = await apiFetch(`/users/invites`, {
+    method: 'POST',
+    credentials: 'include',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  })
+
+  if (!response.ok) {
+    const jsRes = await response.json()
+    switch (response.status) {
+      case StatusCodes.FORBIDDEN:
+        throw new Error(jsRes.data.permissions)
+      case StatusCodes.INTERNAL_SERVER_ERROR:
+        throw new Error(jsRes.message)
+      case StatusCodes.UNPROCESSABLE_ENTITY:
+        throw new Error(jsRes.data.role)
       default:
         console.error(jsRes)
         throw new Error('Ootamatu viga: rohkem infot konsoolis.')

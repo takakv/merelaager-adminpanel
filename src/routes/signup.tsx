@@ -26,11 +26,17 @@ import { Button } from '@/components/ui/button.tsx'
 
 import { Route as loginRoute } from '@/routes/login.tsx'
 
-const tokenSchema = z.object({ token: z.string().optional() }).strict()
+const paramSchema = z
+  .object({
+    token: z.string().optional(),
+    name: z.string().optional(),
+    email: z.string().email().optional(),
+  })
+  .strict()
 
 export const Route = createFileRoute('/signup')({
   component: RouteComponent,
-  validateSearch: tokenSchema,
+  validateSearch: paramSchema,
 })
 
 const formSchema = z.object({
@@ -54,15 +60,15 @@ const formSchema = z.object({
 })
 
 function RouteComponent() {
-  const token = useSearch({ from: '/signup' }).token
+  const { token, name, email } = useSearch({ from: '/signup' })
   const navigate = Route.useNavigate()
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       username: '',
-      email: '',
-      name: '',
+      email: email,
+      name: name,
       nickname: '',
       password: '',
       token: token,

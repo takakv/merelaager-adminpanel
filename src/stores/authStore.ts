@@ -9,6 +9,7 @@ export const UserInfoSchema = Type.Object({
   nickname: Type.Union([Type.String(), Type.Null()]),
   email: Type.Union([Type.String(), Type.Null()]),
   currentShift: Type.Integer(),
+  currentRole: Type.String(),
   isRoot: Type.Boolean(),
   managedShifts: Type.Array(Type.Integer()),
 })
@@ -19,6 +20,7 @@ export type User = {
   nickname: string | null
   email: string | null
   currentShift: number
+  currentRole: string
   isRoot: boolean
   managedShifts: number[]
 }
@@ -72,6 +74,7 @@ export const useAuthStore = create<AuthState & UpdateAction>((set) => ({
       nickname,
       email,
       currentShift,
+      currentRole,
       isRoot,
       managedShifts,
     } = jsRes.data
@@ -83,6 +86,7 @@ export const useAuthStore = create<AuthState & UpdateAction>((set) => ({
         nickname,
         email,
         currentShift,
+        currentRole,
         isRoot,
         managedShifts,
       },
@@ -117,6 +121,7 @@ export const useAuthStore = create<AuthState & UpdateAction>((set) => ({
       nickname,
       email,
       currentShift,
+      currentRole,
       isRoot,
       managedShifts,
     } = jsRes.data
@@ -127,6 +132,7 @@ export const useAuthStore = create<AuthState & UpdateAction>((set) => ({
         nickname,
         email,
         currentShift,
+        currentRole,
         isRoot,
         managedShifts,
       },

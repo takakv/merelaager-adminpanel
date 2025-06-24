@@ -1,6 +1,9 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
 
-import { getUserShift } from '@/utils.ts'
+import { getCurrentRole, getUserShift } from '@/utils.ts'
 
 import {
   shiftStaffFetchQueryOptions,
@@ -16,6 +19,25 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from '@/components/ui/tooltip'
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form.tsx'
+import { Input } from '@/components/ui/input.tsx'
+import { Button } from '@/components/ui/button.tsx'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select.tsx'
+import { sendInvite } from '@/requests/user.ts'
+import { toast } from 'sonner'
 
 export const Route = createFileRoute('/_auth/')({
   component: App,
@@ -122,8 +144,124 @@ const TeamCard = ({ staff }: TeamCardProps) => {
   )
 }
 
+const formSchema = z.object({
+  name: z
+    .string()
+    .trim()
+    .refine((val) => val.split(/\s+/).length >= 2, {
+      message: 'Nimi peab koosnema vähemalt kahest osast.',
+    }),
+  email: z.string().email({
+    message: 'Peab olema meiliaadress.',
+  }),
+  role: z.string(),
+})
+
+const InviteCard = () => {
+  const shiftNr = getUserShift()
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      email: '',
+      name: '',
+      role: '',
+    },
+  })
+
+  const roleMap = {
+    instructor: 'Kasvataja',
+    helper: 'Abikasvataja',
+  }
+
+  const onFormSubmit = async (values: z.infer<typeof formSchema>) => {
+    try {
+      await sendInvite({
+        name: values.name.trim(),
+        email: values.email.trim(),
+        role: values.role,
+        shiftNr,
+      })
+
+      toast.message('Kutse saadetud!')
+    } catch (error) {
+      toast.error('Viga konto loomisel!', {
+        description: (error as Error).message,
+      })
+    }
+  }
+
+  return (
+    <div className="border rounded-md p-6 max-w-sm">
+      <div>Lisa liige</div>
+      <Separator className="my-4" />
+      <Form {...form}>
+        <form
+          className="flex flex-col gap-4"
+          onSubmit={form.handleSubmit(onFormSubmit)}
+        >
+          <FormField
+            control={form.control}
+            name="name"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Nimi</FormLabel>
+                <FormControl>
+                  <Input {...field} placeholder="Kotermann Haldjas" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Meiliaadress</FormLabel>
+                <FormControl>
+                  <Input {...field} placeholder="kotermann@merelaager.ee" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="role"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Roll</FormLabel>
+                <Select onValueChange={field.onChange}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Vali roll" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {Object.keys(roleMap).map((key) => (
+                      <SelectItem key={key} value={key}>
+                        {roleMap[key as keyof typeof roleMap]}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <Button type="submit">Saada kutse</Button>
+        </form>
+      </Form>
+    </div>
+  )
+}
+
 function App() {
   const shiftNr = getUserShift()
+  const currentRole = getCurrentRole()
+
+  const canInvite = ['root', 'boss'].includes(currentRole)
 
   const { data: staff } = useSuspenseQuery(shiftStaffFetchQueryOptions(shiftNr))
 
@@ -131,6 +269,7 @@ function App() {
     <div className="px-6 pb-6 flex flex-col gap-6 overflow-y-scroll h-[calc((100%-var(--spacing)*16))]">
       <div>Kambüüs on veel töös</div>
       <TeamCard staff={staff} />
+      {canInvite && <InviteCard />}
     </div>
   )
 }
