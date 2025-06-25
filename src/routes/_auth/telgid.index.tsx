@@ -1,4 +1,4 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, Link } from '@tanstack/react-router'
 import {
   useMutation,
   useQueryClient,
@@ -34,6 +34,8 @@ import {
   type RecordPatchObject,
   shiftRecordsFetchQueryOptions,
 } from '@/requests/shift-records.ts'
+
+import { Route as tentRoute } from './telgid.$tentNr.tsx'
 
 export const Route = createFileRoute('/_auth/telgid/')({
   component: RouteComponent,
@@ -152,7 +154,15 @@ type TentBoxProps = {
 const TentBox = ({ tentKey, records }: TentBoxProps) => {
   return (
     <div className="p-6 border rounded-md w-full md:w-56">
-      <div>{tentKey}</div>
+      <div className="text-center">
+        <Link
+          to={tentRoute.to}
+          params={{ tentNr: tentKey }}
+          className="hover:underline"
+        >
+          Telk {tentKey}
+        </Link>
+      </div>
       <Separator className="my-4" />
       <div className="flex flex-col gap-2">
         {records.map((record) => (
