@@ -47,6 +47,33 @@ export const fetchTentInfo = async (shiftNr: number, tentNr: number) => {
   return (jsRes as TentAPISuccessResponse).data
 }
 
+export const addTentScore = async (
+  shiftNr: number,
+  tentNr: number,
+  score: number,
+) => {
+  const response = await apiFetch(`/shifts/${shiftNr}/tents/${tentNr}`, {
+    method: 'POST',
+    mode: 'cors',
+    credentials: 'include',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ score }),
+  })
+
+  const jsRes = await response.json()
+  if (response.ok) return jsRes.data as TentScore
+
+  switch (response.status) {
+    case StatusCodes.UNAUTHORIZED:
+      throw new Error('Ligipääsuks pead olema autenditud!')
+    case StatusCodes.FORBIDDEN:
+      throw new Error(jsRes.data.permissions)
+    default:
+      console.error(jsRes)
+      throw new Error('Ootamatu viga: rohkem infot konsoolis.')
+  }
+}
+
 export const shiftTentFetchQueryOptions = (shiftNr: number, tentNr: number) =>
   queryOptions({
     queryKey: ['tent', shiftNr, tentNr],
