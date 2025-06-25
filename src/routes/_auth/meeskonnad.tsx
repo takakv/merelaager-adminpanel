@@ -42,7 +42,7 @@ import {
   FormMessage,
 } from '@/components/ui/form.tsx'
 import { toast } from 'sonner'
-import { usePatchShiftRecord } from '@/routes/_auth/telgid.tsx'
+import { usePatchShiftRecord } from '@/routes/_auth/telgid.index.tsx'
 import { useEffect } from 'react'
 import {
   Tooltip,

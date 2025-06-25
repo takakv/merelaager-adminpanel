@@ -35,7 +35,7 @@ import {
   shiftRecordsFetchQueryOptions,
 } from '@/requests/shift-records.ts'
 
-export const Route = createFileRoute('/_auth/telgid')({
+export const Route = createFileRoute('/_auth/telgid/')({
   component: RouteComponent,
   loader: ({ context: { queryClient } }) => {
     const shiftNr = getUserShift()
