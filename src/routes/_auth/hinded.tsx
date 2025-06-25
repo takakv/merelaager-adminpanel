@@ -1,4 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
+import { useSuspenseQuery } from '@tanstack/react-query'
+import type { ColumnDef } from '@tanstack/table-core'
 
 import { getUserShift } from '@/utils.ts'
 
@@ -6,9 +8,8 @@ import {
   shiftTentsFetchQueryOptions,
   type TentScore,
 } from '@/requests/tents.ts'
-import { useSuspenseQuery } from '@tanstack/react-query'
+
 import { DataTable } from '@/components/data-table.tsx'
-import type { ColumnDef } from '@tanstack/table-core'
 
 export const Route = createFileRoute('/_auth/hinded')({
   component: RouteComponent,
@@ -94,14 +95,16 @@ function RouteComponent() {
     uniqueDateScores.set(dateString, dateScores)
   })
 
-  console.log(Array.from(uniqueDateScores.values()))
-
   return (
     <div className="px-6 pb-6 flex flex-col gap-6 overflow-y-scroll h-[calc((100%-var(--spacing)*16))]">
       <DataTable
         columns={scoreTableColumns}
         data={Array.from(uniqueDateScores.values())}
       />
+      <p>
+        Kui ühel kuupäeval on telgile antud rohkem kui üks hinne, siis on
+        tabelis kuvatud selle päeva telgi hinnete keskmine.
+      </p>
     </div>
   )
 }
