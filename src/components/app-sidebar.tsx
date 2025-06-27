@@ -1,6 +1,11 @@
 import { Link } from '@tanstack/react-router'
 
-import { getUserId, getUserShift, getUserShifts } from '@/utils.ts'
+import {
+  getCurrentRole,
+  getUserId,
+  getUserShift,
+  getUserShifts,
+} from '@/utils.ts'
 
 import { Route as homeRoute } from '../routes/_auth/index.tsx'
 import { Route as registrationsRoute } from '../routes/_auth/nimekiri.tsx'
@@ -143,6 +148,10 @@ const ShiftSwitcher = () => {
 }
 
 export function AppSidebar() {
+  const currentRole = getCurrentRole()
+  const isAdmin = ['root', 'boss'].includes(currentRole)
+  const adminPages = ['Arved', 'Õigused']
+
   return (
     <Sidebar>
       {/*<SidebarHeader />*/}
@@ -187,15 +196,18 @@ export function AppSidebar() {
         </SidebarGroup>
         <SidebarGroup>
           <SidebarGroupContent>
-            {adminItems.map((item) => (
-              <SidebarMenuItem key={item.title}>
-                <SidebarMenuButton asChild>
-                  <Link to={item.url}>
-                    <span>{item.title}</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            ))}
+            {adminItems.map((item) => {
+              if (!isAdmin && adminPages.includes(item.title)) return null
+              return (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton asChild>
+                    <Link to={item.url}>
+                      <span>{item.title}</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              )
+            })}
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
