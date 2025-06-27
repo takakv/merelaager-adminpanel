@@ -99,24 +99,21 @@ const TeamlessChild = ({ record, teams }: TeamlessChildProps) => {
   }
 
   return (
-    <div>
-      <div>{record.childName}</div>
-      <Select onValueChange={onValueChange}>
-        <SelectTrigger className="w-auto">
-          <SelectValue placeholder="Meeskond" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectGroup>
-            <SelectLabel>Meeskond</SelectLabel>
-            {teams.map((team) => (
-              <SelectItem value={`${team.id}`} key={team.id}>
-                {team.name}
-              </SelectItem>
-            ))}
-          </SelectGroup>
-        </SelectContent>
-      </Select>
-    </div>
+    <Select onValueChange={onValueChange}>
+      <SelectTrigger className="w-auto">
+        <SelectValue placeholder={record.childName} />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectGroup>
+          <SelectLabel>Meeskond</SelectLabel>
+          {teams.map((team) => (
+            <SelectItem value={`${team.id}`} key={team.id}>
+              {team.name}
+            </SelectItem>
+          ))}
+        </SelectGroup>
+      </SelectContent>
+    </Select>
   )
 }
 

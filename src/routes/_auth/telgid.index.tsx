@@ -58,24 +58,21 @@ const TentlessChild = ({ record }: TentlessChildProps) => {
   }
 
   return (
-    <div>
-      <div>{record.childName}</div>
-      <Select onValueChange={onValueChange}>
-        <SelectTrigger className="w-auto">
-          <SelectValue placeholder="Telk" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectGroup>
-            <SelectLabel>Telk</SelectLabel>
-            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((tentNr) => (
-              <SelectItem value={`${tentNr}`} key={tentNr}>
-                {tentNr}
-              </SelectItem>
-            ))}
-          </SelectGroup>
-        </SelectContent>
-      </Select>
-    </div>
+    <Select onValueChange={onValueChange}>
+      <SelectTrigger className="w-auto">
+        <SelectValue placeholder={record.childName} />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectGroup>
+          <SelectLabel>Telk</SelectLabel>
+          {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((tentNr) => (
+            <SelectItem value={`${tentNr}`} key={tentNr}>
+              {tentNr}
+            </SelectItem>
+          ))}
+        </SelectGroup>
+      </SelectContent>
+    </Select>
   )
 }
 
