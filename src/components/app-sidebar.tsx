@@ -14,6 +14,7 @@ import { Route as permissionsRoute } from '../routes/_auth/oigused.tsx'
 import { Route as tentsRoute } from '../routes/_auth/telgid.index.tsx'
 import { Route as teamsRoute } from '../routes/_auth/meeskonnad.tsx'
 import { Route as gradesRoute } from '../routes/_auth/hinded.tsx'
+import { Route as shirtsRoute } from '../routes/_auth/sargid.tsx'
 import { Route as statsRoute } from '../routes/_auth/statistika.tsx'
 
 import { ChevronsUpDown } from 'lucide-react'
@@ -67,6 +68,10 @@ const adminItems = [
   {
     title: 'Arved',
     url: billsRoute.to,
+  },
+  {
+    title: 'T-särgid',
+    url: shirtsRoute.to,
   },
   {
     title: 'Õigused',
@@ -150,7 +155,7 @@ const ShiftSwitcher = () => {
 export function AppSidebar() {
   const currentRole = getCurrentRole()
   const isAdmin = ['root', 'boss'].includes(currentRole)
-  const adminPages = ['Arved', 'Õigused']
+  const adminPages = ['Arved', 'Õigused', 'T-särgid']
 
   return (
     <Sidebar>
