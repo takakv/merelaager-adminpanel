@@ -36,7 +36,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select.tsx'
-import { sendInvite } from '@/requests/user.ts'
+import { changePassword, sendInvite } from '@/requests/user.ts'
 import { toast } from 'sonner'
 
 export const Route = createFileRoute('/_auth/')({
@@ -157,6 +157,83 @@ const formSchema = z.object({
   role: z.string(),
 })
 
+const changePasswordFormSchema = z.object({
+  password: z.string().min(6, {
+    message: 'Salasõna peab olema vähemat 6 tähemärki pikk!',
+  }),
+  confirmPassword: z.string(),
+})
+
+const ChangePasswordCard = () => {
+  const form = useForm<z.infer<typeof changePasswordFormSchema>>({
+    resolver: zodResolver(changePasswordFormSchema),
+    defaultValues: {
+      password: '',
+      confirmPassword: '',
+    },
+  })
+
+  const onFormSubmit = async (
+    values: z.infer<typeof changePasswordFormSchema>,
+  ) => {
+    if (values.password !== values.confirmPassword) {
+      toast.warning('Salasõnad peavad klappima!')
+      return
+    }
+
+    try {
+      await changePassword(values.password.trim())
+
+      toast.message('Salasõna muudetud!')
+    } catch (error) {
+      toast.error('Viga salasõna muutmisel!', {
+        description: (error as Error).message,
+      })
+    }
+  }
+
+  return (
+    <div className="border rounded-md p-6 max-w-sm">
+      <div>Muuda salasõna</div>
+      <Separator className="my-4" />
+      <Form {...form}>
+        <form
+          className="flex flex-col gap-4"
+          onSubmit={form.handleSubmit(onFormSubmit)}
+        >
+          <FormField
+            control={form.control}
+            name="password"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Salasõna</FormLabel>
+                <FormControl>
+                  <Input {...field} type="password" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="confirmPassword"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Salasõna uuesti</FormLabel>
+                <FormControl>
+                  <Input {...field} type="password" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <Button type="submit">Uuenda salasõna</Button>
+        </form>
+      </Form>
+    </div>
+  )
+}
+
 const InviteCard = () => {
   const shiftNr = getUserShift()
 
@@ -270,6 +347,7 @@ function App() {
       <div>Kambüüs on veel töös</div>
       <TeamCard staff={staff} />
       {canInvite && <InviteCard />}
+      <ChangePasswordCard />
     </div>
   )
 }

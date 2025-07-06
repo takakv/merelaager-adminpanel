@@ -105,3 +105,21 @@ export const sendInvite = async (data: CreateInviteBody) => {
     }
   }
 }
+
+export const changePassword = async (password: string) => {
+  const response = await apiFetch(`/auth/password`, {
+    method: 'POST',
+    credentials: 'include',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ password }),
+  })
+
+  if (!response.ok) {
+    const jsRes = await response.json()
+    switch (response.status) {
+      default:
+        console.error(jsRes)
+        throw new Error('Ootamatu viga: rohkem infot konsoolis.')
+    }
+  }
+}
