@@ -130,7 +130,10 @@ const TeamCamperEntry = ({ record }: TeamCamperEntryProps) => {
 
   return (
     <div className="flex justify-between items-center gap-4">
-      <p>{record.childName}</p>
+      <div>
+        <p>{record.childName}</p>
+        <p>{record.ageAtCamp}</p>
+      </div>
       <Tooltip>
         <TooltipTrigger asChild>
           <div className="w-5 text-[var(--input)]">
