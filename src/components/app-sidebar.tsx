@@ -13,6 +13,7 @@ import { Route as billsRoute } from '../routes/_auth/arved.tsx'
 import { Route as permissionsRoute } from '../routes/_auth/oigused.tsx'
 import { Route as tentsRoute } from '../routes/_auth/telgid.index.tsx'
 import { Route as teamsRoute } from '../routes/_auth/meeskonnad.tsx'
+import { Route as timerRoute } from '../routes/_auth/taimer.tsx'
 import { Route as gradesRoute } from '../routes/_auth/hinded.tsx'
 import { Route as shirtsRoute } from '../routes/_auth/sargid.tsx'
 import { Route as statsRoute } from '../routes/_auth/statistika.tsx'
@@ -57,6 +58,10 @@ const shiftItems = [
   {
     title: 'Hinded',
     url: gradesRoute.to,
+  },
+  {
+    title: 'Taimer',
+    url: timerRoute.to,
   },
 ]
 

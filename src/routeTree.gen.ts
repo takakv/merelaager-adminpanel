@@ -15,6 +15,7 @@ import { Route as SignupImport } from './routes/signup'
 import { Route as LoginImport } from './routes/login'
 import { Route as AuthRouteImport } from './routes/_auth/route'
 import { Route as AuthIndexImport } from './routes/_auth/index'
+import { Route as AuthTaimerImport } from './routes/_auth/taimer'
 import { Route as AuthStatistikaImport } from './routes/_auth/statistika'
 import { Route as AuthSargidImport } from './routes/_auth/sargid'
 import { Route as AuthOigusedImport } from './routes/_auth/oigused'
@@ -48,6 +49,12 @@ const AuthRouteRoute = AuthRouteImport.update({
 const AuthIndexRoute = AuthIndexImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => AuthRouteRoute,
+} as any)
+
+const AuthTaimerRoute = AuthTaimerImport.update({
+  id: '/taimer',
+  path: '/taimer',
   getParentRoute: () => AuthRouteRoute,
 } as any)
 
@@ -185,6 +192,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthStatistikaImport
       parentRoute: typeof AuthRouteImport
     }
+    '/_auth/taimer': {
+      id: '/_auth/taimer'
+      path: '/taimer'
+      fullPath: '/taimer'
+      preLoaderRoute: typeof AuthTaimerImport
+      parentRoute: typeof AuthRouteImport
+    }
     '/_auth/': {
       id: '/_auth/'
       path: '/'
@@ -238,6 +252,7 @@ interface AuthRouteRouteChildren {
   AuthOigusedRoute: typeof AuthOigusedRoute
   AuthSargidRoute: typeof AuthSargidRoute
   AuthStatistikaRoute: typeof AuthStatistikaRoute
+  AuthTaimerRoute: typeof AuthTaimerRoute
   AuthIndexRoute: typeof AuthIndexRoute
   AuthTelgidTentNrRoute: typeof AuthTelgidTentNrRoute
   AuthTelgidIndexRoute: typeof AuthTelgidIndexRoute
@@ -251,6 +266,7 @@ const AuthRouteRouteChildren: AuthRouteRouteChildren = {
   AuthOigusedRoute: AuthOigusedRoute,
   AuthSargidRoute: AuthSargidRoute,
   AuthStatistikaRoute: AuthStatistikaRoute,
+  AuthTaimerRoute: AuthTaimerRoute,
   AuthIndexRoute: AuthIndexRoute,
   AuthTelgidTentNrRoute: AuthTelgidTentNrRoute,
   AuthTelgidIndexRoute: AuthTelgidIndexRoute,
@@ -271,6 +287,7 @@ export interface FileRoutesByFullPath {
   '/oigused': typeof AuthOigusedRoute
   '/sargid': typeof AuthSargidRoute
   '/statistika': typeof AuthStatistikaRoute
+  '/taimer': typeof AuthTaimerRoute
   '/': typeof AuthIndexRoute
   '/nimekiri/$shiftNr': typeof AuthNimekiriShiftNrRoute
   '/telgid/$tentNr': typeof AuthTelgidTentNrRoute
@@ -287,6 +304,7 @@ export interface FileRoutesByTo {
   '/oigused': typeof AuthOigusedRoute
   '/sargid': typeof AuthSargidRoute
   '/statistika': typeof AuthStatistikaRoute
+  '/taimer': typeof AuthTaimerRoute
   '/': typeof AuthIndexRoute
   '/nimekiri/$shiftNr': typeof AuthNimekiriShiftNrRoute
   '/telgid/$tentNr': typeof AuthTelgidTentNrRoute
@@ -305,6 +323,7 @@ export interface FileRoutesById {
   '/_auth/oigused': typeof AuthOigusedRoute
   '/_auth/sargid': typeof AuthSargidRoute
   '/_auth/statistika': typeof AuthStatistikaRoute
+  '/_auth/taimer': typeof AuthTaimerRoute
   '/_auth/': typeof AuthIndexRoute
   '/_auth/nimekiri/$shiftNr': typeof AuthNimekiriShiftNrRoute
   '/_auth/telgid/$tentNr': typeof AuthTelgidTentNrRoute
@@ -324,6 +343,7 @@ export interface FileRouteTypes {
     | '/oigused'
     | '/sargid'
     | '/statistika'
+    | '/taimer'
     | '/'
     | '/nimekiri/$shiftNr'
     | '/telgid/$tentNr'
@@ -339,6 +359,7 @@ export interface FileRouteTypes {
     | '/oigused'
     | '/sargid'
     | '/statistika'
+    | '/taimer'
     | '/'
     | '/nimekiri/$shiftNr'
     | '/telgid/$tentNr'
@@ -355,6 +376,7 @@ export interface FileRouteTypes {
     | '/_auth/oigused'
     | '/_auth/sargid'
     | '/_auth/statistika'
+    | '/_auth/taimer'
     | '/_auth/'
     | '/_auth/nimekiri/$shiftNr'
     | '/_auth/telgid/$tentNr'
@@ -399,6 +421,7 @@ export const routeTree = rootRoute
         "/_auth/oigused",
         "/_auth/sargid",
         "/_auth/statistika",
+        "/_auth/taimer",
         "/_auth/",
         "/_auth/telgid/$tentNr",
         "/_auth/telgid/"
@@ -439,6 +462,10 @@ export const routeTree = rootRoute
     },
     "/_auth/statistika": {
       "filePath": "_auth/statistika.tsx",
+      "parent": "/_auth"
+    },
+    "/_auth/taimer": {
+      "filePath": "_auth/taimer.tsx",
       "parent": "/_auth"
     },
     "/_auth/": {

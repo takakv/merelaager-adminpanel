@@ -43,6 +43,7 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-hook-form": "^7.57.0",
+    "react-timer-hook": "^4.0.5",
     "recharts": "^2.15.4",
     "shadcn": "^2.6.0",
     "sonner": "^2.0.5",
