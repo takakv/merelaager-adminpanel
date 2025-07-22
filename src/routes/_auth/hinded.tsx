@@ -30,7 +30,7 @@ const scoreColumns: ColumnDef<DisplayTentScore[]>[] = [
       let relevantEntry = Array.from(row.original.values()).find(
         (e) => e.tentNr === tentNr,
       )
-      if (relevantEntry) return relevantEntry.score
+      if (relevantEntry) return relevantEntry.score.toFixed(1)
       return '-'
     },
   }
