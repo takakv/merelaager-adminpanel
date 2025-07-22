@@ -5,6 +5,7 @@ import { StatusCodes } from 'http-status-codes'
 import { apiFetch } from '@/api/apiFetch.ts'
 
 export const TentScoreSchema = Type.Object({
+  scoreId: Type.Number(),
   score: Type.Number(),
   createdAt: Type.String(),
   tentNr: Type.Number(),
@@ -77,6 +78,19 @@ export const fetchTentScores = async (shiftNr: number) => {
   }
 
   if (response.ok) return (jsRes as TentsAPISuccessResponse).data.scores
+}
+
+export const deleteTentScore = async (scoreId: number) => {
+  const response = await apiFetch(`/grades/${scoreId}`, {
+    method: 'DELETE',
+    mode: 'cors',
+    credentials: 'include',
+  })
+
+  if (response.ok) return null
+
+  console.error(await response.text())
+  throw new Error('Ootamatu viga: rohkem infot konsoolis.')
 }
 
 export const addTentScore = async (

@@ -13,7 +13,9 @@ import { getUserShift } from '@/utils.ts'
 
 import {
   addTentScore,
+  deleteTentScore,
   shiftTentFetchQueryOptions,
+  type TentInfo,
   type TentScore,
 } from '@/requests/tents.ts'
 import { Separator } from '@/components/ui/separator.tsx'
@@ -29,6 +31,7 @@ import { Input } from '@/components/ui/input.tsx'
 import { Button } from '@/components/ui/button.tsx'
 import { DataTable } from '@/components/data-table.tsx'
 import { toast } from 'sonner'
+import { SquareX } from 'lucide-react'
 
 export const Route = createFileRoute('/_auth/telgid/$tentNr')({
   component: RouteComponent,
@@ -128,8 +131,64 @@ const scoreTableColumns: ColumnDef<TentScore>[] = [
   {
     accessorKey: 'score',
     header: 'Hinne',
+    cell: ({ row }) => {
+      return (
+        <div className="flex gap-2">
+          <span>{row.original.score}</span>
+          <DeleteScoreButton
+            scoreId={row.original.scoreId}
+            tentNr={row.original.tentNr}
+          />
+        </div>
+      )
+    },
   },
 ]
+
+type DeleteScoreButtonProps = {
+  scoreId: number
+  tentNr: number
+}
+
+const DeleteScoreButton = ({ scoreId, tentNr }: DeleteScoreButtonProps) => {
+  const queryClient = useQueryClient()
+  const shiftNr = getUserShift()
+
+  const mutation = useMutation({
+    mutationFn: async (scoreId: number) => {
+      await deleteTentScore(scoreId)
+    },
+    onError: (error: Error) => {
+      toast.error('Viga hinde kustutamisel!', {
+        description: error.message,
+      })
+    },
+    onSuccess: async () => {
+      console.log('Success')
+
+      const staleData = queryClient.getQueryData<TentInfo>([
+        'tent',
+        shiftNr,
+        tentNr,
+      ])
+      if (!staleData) return
+
+      const index = staleData.scores.findIndex((r) => r.scoreId === scoreId)
+      if (index === -1) return
+
+      const newScores = staleData.scores.filter((r) => r.scoreId !== scoreId)
+      const updatedData = { ...staleData, scores: newScores }
+
+      queryClient.setQueryData(['tent', shiftNr, tentNr], updatedData)
+    },
+  })
+
+  const onClick = () => {
+    mutation.mutate(scoreId)
+  }
+
+  return <SquareX onClick={onClick} />
+}
 
 function RouteComponent() {
   const shiftNr = getUserShift()
