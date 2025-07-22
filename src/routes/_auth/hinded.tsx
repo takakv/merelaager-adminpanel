@@ -4,12 +4,15 @@ import type { ColumnDef } from '@tanstack/table-core'
 
 import { getUserShift } from '@/utils.ts'
 
-import {
-  shiftTentsFetchQueryOptions,
-  type TentScore,
-} from '@/requests/tents.ts'
+import { shiftTentsFetchQueryOptions } from '@/requests/tents.ts'
 
 import { DataTable } from '@/components/data-table.tsx'
+
+type DisplayTentScore = {
+  score: number
+  tentNr: number
+  createdAt: string
+}
 
 export const Route = createFileRoute('/_auth/hinded')({
   component: RouteComponent,
@@ -18,7 +21,7 @@ export const Route = createFileRoute('/_auth/hinded')({
   },
 })
 
-const scoreColumns: ColumnDef<TentScore[]>[] = [
+const scoreColumns: ColumnDef<DisplayTentScore[]>[] = [
   1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
 ].map((tentNr) => {
   return {
@@ -33,7 +36,7 @@ const scoreColumns: ColumnDef<TentScore[]>[] = [
   }
 })
 
-const scoreTableColumns: ColumnDef<TentScore[]>[] = [
+const scoreTableColumns: ColumnDef<DisplayTentScore[]>[] = [
   {
     header: 'Kuupäev',
     cell: ({ row }) => {
@@ -50,7 +53,7 @@ function RouteComponent() {
     shiftTentsFetchQueryOptions(shiftNr),
   )
 
-  const dateScores = new Map<string, TentScore[]>()
+  const dateScores = new Map<string, DisplayTentScore[]>()
 
   // Split scores by date.
   scores?.forEach((score) => {
@@ -65,14 +68,14 @@ function RouteComponent() {
 
   // Keep only a single score per tent per calendar day.
   // Average multiple values for the same day.
-  const uniqueDateScores = new Map<string, TentScore[]>()
+  const uniqueDateScores = new Map<string, DisplayTentScore[]>()
   dateScores.forEach((tentInfo, dateString) => {
     if (tentInfo.length === 0) {
       uniqueDateScores.set(dateString, [])
       return
     }
 
-    const dateScores: TentScore[] = []
+    const dateScores: DisplayTentScore[] = []
     for (let i = 1; i <= 10; ++i) {
       let totalCount = 0
       let totalScore = 0
