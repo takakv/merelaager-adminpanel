@@ -21,11 +21,20 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form.tsx'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog.tsx'
 import { Input } from '@/components/ui/input.tsx'
 import { Button } from '@/components/ui/button.tsx'
 import { Toaster } from '@/components/ui/sonner.tsx'
 
 import { Route as homeRoute } from './_auth/index.tsx'
+import { submitPasswordResetRequest } from '@/requests/password-reset.ts'
 
 // export const Route = createFileRoute('/login')({
 //   component: LoginComponent,
@@ -57,6 +66,67 @@ const formSchema = z.object({
     message: 'Salasõna peab olema vähemalt 6 tähemärki pikk.',
   }),
 })
+
+const passwordResetFormSchema = z.object({
+  email: z.string().email({
+    message: 'Peab olema meiliaadress.',
+  }),
+})
+
+const PasswordReset = () => {
+  const form = useForm<z.infer<typeof passwordResetFormSchema>>({
+    resolver: zodResolver(passwordResetFormSchema),
+    defaultValues: {
+      email: '',
+    },
+  })
+
+  const onSubmit = async (values: z.infer<typeof passwordResetFormSchema>) => {
+    try {
+      await submitPasswordResetRequest(values.email)
+    } catch (err) {
+      console.error(err)
+      toast.error('Viga meili saatmisel!', {
+        description: (err as Error).message,
+      })
+      return
+    }
+  }
+
+  return (
+    <AlertDialog>
+      <AlertDialogTrigger asChild>
+        <div className="inline-block text-sm underline-offset-4 hover:underline opacity-50 hover:opacity-100 cursor-pointer">
+          Unustasid salasõna?
+        </div>
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogTitle>Lähtesta salasõna?</AlertDialogTitle>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)}>
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Meiliaadress</FormLabel>
+                  <FormControl>
+                    <Input {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <div className="flex justify-end gap-2 pt-4">
+              <AlertDialogCancel>Tühista</AlertDialogCancel>
+              <AlertDialogAction type="submit">Lähtesta</AlertDialogAction>
+            </div>
+          </form>
+        </Form>
+      </AlertDialogContent>
+    </AlertDialog>
+  )
+}
 
 function LoginComponent() {
   const { login } = useAuthStore()
@@ -149,6 +219,9 @@ function LoginComponent() {
                 <Button type="submit">Logi sisse</Button>
               </form>
             </Form>
+            <div className="pt-4">
+              <PasswordReset />
+            </div>
           </CardContent>
         </Card>
       </div>
